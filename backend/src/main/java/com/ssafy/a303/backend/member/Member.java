@@ -1,4 +1,4 @@
-package member;
+package com.ssafy.a303.backend.member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
