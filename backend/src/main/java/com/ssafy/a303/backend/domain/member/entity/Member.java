@@ -1,6 +1,6 @@
-package com.ssafy.a303.backend.member.entity;
+package com.ssafy.a303.backend.domain.member.entity;
 
-import com.ssafy.a303.backend.report.entity.Report;
+import com.ssafy.a303.backend.domain.report.entity.Report;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

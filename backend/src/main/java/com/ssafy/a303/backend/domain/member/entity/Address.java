@@ -1,4 +1,4 @@
-package com.ssafy.a303.backend.member.entity;
+package com.ssafy.a303.backend.domain.member.entity;
 
 import jakarta.persistence.Embeddable;
 
