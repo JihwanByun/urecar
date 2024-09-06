@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
 @Entity
@@ -38,6 +39,7 @@ public class Report {
     private String secondImage;
     private String video;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
