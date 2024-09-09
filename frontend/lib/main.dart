@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home_screen.dart';
+import 'package:frontend/screens/main_screen.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(const App());
@@ -11,13 +13,13 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         primaryColor: const Color(0xFFA1E4E4),
         cardColor: const Color(0xFFF2F3F5),
       ),
-      home: const HomeScreen(),
+      home: const MainScreen(),
     );
   }
 }
