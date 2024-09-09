@@ -1,15 +1,11 @@
 package com.ssafy.a303.outbox_kafka_producer.service;
 
-import java.time.LocalDateTime;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mapping.KPropertyPathExtensionsKt;
-import org.springframework.stereotype.Service;
-
 import com.ssafy.a303.outbox_kafka_producer.KafkaProducer;
 import com.ssafy.a303.outbox_kafka_producer.repository.OutboxReportRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
 
 @Service
 public class OutBoxReportService {
