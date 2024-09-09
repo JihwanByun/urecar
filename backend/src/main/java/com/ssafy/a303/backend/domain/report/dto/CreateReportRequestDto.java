@@ -1,4 +1,4 @@
-package com.ssafy.a303.backend.report.dto;
+package com.ssafy.a303.backend.domain.report.dto;
 
 import lombok.Getter;
 
