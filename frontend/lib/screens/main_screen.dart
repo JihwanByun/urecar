@@ -58,6 +58,9 @@ class _MainScreenState extends State<MainScreen> {
         currentIndex: currentIndex,
         onTap: (int index) {
           controller.changePage(index);
+          setState(() {
+            currentIndex = controller.currentIndex.value;
+          });
         },
       ),
     );

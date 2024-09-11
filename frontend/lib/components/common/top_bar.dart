@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/notification_screen.dart';
-import 'package:get/get.dart';
 
 class TopBar extends StatelessWidget {
   final VoidCallback onNotificationPressed;
@@ -11,9 +9,9 @@ class TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      title: const Text(
-        "우리로고?",
-        style: TextStyle(fontSize: 24),
+      title: Image.asset(
+        'assets/images/logo.png',
+        width: 110,
       ),
       actions: [
         Padding(

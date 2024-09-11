@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:camera/camera.dart';
 
 class MainController extends GetxController {
   var currentIndex = 0.obs; // 현재 탭 인덱스

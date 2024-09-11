@@ -13,6 +13,13 @@ class LandingScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Image.asset(
+            'assets/images/logo.png',
+            width: 350,
+          ),
+          const SizedBox(
+            height: 40,
+          ),
           Button(
             text: "사진 촬영",
             onPressed: () {
