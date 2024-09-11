@@ -14,6 +14,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
+        fontFamily: 'Suit',
         scaffoldBackgroundColor: Colors.white,
         primaryColor: const Color(0xFFA1E4E4),
         primaryColorLight: const Color(0xFFE3F7F7),
