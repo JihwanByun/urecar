@@ -1,11 +1,11 @@
 package com.ssafy.a303.backend.domain.report.service;
 
+import com.ssafy.a303.backend.domain.report.entity.Report;
 import com.ssafy.a303.backend.domain.report.repository.ReportRepository;
 import com.ssafy.a303.backend.exception.CustomException;
 import com.ssafy.a303.backend.exception.ErrorCode;
 import com.ssafy.a303.backend.domain.member.repository.MemberRepository;
 import com.ssafy.a303.backend.domain.report.dto.CreateReportRequestDto;
-import com.ssafy.a303.backend.report.entity.Report;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
