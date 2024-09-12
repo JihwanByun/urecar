@@ -18,18 +18,17 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
-  final List<Widget> screens = [
-    const HomeScreen(),
-    const CameraScreen(),
-    const HistoryScreen(),
-    const SettingScreen(),
-  ];
   bool showNotification = false;
   bool showLanding = true;
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      const HomeScreen(),
+      const CameraScreen(),
+      const HistoryScreen(),
+      const SettingScreen(),
+    ];
     final MainController controller = Get.put(MainController());
     final theme = Theme.of(context);
     return Scaffold(
@@ -55,12 +54,8 @@ class _MainScreenState extends State<MainScreen> {
         }
       }),
       bottomNavigationBar: BottomNavigation(
-        currentIndex: currentIndex,
-        onTap: (int index) {
+        onTap: (int index) async {
           controller.changePage(index);
-          setState(() {
-            currentIndex = controller.currentIndex.value;
-          });
         },
       ),
     );

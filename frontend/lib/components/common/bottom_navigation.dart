@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/controller.dart';
+import 'package:get/get.dart';
 
 class BottomNavigation extends StatelessWidget {
-  final int currentIndex;
-
   final Function(int) onTap;
 
   const BottomNavigation({
     super.key,
-    required this.currentIndex,
     required this.onTap,
   });
   @override
   Widget build(BuildContext context) {
+    final MainController controller = Get.find();
     return BottomNavigationBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      currentIndex: currentIndex,
+      currentIndex: controller.currentIndex.value,
       selectedItemColor: Colors.black,
       unselectedItemColor: Colors.black54,
       showUnselectedLabels: true,
