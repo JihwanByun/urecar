@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/screens/login_screen.dart';
 import 'package:get/get.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -40,6 +41,17 @@ class LandingScreen extends StatelessWidget {
             text: "메인으로",
             onPressed: () {
               controller.changePage(0);
+            },
+            horizontal: 95,
+            vertical: 20,
+            fontSize: 30,
+            backgroundColor: Theme.of(context).primaryColorLight,
+            contentColor: Colors.black,
+          ),
+          Button(
+            text: "로그인",
+            onPressed: () {
+              Get.to(const LoginScreen());
             },
             horizontal: 95,
             vertical: 20,
