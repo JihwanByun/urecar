@@ -23,7 +23,7 @@ stages:          # List of stages for jobs, and their order of execution
 #   - deploy
 
 sonarqube-check:
-  image: openjdk:21-alpine
+  image: openjdk:21-slim
   stage: sonar
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
