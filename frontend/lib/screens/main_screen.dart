@@ -23,12 +23,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> screens = [
-      const HomeScreen(),
-      const CameraScreen(),
-      const HistoryScreen(),
-      const SettingScreen(),
-    ];
     final MainController controller = Get.put(MainController());
     final theme = Theme.of(context);
     return Scaffold(
@@ -42,16 +36,37 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       body: Obx(() {
-        if (controller.showLanding.value) {
-          return LandingScreen();
-        } else if (controller.showNotification.value) {
-          return const NotificationScreen();
-        } else {
-          return IndexedStack(
-            index: controller.currentIndex.value,
-            children: screens,
-          );
-        }
+        return Navigator(
+          onGenerateRoute: (settings) {
+            switch (controller.currentIndex.value) {
+              case 0:
+                return GetPageRoute(
+                  settings: settings,
+                  page: () => const HomeScreen(),
+                );
+              case 1:
+                return GetPageRoute(
+                  settings: settings,
+                  page: () => const CameraScreen(),
+                );
+              case 2:
+                return GetPageRoute(
+                  settings: settings,
+                  page: () => const HistoryScreen(),
+                );
+              case 3:
+                return GetPageRoute(
+                  settings: settings,
+                  page: () => const SettingScreen(),
+                );
+              default:
+                return GetPageRoute(
+                  settings: settings,
+                  page: () => const HomeScreen(),
+                );
+            }
+          },
+        );
       }),
       bottomNavigationBar: BottomNavigation(
         onTap: (int index) async {

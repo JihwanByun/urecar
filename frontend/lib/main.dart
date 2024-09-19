@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/screens/camera_screen.dart';
+import 'package:frontend/screens/history_screen.dart';
+import 'package:frontend/screens/home_screen.dart';
+import 'package:frontend/screens/landing_screen.dart';
 import 'package:frontend/screens/main_screen.dart';
+import 'package:frontend/screens/setting_screen.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 
@@ -41,7 +46,14 @@ class App extends StatelessWidget {
         primaryColorLight: const Color(0xFFE3F7F7),
         cardColor: const Color(0xFFF2F3F5),
       ),
-      home: const MainScreen(),
+      initialRoute: '/landing',
+      getPages: [
+        GetPage(name: '/home', page: () => const HomeScreen()),
+        GetPage(name: '/camera', page: () => const CameraScreen()),
+        GetPage(name: '/history', page: () => const HistoryScreen()),
+        GetPage(name: '/setting', page: () => const SettingScreen()),
+        GetPage(name: '/landing', page: () => LandingScreen())
+      ],
     );
   }
 }

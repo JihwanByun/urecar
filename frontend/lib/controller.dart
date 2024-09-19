@@ -9,9 +9,23 @@ class MainController extends GetxController {
   var camera;
   // 페이지 변경 메서드
   void changePage(int index) {
-    currentIndex.value = index;
-    showNotification.value = false;
-    showLanding.value = false;
+    if (currentIndex.value != index) {
+      currentIndex.value = index;
+      switch (index) {
+        case 0:
+          Get.offAllNamed('/home');
+          break;
+        case 1:
+          Get.offAllNamed('/camera');
+          break;
+        case 2:
+          Get.offAllNamed('/history');
+          break;
+        case 3:
+          Get.offAllNamed('/setting');
+          break;
+      }
+    }
   }
 
   // 알림 페이지 전환 메서드
