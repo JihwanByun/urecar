@@ -30,8 +30,12 @@ class _SettingScreenState extends State<SettingScreen> {
       body: const Center(
         child: Column(
           children: [
-            Text("setting"),
-            SwitchButton(),
+            Row(
+              children: [Text("data"), Text("data")],
+            ),
+            SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),

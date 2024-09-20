@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/screens/check_image_screen.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
 
@@ -16,11 +17,24 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
+  late double longitude;
+  late double latitude;
 
   @override
   void initState() {
     super.initState();
     initializeCamera();
+    checkPermission();
+  }
+
+  void checkPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('permissions are denied');
+      }
+    }
   }
 
   void initializeCamera() {
@@ -34,6 +48,13 @@ class _CameraScreenState extends State<CameraScreen> {
     } else {
       print("카메라가 없습니다.");
     }
+  }
+
+  Future<void> getLocation() async {
+    Position position = await Geolocator.getCurrentPosition();
+    longitude = position.longitude;
+    latitude = position.latitude;
+    print("longitude: $longitude, latitude: $latitude");
   }
 
   @override
@@ -81,6 +102,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       try {
                         await _initializeControllerFuture;
                         final image = await _controller!.takePicture();
+                        await getLocation();
                         if (!mounted) return;
                         await Get.to(
                             () => CheckImageScreen(imagePath: image.path));

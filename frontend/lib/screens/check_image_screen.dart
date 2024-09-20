@@ -1,15 +1,63 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/camera_screen.dart';
-import 'package:frontend/screens/signup_screen.dart';
 import 'package:get/get.dart';
 
-class CheckImageScreen extends StatelessWidget {
+class CheckImageScreen extends StatefulWidget {
   final String imagePath;
   const CheckImageScreen({super.key, required this.imagePath});
+
+  @override
+  State<CheckImageScreen> createState() => _CheckImageScreenState();
+}
+
+class _CheckImageScreenState extends State<CheckImageScreen> {
+  int totalSeconds = 6000;
+  bool isRunning = false;
+  late Timer timer;
+  void onTick(Timer timer) {
+    if (totalSeconds == 0) {
+      setState(() {
+        isRunning = false;
+      });
+      timer.cancel();
+    } else {
+      setState(() {
+        totalSeconds -= 1;
+      });
+    }
+  }
+
+  void onStart() {
+    timer = Timer.periodic(const Duration(milliseconds: 10), onTick);
+    setState(() {
+      isRunning = true;
+    });
+  }
+
+  @override
+  void initState() {
+    onStart();
+    super.initState();
+  }
+
+  String formatTime() {
+    int seconds = (totalSeconds / 100).floor();
+    int milliseconds = totalSeconds % 100;
+    return '${seconds.toString().padLeft(2, '0')}:${milliseconds.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  void dispose() {
+    if (isRunning == true) {
+      isRunning = false;
+      timer.cancel();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +75,22 @@ class CheckImageScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Image.file(
-            File(imagePath),
-          ),
+          Stack(children: [
+            Image.file(
+              File(widget.imagePath),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15.0),
+              child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    formatTime(),
+                    style: const TextStyle(
+                      fontSize: 40,
+                    ),
+                  )),
+            )
+          ]),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
@@ -50,12 +111,12 @@ class CheckImageScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: 10, // 두 버튼 사이의 간격
+                  width: 10,
                   child: Center(
                     child: Container(
-                      width: 1, // 선의 두께
-                      height: 55, // 선의 높이
-                      color: Colors.black, // 선의 색상
+                      width: 1,
+                      height: 55,
+                      color: Colors.black,
                     ),
                   ),
                 ),
