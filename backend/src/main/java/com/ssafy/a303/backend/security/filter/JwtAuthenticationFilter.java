@@ -4,7 +4,6 @@ import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.member.service.MemberService;
 import com.ssafy.a303.backend.exception.CustomException;
 import com.ssafy.a303.backend.exception.ErrorCode;
-import com.ssafy.a303.backend.security.user.UserDetailsServiceImpl;
 import com.ssafy.a303.backend.security.jwt.JwtService;
 import com.ssafy.a303.backend.security.jwt.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final MemberService memberService;
     private final JwtService jwtService;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -101,13 +101,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
-//    @Override
-//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//        return StringUtils.startsWithAny(request.getRequestURI()
-//                , "/swagger", "/swagger-ui.html", "/swagger-ui/*", "/api-docs", "/api-docs/*", "/v3/api-docs/*"
-//                , "/v3/api-docs/swagger-config", "/v3/api-docs/KIDWE");
-//    }
 
 }
 

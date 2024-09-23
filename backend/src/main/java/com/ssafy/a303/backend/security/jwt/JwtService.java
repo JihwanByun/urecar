@@ -1,11 +1,9 @@
 package com.ssafy.a303.backend.security.jwt;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class JwtService {
 
@@ -13,8 +11,6 @@ public class JwtService {
     private final JwtRepository refreshTokenRepository;
 
     public void saveRefreshToken(String email, String refreshToken) {
-        log.info("save refresh token: {}", email);
-        log.info("refresh token: {}", refreshToken);
         refreshTokenRepository.save(email, refreshToken, JwtUtil.getExpiredTime(refreshToken));
     }
 

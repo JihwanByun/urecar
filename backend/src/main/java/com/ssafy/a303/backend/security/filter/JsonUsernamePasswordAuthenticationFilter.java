@@ -9,37 +9,36 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StreamUtils;
 
+/**
+ * 사용자 인증을 위한 Filter(login 을 위한 filter)
+ * AbstractAuthenticationProcessingFilter: UsernamePasswordAuthenticationFilter 의 추상클래스
+ */
 @Slf4j
 public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String DEFAULT_LOGIN_REQUEST_URL = "/login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
+
+    // AbstractAuthenticationProcessingFilter 에 구현된 객체로, URL과 METHOD가 일치하는 경우에만 매칭된다.
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER =
             new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD);
 
     private final ObjectMapper objectMapper;
-    private final AuthenticationProviderImpl authenticationProvider;
+    private final AuthenticationProvider authenticationProvider;
 
-    public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper,
-            AuthenticationSuccessHandler authenticationSuccessHandler,
-            AuthenticationFailureHandler authenticationFailureHandler,
-            AuthenticationProviderImpl authenticationProvider
-    ) {
+    public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper, AuthenticationProviderImpl authenticationProvider) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER);
         this.objectMapper = objectMapper;
         this.authenticationProvider = authenticationProvider;
-        setAuthenticationSuccessHandler(authenticationSuccessHandler);
-        setAuthenticationFailureHandler(authenticationFailureHandler);
     }
 
     @Override
