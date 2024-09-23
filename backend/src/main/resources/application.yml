@@ -1,4 +1,7 @@
 spring:
+  application:
+    name: UreCar
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -8,6 +11,19 @@ spring:
     url: jdbc:mysql://localhost:3306/urecar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ssafy
     password: ssafy
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ssafy
+
+jwt:
+  token:
+    header: Authorization
+    secret: 18CB6A32EFEE1C3D5873D7D35F28D
+    access-expired-time: 3000 #10s
+    refresh-expired-time: 1209600000 #14d
 
 server:
   port: 8080

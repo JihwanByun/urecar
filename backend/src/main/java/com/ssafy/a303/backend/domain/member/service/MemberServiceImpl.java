@@ -1,4 +1,13 @@
 package com.ssafy.a303.backend.domain.member.service;
 
-public class MemberServiceImpl {
+import com.ssafy.a303.backend.domain.member.entity.Member;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MemberServiceImpl implements MemberService {
+
+    public Member getMemberByEmail(String email) {
+        return null;
+    }
+
 }
