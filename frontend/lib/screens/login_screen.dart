@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 50,
             ),
-            const InputLabel(name: "아이디"),
+            const InputLabel(name: "이메일"),
             const Input(),
             const InputLabel(name: "비밀번호"),
             const Input(),
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Get.to(const SignupScreen());
+                    Get.to(() => const SignupScreen());
                   },
                   child: const Text(
                     "회원가입",
@@ -68,11 +68,12 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 60),
               child: Button(
-                  text: "로그인",
-                  onPressed: () {},
-                  horizontal: 100,
-                  vertical: 10,
-                  fontSize: 15),
+                text: "로그인",
+                onPressed: () {},
+                horizontal: 100,
+                vertical: 10,
+                fontSize: 15,
+              ),
             )
           ],
         ),

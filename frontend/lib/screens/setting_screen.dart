@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/top_bar.dart';
-import 'package:frontend/components/settingScreen/setting_screen_item.dart';
+import 'package:frontend/components/setting_screen/setting_screen_item.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 

@@ -4,7 +4,6 @@ import 'package:frontend/screens/camera_screen.dart';
 import 'package:frontend/screens/history_screen.dart';
 import 'package:frontend/screens/home_screen.dart';
 import 'package:frontend/screens/landing_screen.dart';
-import 'package:frontend/screens/main_screen.dart';
 import 'package:frontend/screens/setting_screen.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
