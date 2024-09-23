@@ -39,6 +39,7 @@ dependencies:
   get: ^4.6.6
   http: ^1.2.2
   geolocator: ^13.0.1
+  remedi_kopo: ^0.0.2
 
 dev_dependencies:
   flutter_test:
