@@ -28,6 +28,7 @@ backend-build-job:       # This job runs in the build stage, which runs first.
   script:
     - echo "backend build start"
     - cd backend
+    - chmod +x ./gradlew 
     - ./gradlew clean build
     - docker build -t backend-image:latest .
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
