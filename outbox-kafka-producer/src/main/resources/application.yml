@@ -1,0 +1,48 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: outbox-kafka-producer
+  datasource:
+    url: jdbc:mysql://localhost:3306/urecar
+    username: root
+    password: ssafy
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # 개발 환경에서는 'update', 배포 시에는 'validate' 또는 'none' 권장
+    show-sql: true
+    # properties:
+    #   hibernate:
+    #     dialect: org.hibernate.dialect.MySQLDialect
+
+  kafka:
+    bootstrap-servers: localhost:10000  # 카프카 브로커 주소
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 3
+      batch-size: 16384
+      linger-ms: 5
+      # partitioner:
+      #   class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
+      buffer-memory: 33554432
+      properties:
+        metadata.max.age.ms: 10000
+    topic:
+      name:
+        first-request: "first-request"
+        second-request: "second-request"
+
+logging:
+  level:
+    org.springframework.kafka: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
