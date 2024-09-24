@@ -46,7 +46,7 @@ backend-deploy-job:      # This job runs in the deploy stage.
   script:
     - echo "backend deploy start"
     - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
-      docker pull $DOCKER_USERNAME/urecar-backend-image:latest &&  
+      docker pull urecar/backend-image:latest &&  
       docker-compose -f /home/ubuntu/docker/backend/docker-compose.yml up -d " # image pull from hub and docker-compose로 컨테이너 실행
 
 #    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose down"
