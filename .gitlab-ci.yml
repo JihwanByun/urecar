@@ -32,7 +32,7 @@ backend-build-job:       # This job runs in the build stage, which runs first.
     - ./gradlew clean build
     - docker build -t backend-image:latest .
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
-    - docker push $DOCKER_USERNAME/urecar-backend-image:latest  # Docker Hub로 이미지 푸시
+    - docker push imjunhyuk/urecar:latest  # Docker Hub로 이미지 푸시
     - echo "backend build end"
   only:
     - develop
@@ -46,7 +46,7 @@ backend-deploy-job:      # This job runs in the deploy stage.
   script:
     - echo "backend deploy start"
     - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
-      docker pull urecar/backend-image:latest &&  
+      docker pull imjunhyuk/urecar:latest &&  
       docker-compose -f /home/ubuntu/docker/backend/docker-compose.yml up -d " # image pull from hub and docker-compose로 컨테이너 실행
 
 #    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose down"
