@@ -50,6 +50,9 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
 
         String username = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
+
+        log.info("Request URI ===> /login, username: {}", username);
+
         if (username == null || password == null) {
             throw new AuthenticationServiceException("DATA IS MISS");
         }
