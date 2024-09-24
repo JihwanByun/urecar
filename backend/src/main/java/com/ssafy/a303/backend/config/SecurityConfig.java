@@ -92,7 +92,8 @@ public class SecurityConfig {
         JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordAuthenticationFilter
                 = new JsonUsernamePasswordAuthenticationFilter(
                 new ObjectMapper(), new AuthenticationProviderImpl(new UserDetailsServiceImpl(memberRepository), passwordEncoder()));
-        jsonUsernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(new JwtService(jwtRepository), new MemberServiceImpl(memberRepository)));
+        jsonUsernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(new JwtService(jwtRepository)
+                , new MemberServiceImpl(memberRepository, passwordEncoder())));
         jsonUsernamePasswordAuthenticationFilter.setAuthenticationFailureHandler(new LoginFailureHandler());
         jsonUsernamePasswordAuthenticationFilter.setAuthenticationManager(authenticationManager(memberRepository));
         return jsonUsernamePasswordAuthenticationFilter;
@@ -108,7 +109,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(JwtRepository jwtRepository, MemberRepository memberRepository) {
-        return new JwtAuthenticationFilter(new MemberServiceImpl(memberRepository), new JwtService(jwtRepository),
+        return new JwtAuthenticationFilter(new MemberServiceImpl(memberRepository, passwordEncoder()), new JwtService(jwtRepository),
                 new UserDetailsServiceImpl(memberRepository));
     }
 

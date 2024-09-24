@@ -5,9 +5,9 @@ import com.ssafy.a303.backend.domain.member.entity.Member;
 
 public interface MemberService {
 
-    Member getMemberByEmail(String email);
-
     void saveMember(SignupRequestDto signupRequestDto);
+
+    Member getMemberByEmail(String email);
 
     boolean isExistEmail(String email);
 
