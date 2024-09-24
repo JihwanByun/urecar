@@ -33,6 +33,8 @@ public class Member {
     private String name;
     @Column(nullable = false)
     private String tel;
+    @Column(nullable = false)
+    private Role role;
 
     @Embedded
     private Address address;
@@ -44,12 +46,13 @@ public class Member {
     private boolean isDeleted;
 
     @Builder
-    public Member(String email, String password, String name, String tel, Address address) {
+    public Member(String email, String password, String name, String tel, Address address, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.tel = tel;
         this.address = address;
+        this.role = role;
     }
 
 }
