@@ -42,7 +42,6 @@ backend-docker-build-job:
   image: docker:latest
   stage: docker-build
   variables:
-    DOCKER_HOST: tcp://docker:2375  # Docker 데몬 연결을 위한 환경 변수
     DOCKER_TLS_CERTDIR: ""  # Docker의 TLS 비활성화
   services:
     - docker:dind
