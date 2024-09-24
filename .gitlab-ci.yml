@@ -41,8 +41,6 @@ backend-build-job:       # This job runs in the build stage, which runs first.
 backend-docker-build-job:
   image: docker:latest
   stage: docker-build
-  services:
-    - docker:dind  # Docker-in-Docker 서비스 활성화
   script:
     - echo "backend docker build start"
     - docker build -t imjunhyuk/urecar:latest .
@@ -51,8 +49,8 @@ backend-docker-build-job:
     - echo "backend docker build end"
   only:
     - develop
-  dependencies:
-    - backend-build-job 
+  # dependencies:
+  #   - backend-build-job 
   after_script:
     - docker logout
 
@@ -60,8 +58,6 @@ backend-docker-build-job:
 backend-deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
-  services:
-    - docker:dind  # Docker-in-Docker 서비스 활성화
   script:
     - echo "backend deploy start"
     - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
@@ -73,7 +69,8 @@ backend-deploy-job:      # This job runs in the deploy stage.
     - echo "backend deploy end"
   only:
     - develop
-
+  after_script:
+    - docker logout
 
 before_script:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
