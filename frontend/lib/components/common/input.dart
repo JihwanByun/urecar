@@ -7,6 +7,10 @@ class Input extends StatelessWidget {
   final bool? obscure;
   final Function? onTap;
   final TextEditingController? controller;
+  final FormFieldValidator<String>? validator;
+  final FormFieldSetter<String>? onSaved;
+  final bool? readonly;
+  final String? hint;
 
   const Input({
     super.key,
@@ -16,6 +20,10 @@ class Input extends StatelessWidget {
     this.obscure,
     this.onTap,
     this.controller,
+    this.validator,
+    this.onSaved,
+    this.readonly,
+    this.hint,
   });
 
   @override
@@ -33,7 +41,11 @@ class Input extends StatelessWidget {
         onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
         keyboardType: inputType,
         obscureText: obscure ?? false,
+        readOnly: readonly ?? false,
+        validator: validator,
+        onSaved: onSaved,
         decoration: InputDecoration(
+          hintText: hint,
           suffixIcon: buttonText != null
               ? Padding(
                   padding: const EdgeInsets.only(
