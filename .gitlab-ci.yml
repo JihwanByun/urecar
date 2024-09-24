@@ -17,27 +17,65 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 stages:          # List of stages for jobs, and their order of execution
-#   - build
-  - sonar
+  - build
+#  - sonar
 #   - test
-#   - deploy
+  - deploy
 
-sonarqube-check:
-  image: gradle:jdk21
-  stage: sonar
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
+backend-build-job:       # This job runs in the build stage, which runs first.
+  image: openjdk:21
+  stage: build
   script:
-    - cd backend 
-    - gradle sonar
-  allow_failure: true
+    - echo "backend build start"
+    - cd backend
+    - ./gradlew clean build
+    - docker build -t backend-image:latest .
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
+    - docker push $DOCKER_USERNAME/urecar-backend-image:latest  # Docker Hub로 이미지 푸시
+    - echo "backend build end"
   only:
     - develop
+  artifacts:
+    paths:
+      - build/libs/*.jar  # JAR 파일을 빌드 아티팩트로 저장
+
+backend-deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  script:
+    - echo "backend deploy start"
+    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "
+      docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
+      docker pull $DOCKER_USERNAME/urecar-backend-image:latest &&  # Docker Hub로부터 이미지 풀
+      docker-compose -f /home/ubuntu/docker/backend/docker-compose.yml up -d  # docker-compose로 컨테이너 실행
+      "
+#    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose down"
+#    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose up -d"
+    - echo "backend deploy end"
+
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  - mkdir -p ~/.ssh
+  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+#sonarqube-check:
+#  image: gradle:jdk21
+#  stage: sonar
+#  variables:
+#    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+#    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+#  cache:
+#    key: "${CI_JOB_NAME}"
+#    paths:
+#      - .sonar/cache
+#  script:
+#    - cd backend
+#    - gradle sonar
+#  allow_failure: true
+#  only:
+#    - develop
 
 # build-job:       # This job runs in the build stage, which runs first.
 #   stage: build
