@@ -7,7 +7,6 @@ public class CreateReportRequestDto {
 
     private Integer memberId;
     private String content;
-    private String firstImage;
     private Double latitude;
     private Double longitude;
 

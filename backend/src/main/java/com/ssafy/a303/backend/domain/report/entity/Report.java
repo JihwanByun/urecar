@@ -37,9 +37,7 @@ public class Report {
     @Column(nullable = false)
     private String firstImage;
     private String secondImage;
-    private String video;
 
-    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
@@ -48,11 +46,10 @@ public class Report {
     private double longitude;
 
     @Builder
-    public Report(Member member, String content, String firstImage, String video, LocalDateTime createdAt, double latitude, double longitude) {
+    public Report(Member member, String content, String firstImage, LocalDateTime createdAt, double latitude, double longitude) {
         this.member = member;
         this.content = content;
         this.firstImage = firstImage;
-        this.video = video;
         this.createdAt = createdAt;
         this.latitude = latitude;
         this.longitude = longitude;
