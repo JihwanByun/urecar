@@ -43,6 +43,7 @@ backend-docker-build-job:
   stage: docker-build
   variables:
     DOCKER_TLS_CERTDIR: ""  # Docker의 TLS 비활성화
+    DOCKER_HOST: "unix:///var/run/docker.sock"
   # services:
   #   - docker:dind
   script:
@@ -64,9 +65,9 @@ backend-deploy-job:      # This job runs in the deploy stage.
   # environment: production
   # services:
   #   - docker:dind 
-  variables:
-    DOCKER_HOST: tcp://docker:2375  # Docker 데몬 연결을 위한 환경 변수
-    DOCKER_TLS_CERTDIR: ""  # Docker의 TLS 비활성화
+  # variables:
+  #   DOCKER_HOST: tcp://docker:2375  # Docker 데몬 연결을 위한 환경 변수
+  #   DOCKER_TLS_CERTDIR: ""  # Docker의 TLS 비활성화
   script:
     - echo "backend deploy start"
     - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
