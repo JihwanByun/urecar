@@ -4,10 +4,10 @@ import 'package:frontend/screens/camera_screen.dart';
 import 'package:frontend/screens/history_screen.dart';
 import 'package:frontend/screens/home_screen.dart';
 import 'package:frontend/screens/landing_screen.dart';
-import 'package:frontend/screens/main_screen.dart';
 import 'package:frontend/screens/setting_screen.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 late List<CameraDescription> cameras;
 
@@ -28,6 +28,7 @@ Future<void> main() async {
     firstCamera = null;
   }
   controller.camera = firstCamera;
+  await dotenv.load(fileName: 'assets/config/.env.development');
   runApp(
     const App(),
   );

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
+import 'package:frontend/components/home_screen/home_screen_image_card.dart';
+import 'package:frontend/screens/guide_screen.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
 
@@ -63,6 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ]),
+              HomeScreenImageCard(
+                  imageLink: "assets/images/guide_link.png",
+                  screen: GuideScreen(),
+                  title: "신고 가이드 보러 가기")
             ],
           ),
         ],
