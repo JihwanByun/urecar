@@ -38,6 +38,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Bean
     public SecurityFilterChain configure(HttpSecurity http, JwtRepository jwtRepository, MemberRepository memberRepository)
             throws Exception {
 
