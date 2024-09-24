@@ -44,7 +44,6 @@ backend-docker-build-job:
   variables:
     DOCKER_HOST: tcp://docker:2375  # Docker 데몬 연결을 위한 환경 변수
     DOCKER_TLS_CERTDIR: ""  # Docker의 TLS 비활성화
-  privileged: true 
   services:
     - docker:dind
   script:
@@ -65,8 +64,7 @@ backend-deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   # environment: production
   services:
-    - docker:dind
-  privileged: true   
+    - docker:dind 
   variables:
     DOCKER_HOST: tcp://docker:2375  # Docker 데몬 연결을 위한 환경 변수
     DOCKER_TLS_CERTDIR: ""  # Docker의 TLS 비활성화
