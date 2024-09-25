@@ -59,7 +59,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void dispose() {
-    _controller?.dispose(); // 카메라 리소스 해제
+    _controller?.dispose();
     super.dispose();
   }
 

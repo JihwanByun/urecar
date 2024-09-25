@@ -6,8 +6,8 @@ class Spinner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SpinKitCircle(
-        color: Colors.blue, // You can customize the color here
-        size: 50.0, // Customize the size if needed
+        color: Colors.blue,
+        size: 50.0,
       ),
     );
   }
