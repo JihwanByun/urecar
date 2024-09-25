@@ -66,15 +66,15 @@ class _SignupScreenState extends State<SignupScreen> {
       final isAvailable =
           await apiService.emailCheck({'email': emailController.text});
 
-      if (isAvailable) {
+      if (!isAvailable) {
         setState(() {
-          emailSuccess = "사용 가능한 이메일입니다."; // 중복 없음, 성공 메시지
-          emailError = null; // 에러 메시지 없음
-          formData["email"] = emailController.text; // 이메일 저장
+          emailSuccess = "사용 가능한 이메일입니다.";
+          emailError = null;
+          formData["email"] = emailController.text;
         });
       } else {
         setState(() {
-          emailError = "이미 사용 중인 이메일입니다."; // 중복 있음, 에러 메시지
+          emailError = "이미 사용 중인 이메일입니다.";
           emailSuccess = null;
         });
       }
@@ -163,7 +163,7 @@ class _SignupScreenState extends State<SignupScreen> {
       };
       try {
         await apiService.signUp(formData);
-        Get.to(() => const LoginScreen());
+        Get.offAllNamed('/login');
       } catch (e) {
         Get.snackbar('오류', '회원가입 중 오류가 발생했습니다.',
             snackPosition: SnackPosition.BOTTOM);
@@ -219,6 +219,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 controller: passwordController,
                 inputType: TextInputType.visiblePassword,
                 obscure: true,
+                onSaved: (value) {
+                  formData['password'] = value ?? '';
+                },
               ),
               if (passwordError != null)
                 Padding(
@@ -247,6 +250,9 @@ class _SignupScreenState extends State<SignupScreen> {
               const InputLabel(name: "이름"),
               Input(
                 controller: nameController,
+                onSaved: (value) {
+                  formData['name'] = value ?? '';
+                },
               ),
               if (nameError != null)
                 Padding(
@@ -261,6 +267,9 @@ class _SignupScreenState extends State<SignupScreen> {
               Input(
                 controller: phoneController,
                 inputType: TextInputType.phone,
+                onSaved: (value) {
+                  formData['tel'] = value ?? '';
+                },
               ),
               if (phoneError != null)
                 Padding(
@@ -288,6 +297,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               Input(
                 controller: addressDetailController,
+                onSaved: (value) {
+                  formData['address_detail'] = value ?? '';
+                },
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 60),

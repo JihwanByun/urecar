@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 
 class MainController extends GetxController {
+  var accessToken = "".obs;
   var currentIndex = 10.obs; // 현재 탭 인덱스
   var pageStack = <int>[0].obs; // 페이지 스택 (초기 홈 화면)
   var showNotification = false.obs; // 알림 페이지 상태

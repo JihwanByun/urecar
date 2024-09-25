@@ -4,6 +4,7 @@ import 'package:frontend/screens/camera_screen.dart';
 import 'package:frontend/screens/history_screen.dart';
 import 'package:frontend/screens/home_screen.dart';
 import 'package:frontend/screens/landing_screen.dart';
+import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/screens/setting_screen.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
@@ -53,7 +54,8 @@ class App extends StatelessWidget {
         GetPage(name: '/camera', page: () => const CameraScreen()),
         GetPage(name: '/history', page: () => const HistoryScreen()),
         GetPage(name: '/setting', page: () => const SettingScreen()),
-        GetPage(name: '/landing', page: () => LandingScreen())
+        GetPage(name: '/landing', page: () => LandingScreen()),
+        GetPage(name: '/login', page: () => const LoginScreen())
       ],
     );
   }

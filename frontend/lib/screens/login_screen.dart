@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 formData['email'] = value ?? '';
               },
             ),
-            if (emailError != null) // 에러 메시지를 별도로 렌더링
+            if (emailError != null)
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
