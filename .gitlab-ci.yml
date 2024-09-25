@@ -28,6 +28,8 @@ backend-build-job:       # This job runs in the build stage, which runs first.
   script:
     - echo "backend build start"
     - cd backend
+    - ./gradlew wrapper
+
     - chmod +x ./gradlew 
     - ./gradlew clean build
     - echo "backend build end"
