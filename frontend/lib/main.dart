@@ -7,7 +7,7 @@ import 'package:frontend/screens/landing_screen.dart';
 import 'package:frontend/screens/setting_screen.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
-import 'package:frontend/components/common/spinner.dart'; // Import the Spinner
+import 'package:frontend/components/common/spinner.dart';
 
 late List<CameraDescription> cameras;
 
@@ -15,7 +15,6 @@ Future<void> main() async {
   final MainController controller = Get.put(MainController());
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Display spinner while loading
   runApp(const LoadingApp());
 
   final cameras = await availableCameras();
@@ -27,11 +26,9 @@ Future<void> main() async {
   }
   controller.camera = firstCamera;
 
-  // After initialization, launch the main app
   runApp(const App());
 }
 
-// Temporary loading screen with Spinner
 class LoadingApp extends StatelessWidget {
   const LoadingApp({super.key});
 
@@ -39,7 +36,7 @@ class LoadingApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
-        body: Spinner(), // Show spinner while loading
+        body: Spinner(),
       ),
     );
   }
