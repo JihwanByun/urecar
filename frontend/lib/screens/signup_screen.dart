@@ -29,6 +29,14 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController addressDetailController = TextEditingController();
 
+  String? emailError;
+  String? emailSuccess;
+  String? passwordError;
+  String? confirmPasswordError;
+  String? nameError;
+  String? phoneError;
+  String? addressError;
+
   void searchAddress(BuildContext context) async {
     KopoModel? model = await Get.to(() => RemediKopo());
 
@@ -47,8 +55,105 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
+  Future<void> checkEmailDuplicate() async {
+    final apiService = ApiService();
+    setState(() {
+      emailError = null;
+      emailSuccess = null;
+    });
+
+    try {
+      final isAvailable =
+          await apiService.emailCheck({'email': emailController.text});
+
+      if (isAvailable) {
+        setState(() {
+          emailSuccess = "사용 가능한 이메일입니다."; // 중복 없음, 성공 메시지
+          emailError = null; // 에러 메시지 없음
+          formData["email"] = emailController.text; // 이메일 저장
+        });
+      } else {
+        setState(() {
+          emailError = "이미 사용 중인 이메일입니다."; // 중복 있음, 에러 메시지
+          emailSuccess = null;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        emailError = "이메일 중복 확인 중 오류가 발생했습니다.";
+        emailSuccess = null;
+      });
+    }
+  }
+
   void submitForm() async {
-    if (formKey.currentState!.validate()) {
+    setState(() {
+      // 에러 메시지 초기화
+      emailError = null;
+      passwordError = null;
+      confirmPasswordError = null;
+      nameError = null;
+      phoneError = null;
+      addressError = null;
+    });
+
+    bool isValid = true;
+
+    // 유효성 검사: 각 필드마다 조건을 확인하여 에러 메시지 설정
+    if (emailController.text.isEmpty) {
+      setState(() {
+        emailError = "이메일을 입력하세요.";
+      });
+      isValid = false;
+    } else if (!RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
+        .hasMatch(emailController.text)) {
+      setState(() {
+        emailError = "유효한 이메일 주소를 입력하세요.";
+      });
+      isValid = false;
+    } else if (emailSuccess == null) {
+      setState(() {
+        emailError = "이메일 중복을 확인해주세요."; // 중복 확인 필요
+      });
+      isValid = false;
+    }
+
+    if (passwordController.text.length < 6) {
+      setState(() {
+        passwordError = "비밀번호는 6자 이상이어야 합니다.";
+      });
+      isValid = false;
+    }
+
+    if (confirmPasswordController.text != passwordController.text) {
+      setState(() {
+        confirmPasswordError = "비밀번호가 일치하지 않습니다.";
+      });
+      isValid = false;
+    }
+
+    if (nameController.text.isEmpty) {
+      setState(() {
+        nameError = "이름을 입력하세요.";
+      });
+      isValid = false;
+    }
+
+    if (phoneController.text.isEmpty) {
+      setState(() {
+        phoneError = "전화번호를 입력하세요.";
+      });
+      isValid = false;
+    }
+
+    if (addressController.text.isEmpty) {
+      setState(() {
+        addressError = "주소를 입력하세요.";
+      });
+      isValid = false;
+    }
+
+    if (isValid) {
       formKey.currentState!.save();
       final apiService = ApiService();
       formData['address'] = {
@@ -64,13 +169,6 @@ class _SignupScreenState extends State<SignupScreen> {
             snackPosition: SnackPosition.BOTTOM);
       }
     }
-  }
-
-  String? validatePassword(String? value) {
-    if (value != passwordController.text) {
-      return "비밀번호가 일치하지 않습니다.";
-    }
-    return null;
   }
 
   @override
@@ -96,102 +194,100 @@ class _SignupScreenState extends State<SignupScreen> {
                 controller: emailController,
                 inputType: TextInputType.emailAddress,
                 buttonText: "중복 확인",
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "이메일을 입력하세요.";
-                  }
-                  if (!RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
-                      .hasMatch(value)) {
-                    return "유효한 이메일 주소를 입력하세요.";
-                  }
-                  if (formData["email"] == null || value != formData["email"]) {
-                    return "이메일 중복을 확인해주세요.";
-                  }
-                  return null;
-                },
-                onPressed: () async {
-                  final apiService = ApiService();
-                  try {
-                    final res =
-                        apiService.emailCheck({'email': formData['email']});
-                    if (res == true) {
-                      formData["email"] = emailController.value;
-                    }
-                  } catch (e) {
-                    Get.snackbar('오류', '중복 확인 중 오류가 발생했습니다.',
-                        snackPosition: SnackPosition.BOTTOM);
-                  }
-                },
+                onPressed: checkEmailDuplicate,
               ),
+              if (emailError != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                  child: Text(
+                    emailError!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+              if (emailSuccess != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                  child: Text(
+                    emailSuccess!,
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                ),
               const InputLabel(name: "비밀번호"),
               Input(
                 controller: passwordController,
                 inputType: TextInputType.visiblePassword,
                 obscure: true,
-                validator: (value) {
-                  if (value == null || value.length < 6) {
-                    return "비밀번호는 6자 이상이어야 합니다.";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  formData['password'] = value ?? '';
-                },
               ),
+              if (passwordError != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                  child: Text(
+                    passwordError!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               const InputLabel(name: "비밀번호 확인"),
               Input(
                 controller: confirmPasswordController,
                 inputType: TextInputType.visiblePassword,
                 obscure: true,
-                validator: validatePassword,
               ),
+              if (confirmPasswordError != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                  child: Text(
+                    confirmPasswordError!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               const InputLabel(name: "이름"),
               Input(
                 controller: nameController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "이름을 입력하세요.";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  formData['name'] = value ?? '';
-                },
               ),
+              if (nameError != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                  child: Text(
+                    nameError!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               const InputLabel(name: "휴대전화 번호"),
               Input(
                 controller: phoneController,
                 inputType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "전화번호를 입력하세요.";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  formData['tel'] = value ?? '';
-                },
               ),
+              if (phoneError != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                  child: Text(
+                    phoneError!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               const InputLabel(name: "주소"),
               Input(
                 controller: addressController,
                 onTap: () => searchAddress(context),
                 readonly: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "주소를 입력하세요.";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  formData['address'] = value ?? '';
-                },
               ),
+              if (addressError != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                  child: Text(
+                    addressError!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               Input(
                 controller: addressDetailController,
-                onSaved: (value) {
-                  formData['address_detail'] = value ?? '';
-                },
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 60),

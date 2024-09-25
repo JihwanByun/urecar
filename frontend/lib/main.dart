@@ -7,17 +7,18 @@ import 'package:frontend/screens/landing_screen.dart';
 import 'package:frontend/screens/setting_screen.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
+import 'package:frontend/components/common/spinner.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 late List<CameraDescription> cameras;
 
 Future<void> main() async {
   final MainController controller = Get.put(MainController());
-
   WidgetsFlutterBinding.ensureInitialized();
 
-  final cameras = await availableCameras();
+  runApp(const LoadingApp());
 
+  final cameras = await availableCameras();
   CameraDescription? firstCamera;
   if (cameras.isNotEmpty) {
     firstCamera = cameras.first;
@@ -29,6 +30,20 @@ Future<void> main() async {
   runApp(
     const App(),
   );
+  runApp(const App());
+}
+
+class LoadingApp extends StatelessWidget {
+  const LoadingApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(
+        body: Spinner(),
+      ),
+    );
+  }
 }
 
 class App extends StatelessWidget {

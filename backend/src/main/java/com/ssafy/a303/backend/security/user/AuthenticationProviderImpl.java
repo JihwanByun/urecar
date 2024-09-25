@@ -1,15 +1,16 @@
 package com.ssafy.a303.backend.security.user;
 
-import com.ssafy.a303.backend.exception.CustomException;
-import com.ssafy.a303.backend.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class AuthenticationProviderImpl implements AuthenticationProvider {
 
@@ -23,7 +24,7 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new CustomException(ErrorCode.INVALID_LOGIN_VALUE);
+            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
         }
 
         return new UsernamePasswordAuthenticationToken(username,password,user.getAuthorities());

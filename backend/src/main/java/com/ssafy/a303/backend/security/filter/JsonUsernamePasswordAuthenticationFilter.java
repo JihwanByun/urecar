@@ -1,6 +1,5 @@
 package com.ssafy.a303.backend.security.filter;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.a303.backend.security.dto.LoginRequestDto;
 import com.ssafy.a303.backend.security.user.AuthenticationProviderImpl;
@@ -9,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,15 +25,13 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
     private static final String DEFAULT_LOGIN_REQUEST_URL = "/login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
-
-    // AbstractAuthenticationProcessingFilter 에 구현된 객체로, URL과 METHOD가 일치하는 경우에만 매칭된다.
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER =
             new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD);
 
     private final ObjectMapper objectMapper;
-    private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationProviderImpl authenticationProvider;
 
-    public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper, AuthenticationProviderImpl authenticationProvider) {
+    public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper,AuthenticationProviderImpl authenticationProvider) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER);
         this.objectMapper = objectMapper;
         this.authenticationProvider = authenticationProvider;
@@ -50,9 +46,6 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
 
         String username = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
-
-        log.info("Request URI ===> /login, username: {}", username);
-
         if (username == null || password == null) {
             throw new AuthenticationServiceException("DATA IS MISS");
         }

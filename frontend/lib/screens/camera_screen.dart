@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
+import 'package:frontend/components/common/spinner.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/screens/check_image_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -85,7 +87,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return CameraPreview(_controller!);
                 } else {
-                  return const Center(child: CircularProgressIndicator());
+                  return Spinner();
                 }
               },
             ),
@@ -100,14 +102,24 @@ class _CameraScreenState extends State<CameraScreen> {
                     backgroundColor: Colors.white,
                     onPressed: () async {
                       try {
+                        Get.dialog(
+                          const Spinner(),
+                          barrierDismissible: false,
+                        );
+
                         await _initializeControllerFuture;
                         final image = await _controller!.takePicture();
+
                         await getLocation();
+
+                        Get.back();
+
                         if (!mounted) return;
                         await Get.to(
                             () => CheckImageScreen(imagePath: image.path));
                       } catch (e) {
                         print(e);
+                        Get.back();
                       }
                     },
                   ),
