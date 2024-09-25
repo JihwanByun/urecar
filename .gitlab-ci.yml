@@ -48,6 +48,8 @@ backend-docker-build-job:
   #   - docker:dind
   script:
     - echo "backend docker build start"
+    - echo "env"
+    - env
     - docker build -t imjunhyuk/urecar:latest .
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
     - docker push imjunhyuk/urecar:latest  # Docker Hub로 이미지 푸시
