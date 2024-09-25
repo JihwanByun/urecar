@@ -26,10 +26,14 @@ class _LoginScreenState extends State<LoginScreen> {
       formKey.currentState!.save();
       final apiService = ApiService();
       try {
-        await apiService.login(formData);
-        controller.changePage(0);
+        final res = await apiService.login(formData);
+        if (res == 200) {
+          controller.changePage(0);
+        } else {
+          Get.snackbar('오류', '$res', snackPosition: SnackPosition.BOTTOM);
+        }
       } catch (e) {
-        Get.snackbar('오류', '회원가입 중 오류가 발생했습니다.',
+        Get.snackbar('오류', '로그인 중 오류가 발생했습니다.',
             snackPosition: SnackPosition.BOTTOM);
       }
     }
