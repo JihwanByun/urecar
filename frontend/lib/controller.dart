@@ -29,7 +29,6 @@ class MainController extends GetxController {
     }
   }
 
-  // 알림 페이지 전환 메서드
   void showNotificationPage() {
     showNotification.value = true;
   }
