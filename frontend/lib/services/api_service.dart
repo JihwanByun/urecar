@@ -66,11 +66,16 @@ class ApiService {
         body: jsonEncode(formData),
       );
       if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        controller.accessToken.value = responseData['accessToken'];
+
         return response.statusCode;
       } else {
         final responseData = jsonDecode(response.body);
+        print(responseData);
       }
     } catch (e) {
+      print(e);
       return e;
     }
   }

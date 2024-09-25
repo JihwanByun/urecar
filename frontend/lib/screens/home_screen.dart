@@ -68,7 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
               HomeScreenImageCard(
                   imageLink: "assets/images/guide_link.png",
                   screen: GuideScreen(),
-                  title: "신고 가이드 보러 가기")
+                  title: "신고 가이드 보러 가기"),
+              HomeScreenImageCard(
+                  imageLink: "assets/images/safety_news.png",
+                  screen: GuideScreen(),
+                  title: "안전 뉴스 보러 가기")
             ],
           ),
         ],
