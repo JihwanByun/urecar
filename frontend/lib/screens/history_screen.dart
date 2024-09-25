@@ -27,7 +27,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
       ),
       body: const Center(
-        child: Text("history"),
+        child: Text("histories"),
       ),
       bottomNavigationBar: BottomNavigation(
         onTap: (int index) async {
