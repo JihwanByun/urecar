@@ -36,6 +36,10 @@ backend-build-job:       # This job runs in the build stage, which runs first.
   artifacts:
     paths:
       - backend/build/libs/*.jar  # JAR 파일을 빌드 아티팩트로 저장
+  before_script:
+    - echo "Starting CI/CD pipeline"
+    - chmod +x ./gradlew # gradlew 스크립트에 실행 권한 추가
+    - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk # 필요한 Java 버전 환경 설정
 
 backend-docker-build-job:
   image: docker:latest
