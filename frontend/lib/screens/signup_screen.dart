@@ -53,8 +53,8 @@ class _SignupScreenState extends State<SignupScreen> {
       final apiService = ApiService();
       formData['address'] = {
         'address': formData.remove('address') ?? '',
-        'address_detail': formData.remove('address_detail') ?? '',
-        'zip_code': formData.remove('zip_code') ?? ''
+        'addressDetail': formData.remove('address_detail') ?? '',
+        'zipCode': formData.remove('zip_code') ?? ''
       };
       try {
         await apiService.signUp(formData);
@@ -104,15 +104,19 @@ class _SignupScreenState extends State<SignupScreen> {
                       .hasMatch(value)) {
                     return "유효한 이메일 주소를 입력하세요.";
                   }
+                  if (formData["email"] == null || value != formData["email"]) {
+                    return "이메일 중복을 확인해주세요.";
+                  }
                   return null;
-                },
-                onSaved: (value) {
-                  formData['email'] = value ?? '';
                 },
                 onPressed: () async {
                   final apiService = ApiService();
                   try {
-                    apiService.emailCheck({'email': formData['email']});
+                    final res =
+                        apiService.emailCheck({'email': formData['email']});
+                    if (res == true) {
+                      formData["email"] = emailController.value;
+                    }
                   } catch (e) {
                     Get.snackbar('오류', '중복 확인 중 오류가 발생했습니다.',
                         snackPosition: SnackPosition.BOTTOM);

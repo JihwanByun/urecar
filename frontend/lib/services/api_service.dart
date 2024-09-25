@@ -9,30 +9,69 @@ class ApiService {
   final MainController controller = Get.put(MainController());
   String? baseUrl = dotenv.env['FLUTTER_APP_SERVER_URL'];
 
-  Future<void> signUp(Map<String, dynamic> formData) async {
+  Future<dynamic> signUp(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/members/signup');
-    final response = await http.post(
-      url,
-      body: jsonEncode(formData),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(formData),
+      );
+      if (response.statusCode == 200) {
+        return response.statusCode;
+      } else {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      }
+    } catch (e) {
+      return e;
+    }
   }
 
-  Future<void> emailCheck(Map<String, dynamic> formData) async {
+  Future<dynamic> emailCheck(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/members/emailCheck');
-    final response = await http.post(
-      url,
-      body: jsonEncode(formData),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(formData),
+      );
+      if (response.statusCode == 200) {
+        if (response.body == "true") {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      }
+    } catch (e) {
+      return e;
+    }
   }
 
-  Future<void> login(Map<String, dynamic> formData) async {
+  Future<dynamic> login(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/login');
-    final response = await http.post(
-      url,
-      body: jsonEncode(formData),
-    );
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(formData),
+      );
+      if (response.statusCode == 200) {
+        return response.statusCode;
+      } else {
+        final responseData = jsonDecode(response.body);
+      }
+    } catch (e) {
+      return e;
     }
   }
 }
