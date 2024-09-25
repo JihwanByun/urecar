@@ -24,7 +24,6 @@ stages:          # List of stages for jobs, and their order of execution
   - deploy
 
 backend-build-job:       # This job runs in the build stage, which runs first.
-  image: openjdk:21-jdk-slim
   stage: build
   script:
     - echo "backend build start"
