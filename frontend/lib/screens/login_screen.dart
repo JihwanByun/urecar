@@ -21,8 +21,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  String? emailError;
+  String? passwordError;
+
   void submitForm() async {
-    if (formKey.currentState!.validate()) {
+    setState(() {
+      emailError = null;
+      passwordError = null;
+    });
+
+    bool isValid = true;
+
+    if (emailController.text.isEmpty) {
+      setState(() {
+        emailError = "이메일을 입력하세요.";
+      });
+      isValid = false;
+    } else if (!RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
+        .hasMatch(emailController.text)) {
+      setState(() {
+        emailError = "유효한 이메일 주소를 입력하세요.";
+      });
+      isValid = false;
+    }
+
+    if (passwordController.text.isEmpty || passwordController.text.length < 6) {
+      setState(() {
+        passwordError = "비밀번호는 6자 이상이어야 합니다.";
+      });
+      isValid = false;
+    }
+
+    if (isValid) {
       formKey.currentState!.save();
       final apiService = ApiService();
       try {
@@ -47,9 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 150,
-            ),
+            const SizedBox(height: 150),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 100),
               child: Image.asset(
@@ -57,42 +85,42 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 350,
               ),
             ),
-            const SizedBox(
-              height: 50,
-            ),
+            const SizedBox(height: 50),
             const InputLabel(name: "이메일"),
             Input(
               controller: emailController,
               inputType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "이메일을 입력하세요.";
-                }
-                if (!RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
-                    .hasMatch(value)) {
-                  return "유효한 이메일 주소를 입력하세요.";
-                }
-                return null;
-              },
               onSaved: (value) {
                 formData['email'] = value ?? '';
               },
             ),
+            if (emailError != null) // 에러 메시지를 별도로 렌더링
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                child: Text(
+                  emailError!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
             const InputLabel(name: "비밀번호"),
             Input(
               controller: passwordController,
               inputType: TextInputType.visiblePassword,
               obscure: true,
-              validator: (value) {
-                if (value == null || value.length < 6) {
-                  return "비밀번호는 6자 이상이어야 합니다.";
-                }
-                return null;
-              },
               onSaved: (value) {
                 formData['password'] = value ?? '';
               },
             ),
+            if (passwordError != null)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                child: Text(
+                  passwordError!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
