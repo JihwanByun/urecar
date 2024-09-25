@@ -43,7 +43,7 @@ backend-docker-build-job:
   stage: docker-build
   variables:
     DOCKER_TLS_CERTDIR: ""  # Docker의 TLS 비활성화
-    DOCKER_HOST: "unix:///var/run/docker.sock"
+    DOCKER_HOST: "unix://var/run/docker.sock"
   # services:
   #   - docker:dind
   script:
