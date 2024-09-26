@@ -18,7 +18,7 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
   final ScrollController _scrollController = ScrollController();
   List<int> newsList = [];
   bool isLoading = false;
-  int selectedTab = 0; // 현재 선택된 탭 상태 관리
+  int selectedTab = 0;
 
   @override
   void initState() {
@@ -74,11 +74,9 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
             ),
             const SizedBox(height: 20),
 
-            // 검색창
             _buildSearchField(),
             const SizedBox(height: 20),
 
-            // 선택된 탭에 따라 내용 표시
             selectedTab == 0 ? _buildAnnouncementContent() : _buildNewsList(),
           ],
         ),
@@ -91,7 +89,6 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
     );
   }
 
-  // 검색창 구성
   Widget _buildSearchField() {
     return TextField(
       decoration: InputDecoration(
@@ -107,7 +104,6 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
     );
   }
 
-  // 공지사항 내용 구성
   Widget _buildAnnouncementContent() {
     return Container(
       padding: const EdgeInsets.all(15),
@@ -141,7 +137,6 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
     );
   }
 
-  // 뉴스 리스트 (무한 스크롤) 구성
   Widget _buildNewsList() {
     return Expanded(
       child: ListView.builder(
@@ -158,7 +153,6 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
     );
   }
 
-  // 뉴스 아이템 구성
   Widget _buildNewsItem() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
