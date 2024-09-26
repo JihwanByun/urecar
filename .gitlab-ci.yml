@@ -43,7 +43,6 @@ backend-build-job:       # This job runs in the build stage, which runs first.
     expire_in: 1 week
   before_script:
     - echo "Starting CI/CD pipeline"
-    - chmod +x ./gradlew # gradlew 스크립트에 실행 권한 추가
     - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk # 필요한 Java 버전 환경 설정
 
 backend-docker-build-job:
