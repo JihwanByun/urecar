@@ -6,6 +6,6 @@ import jakarta.persistence.Enumerated;
 public class OutboxReport extends Report {
 
     @Enumerated(EnumType.STRING)
-    private State state;
+    private OutboxStatus outboxStatus;
 
 }
