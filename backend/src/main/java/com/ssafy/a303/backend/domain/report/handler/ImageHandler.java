@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class ImageHandler {
 
-    public ImageInfoDto save(Integer memberId, MultipartFile image) {
+    public ImageInfoDto save(Long memberId, MultipartFile image) {
         String fileName = new SimpleDateFormat("yyyyMMddkkmmss")
                 .format(new Date(Long.parseLong(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))));
         File folder = new File("C:\\Users\\SSAFY\\Desktop\\imageFolder\\" + memberId);

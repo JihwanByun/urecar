@@ -25,7 +25,7 @@ public class Member {
     @Id
     @GeneratedValue
     @Column(name = "MEMBER_ID")
-    private int id;
+    private long id;
 
     @Column(nullable = false)
     private String email;
