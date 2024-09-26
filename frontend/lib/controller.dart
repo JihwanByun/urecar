@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 class MainController extends GetxController {
   var accessToken = "".obs;
+  var userName = "".obs;
+  var userId = 0.obs;
   var currentIndex = 10.obs;
   var pageStack = <int>[0].obs;
   var showNotification = false.obs;
