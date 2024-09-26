@@ -40,7 +40,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         objectMapper.writeValue(response.getWriter(),
                 LoginResponseDto.builder()
-                .accessToken(accessToken)
+                        .accessToken(accessToken)
                         .memberId(member.getId())
                         .memberName(member.getName())
                         .build());
