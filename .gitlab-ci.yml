@@ -54,6 +54,10 @@ backend-docker-build-job:
     - echo "whoami"
     # - ls -l /var/run/docker.sock
     - whoami
+    - echo "ls -la"
+    - ls -la    
+    - echo "pwd"
+    - pwd
     - docker build -t imjunhyuk/urecar:latest .
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
     - docker push imjunhyuk/urecar:latest  # Docker Hub로 이미지 푸시
