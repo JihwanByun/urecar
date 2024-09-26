@@ -1,5 +1,6 @@
 package com.ssafy.a303.outbox_kafka_producer.scheduler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -9,13 +10,14 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class PollingScheduler {
     
     private final OutBoxReportService outBoxReportService;
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 1004)
     public void pollingDatabase(){
-        System.out.println("polling");
+        log.info("polling");
         outBoxReportService.publishMessage();
     }
 }

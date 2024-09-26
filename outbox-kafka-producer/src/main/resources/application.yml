@@ -19,22 +19,22 @@ spring:
     #     dialect: org.hibernate.dialect.MySQLDialect
 
   kafka:
-    bootstrap-servers: localhost:10000  # 카프카 브로커 주소
+    bootstrap-servers: j11a303.p.ssafy.io:40000  # 카프카 브로커 주소
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       acks: all
       retries: 3
       batch-size: 16384
-      linger-ms: 5
-      # partitioner:
-      #   class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
+      linger-ms: 31
       buffer-memory: 33554432
+    partitioner:
+      class: org.apache.kafka.clients.producer.RoundRobinPartitioner
       properties:
         metadata.max.age.ms: 10000
     topic:
       name:
-        first-request: "first-request"
+        first-request: "test_topic"
         second-request: "second-request"
 
 logging:
