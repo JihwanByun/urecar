@@ -5,23 +5,20 @@ class Spinner extends StatelessWidget {
   final Color color;
   final double size;
   final Duration duration;
-  final Duration delay;
 
   const Spinner(
       {super.key,
-      this.color = Colors.greenAccent,
+      this.color = Colors.white,
       this.size = 50.0,
-      this.duration = const Duration(milliseconds: 1200),
-      this.delay = const Duration(milliseconds: 50)});
+      this.duration = const Duration(milliseconds: 1200)});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SpinKitThreeInOut(
+      child: SpinKitThreeBounce(
         color: color,
         size: size,
         duration: duration,
-        delay: delay,
       ),
     );
   }
