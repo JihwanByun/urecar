@@ -24,10 +24,6 @@ jwt:
     secret: 18CB6A32EFEE1C3D5873D7D35F28D18CB6A32EFEE1C3D5873D7D35F28D18CB6A32EFEE1C3D5873D7D35F28D
     access-expired-time: 3000 #10s
     refresh-expired-time: 1209600000 #14d
-
-server:
-  port: 8080
-
 server:
   port: 8080
 management:
