@@ -12,6 +12,7 @@ spring:
     username: ssafy
     password: ssafy
 
+
   data:
     redis:
       host: redis
@@ -27,8 +28,19 @@ jwt:
 server:
   port: 8080
 
+server:
+  port: 8080
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  server:
+    port: 8081
