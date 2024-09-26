@@ -4,7 +4,7 @@ import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 import 'package:frontend/components/common/spinner.dart';
-import 'package:frontend/components/common/toggle_button.dart'; // 토글 버튼 컴포넌트 import
+import 'package:frontend/components/common/toggle_button.dart';
 
 class SafetyNewsScreen extends StatefulWidget {
   const SafetyNewsScreen({super.key});
@@ -63,8 +63,9 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 20),
             ToggleButton(
-              labels: ['공지사항', '안전뉴스'],
+              labels: const ['공지사항', '안전뉴스'],
               initialIndex: selectedTab,
               onToggle: (index) {
                 setState(() {
@@ -73,10 +74,8 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
               },
             ),
             const SizedBox(height: 20),
-
             _buildSearchField(),
             const SizedBox(height: 20),
-
             selectedTab == 0 ? _buildAnnouncementContent() : _buildNewsList(),
           ],
         ),
@@ -111,9 +110,9 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
         color: Colors.blue[50],
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text(
             '🚨 시스템 점검 안내',
             style: TextStyle(

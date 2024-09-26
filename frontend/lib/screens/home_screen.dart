@@ -4,10 +4,7 @@ import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/home_screen/home_screen_image_card.dart';
 import 'package:frontend/screens/guide_screen.dart';
-<<<<<<< frontend/lib/screens/home_screen.dart
 import 'package:frontend/screens/safety_news_screen.dart';
-import 'package:frontend/screens/login_screen.dart';
->>>>>>> frontend/lib/screens/home_screen.dart
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
 
