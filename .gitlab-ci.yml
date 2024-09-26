@@ -49,6 +49,7 @@ backend-docker-build-job:
   stage: docker-build
   script:
     - echo "backend docker build start"
+    - cd backend
     - echo "docker info"
     # - docker info
     - echo "whoami"
