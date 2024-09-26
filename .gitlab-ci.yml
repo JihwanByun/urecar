@@ -25,6 +25,7 @@ stages:          # List of stages for jobs, and their order of execution
 
 backend-build-job:       # This job runs in the build stage, which runs first.
   stage: build
+  image: openjdk:21-jdk-slim
   script:
     - echo "backend build start"
     - cd backend
@@ -38,6 +39,7 @@ backend-build-job:       # This job runs in the build stage, which runs first.
   artifacts:
     paths:
       - backend/build/libs/*.jar  # JAR 파일을 빌드 아티팩트로 저장
+    expire_in: 1 week
   before_script:
     - echo "Starting CI/CD pipeline"
     - chmod +x ./gradlew # gradlew 스크립트에 실행 권한 추가
