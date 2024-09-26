@@ -3,7 +3,7 @@ package com.ssafy.a303.backend.domain.report.dto;
 import lombok.Getter;
 
 @Getter
-public class CreateReportRequestDto {
+public class ReportCreateRequestDto {
 
     private Long memberId;
     private String content;

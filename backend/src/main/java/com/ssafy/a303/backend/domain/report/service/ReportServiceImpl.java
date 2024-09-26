@@ -3,6 +3,7 @@ package com.ssafy.a303.backend.domain.report.service;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
 import com.ssafy.a303.backend.domain.report.entity.OutboxReport;
 import com.ssafy.a303.backend.domain.report.entity.OutboxStatus;
 import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
@@ -13,7 +14,7 @@ import com.ssafy.a303.backend.domain.report.repository.ReportRepository;
 import com.ssafy.a303.backend.exception.CustomException;
 import com.ssafy.a303.backend.exception.ErrorCode;
 import com.ssafy.a303.backend.domain.member.repository.MemberRepository;
-import com.ssafy.a303.backend.domain.report.dto.CreateReportRequestDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import jakarta.transaction.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -37,13 +38,6 @@ public class ReportServiceImpl implements ReportService {
         this.imageHandler = new ImageHandler();
     }
 
-    @Transactional
-    public void createReport(CreateReportRequestDto requestDto, MultipartFile file) {
-        ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
-        Report report = saveReport(requestDto, imageInfoDto);
-        saveOutboxReport(report);
-    }
-
     @Override
     public ReportResponseDto getReport(Long reportId) {
         Report report = reportRepository.getReportById(reportId);
@@ -57,7 +51,15 @@ public class ReportServiceImpl implements ReportService {
                 .build();
     }
 
-    private Report saveReport(CreateReportRequestDto requestDto, ImageInfoDto imageInfoDto) {
+    @Override
+    @Transactional
+    public void createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
+        ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
+        Report report = saveReport(requestDto, imageInfoDto);
+        saveOutboxReport(report);
+    }
+
+    private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
         Report report = Report.builder()
                 .member(memberRepository.findById(requestDto.getMemberId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID)))
                 .content(requestDto.getContent())
@@ -76,12 +78,28 @@ public class ReportServiceImpl implements ReportService {
                 .report(report)
                 .member(memberRepository.findById(report.getMember().getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID)))
                 .firstImage(report.getFirstImage())
+                .secondImage(report.getSecondImage() == null ? null : report.getSecondImage())
                 .outboxStatus(OutboxStatus.FIRST_WAIT)
                 .build();
 
         outboxReportRepository.save(outboxReport);
     }
 
+    @Override
+    @Transactional
+    public void updateReport(ReportUpdateRequestDto requestDto, MultipartFile file) {
+        ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
+        Report report = saveSecondImageInReport(requestDto, imageInfoDto);
+        saveOutboxReport(report);
+    }
+
+    private Report saveSecondImageInReport(ReportUpdateRequestDto requestDto, ImageInfoDto imageInfoDto) {
+        Report report = reportRepository.getReportById(requestDto.getReportId());
+        report.updateSecondImage(imageInfoDto.getFullPathName());
+        return report;
+    }
+
+    @Override
     public GalleryResponseDto getGallery(long memberId) {
         List<Report> reports = reportRepository.findAllByMemberId(memberId);
         List<String> imageUrls = new ArrayList<>();
@@ -90,7 +108,5 @@ public class ReportServiceImpl implements ReportService {
         }
         return GalleryResponseDto.builder().imageUrls(imageUrls).build();
     }
-
-
 
 }
