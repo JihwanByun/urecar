@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class CreateReportRequestDto {
 
-    private Integer memberId;
+    private Long memberId;
     private String content;
     private Double latitude;
     private Double longitude;

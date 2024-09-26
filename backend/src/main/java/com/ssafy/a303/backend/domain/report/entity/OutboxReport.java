@@ -23,7 +23,7 @@ public class OutboxReport {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private long id;
 
     @Enumerated(EnumType.STRING)
     private OutboxStatus outboxStatus;

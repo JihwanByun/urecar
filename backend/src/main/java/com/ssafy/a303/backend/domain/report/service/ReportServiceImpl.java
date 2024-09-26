@@ -1,6 +1,8 @@
 package com.ssafy.a303.backend.domain.report.service;
 
+import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
 import com.ssafy.a303.backend.domain.report.entity.OutboxReport;
 import com.ssafy.a303.backend.domain.report.entity.OutboxStatus;
 import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
@@ -13,6 +15,9 @@ import com.ssafy.a303.backend.exception.ErrorCode;
 import com.ssafy.a303.backend.domain.member.repository.MemberRepository;
 import com.ssafy.a303.backend.domain.report.dto.CreateReportRequestDto;
 import jakarta.transaction.Transactional;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +44,19 @@ public class ReportServiceImpl implements ReportService {
         saveOutboxReport(report);
     }
 
+    @Override
+    public ReportResponseDto getReport(Long reportId) {
+        Report report = reportRepository.getReportById(reportId);
+        return ReportResponseDto.builder()
+                .reportId(report.getId())
+                .content(report.getContent())
+                .date(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                .type(report.getType()).
+                firstImage(report.getFirstImage())
+                .processStatus(report.getProcessStatus())
+                .build();
+    }
+
     private Report saveReport(CreateReportRequestDto requestDto, ImageInfoDto imageInfoDto) {
         Report report = Report.builder()
                 .member(memberRepository.findById(requestDto.getMemberId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID)))
@@ -63,5 +81,16 @@ public class ReportServiceImpl implements ReportService {
 
         outboxReportRepository.save(outboxReport);
     }
+
+    public GalleryResponseDto getGallery(long memberId) {
+        List<Report> reports = reportRepository.findAllByMemberId(memberId);
+        List<String> imageUrls = new ArrayList<>();
+        for(Report report : reports) {
+            imageUrls.add(report.getFirstImage());
+        }
+        return GalleryResponseDto.builder().imageUrls(imageUrls).build();
+    }
+
+
 
 }

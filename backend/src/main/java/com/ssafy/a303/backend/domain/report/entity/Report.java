@@ -26,7 +26,7 @@ public class Report {
     @Id
     @GeneratedValue
     @Column(name = "REPORT_ID")
-    private int id;
+    private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
@@ -34,6 +34,7 @@ public class Report {
 
     @Column(length = 1_000)
     private String content;
+    private String type;
 
     @Column(nullable = false)
     private String firstImage;
