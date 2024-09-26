@@ -1,9 +1,10 @@
 package com.ssafy.a303.backend.domain.report.controller;
 
-import com.ssafy.a303.backend.domain.report.dto.CreateReportRequestDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +28,19 @@ public class ReportController {
 
     @PostMapping
     public ResponseEntity<Void> createReport(
-            @RequestPart(value = "dto") CreateReportRequestDto createReportRequestDto,
+            @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
             @RequestPart(value = "file") MultipartFile file
     ) {
-        reportService.createReport(createReportRequestDto, file);
+        reportService.createReport(reportCreateRequestDto, file);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/secondImage")
+    public ResponseEntity<Void> updateReport(
+            @RequestPart(value = "dto") ReportUpdateRequestDto reportUpdateRequestDto,
+            @RequestPart(value = "file") MultipartFile file
+    ) {
+        reportService.updateReport(reportUpdateRequestDto, file);
         return ResponseEntity.ok().build();
     }
 
