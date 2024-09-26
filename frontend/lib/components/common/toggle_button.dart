@@ -6,11 +6,11 @@ class ToggleButton extends StatefulWidget {
   final int initialIndex;
 
   const ToggleButton({
-    Key? key,
+    super.key,
     required this.labels,
     required this.onToggle,
     this.initialIndex = 0,
-  }) : super(key: key);
+  });
 
   @override
   _ToggleButtonState createState() => _ToggleButtonState();
@@ -70,6 +70,7 @@ class _ToggleButtonState extends State<ToggleButton> {
                         color: isSelected[i] ? Colors.black : Colors.grey,
                         fontWeight:
                             isSelected[i] ? FontWeight.bold : FontWeight.normal,
+                        fontSize: 18,
                       ),
                     ),
                   ),
