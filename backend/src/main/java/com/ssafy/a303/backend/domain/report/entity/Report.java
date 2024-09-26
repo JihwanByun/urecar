@@ -3,6 +3,8 @@ package com.ssafy.a303.backend.domain.report.entity;
 import com.ssafy.a303.backend.domain.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,7 +16,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
 @Entity
@@ -45,14 +46,19 @@ public class Report {
     @Column(nullable = false)
     private double longitude;
 
+    @Enumerated(EnumType.STRING)
+    private ProcessStatus processStatus;
+
     @Builder
-    public Report(Member member, String content, String firstImage, LocalDateTime createdAt, double latitude, double longitude) {
+    public Report(Member member, String content, String firstImage,
+            LocalDateTime createdAt, double latitude, double longitude, ProcessStatus processStatus) {
         this.member = member;
         this.content = content;
         this.firstImage = firstImage;
         this.createdAt = createdAt;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.processStatus = processStatus;
     }
 
     public void updateSecondImage(String secondImage) {

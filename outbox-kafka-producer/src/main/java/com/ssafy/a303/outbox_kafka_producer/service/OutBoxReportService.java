@@ -2,11 +2,15 @@ package com.ssafy.a303.outbox_kafka_producer.service;
 
 import com.ssafy.a303.outbox_kafka_producer.KafkaProducer;
 import com.ssafy.a303.outbox_kafka_producer.repository.OutboxReportRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
+@Slf4j
 @Service
 public class OutBoxReportService {
     
@@ -28,12 +32,12 @@ public class OutBoxReportService {
     }
     public void publishMessage(){
         // read from table
-        
+
         // publish msg to kafka
-        kafkaProducer.sendMessage(firstRequest, "firstRequest" + LocalDateTime.now());
-        System.out.println("topic 1 sent");
-        kafkaProducer.sendMessage(secondRequest, "secondRequest" + LocalDateTime.now());
-        System.out.println("topic 2 sent");
-        // delete outbox column
+        kafkaProducer.sendMessage("test","test +" + LocalDateTime.now());
+//        log.info("topic 1");
+//        kafkaProducer.sendMe
+//        Random random = new Random();
+//        kafkaProducer.sendMessageKey("test", String.valueOf(random.nextInt(6) % 6),"L" + LocalDateTime.now());
     }
 }

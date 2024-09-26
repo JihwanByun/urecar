@@ -4,7 +4,10 @@ import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/home_screen/home_screen_image_card.dart';
 import 'package:frontend/screens/guide_screen.dart';
+<<<<<<< frontend/lib/screens/home_screen.dart
 import 'package:frontend/screens/safety_news_screen.dart';
+import 'package:frontend/screens/login_screen.dart';
+>>>>>>> frontend/lib/screens/home_screen.dart
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
 
@@ -30,24 +33,23 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ),
-      body: const Column(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 27.0,
-              vertical: 20,
-            ),
-            child: Text(
-              "혁님, 안녕하세요!",
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w600,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 27.0,
+                vertical: 20,
               ),
-              textAlign: TextAlign.start,
-            ),
-          ),
-          Column(
+              child: Text(
+                "${controller.userName.value != "" ? controller.userName.value : "Guest"}님, 안녕하세요!",
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.start,
+              )),
+          const Column(
             children: [
               ScreenCard(title: "나의 신고 현황", contents: [
                 Text(

@@ -1,31 +1,36 @@
 import 'package:get/get.dart';
-import 'package:camera/camera.dart';
 
 class MainController extends GetxController {
   var accessToken = "".obs;
-  var currentIndex = 10.obs; // 현재 탭 인덱스
-  var pageStack = <int>[0].obs; // 페이지 스택 (초기 홈 화면)
-  var showNotification = false.obs; // 알림 페이지 상태
-  var showLanding = true.obs; // 랜딩 페이지 상태
+  var userName = "".obs;
+  var userId = 0.obs;
+  var currentIndex = 10.obs;
+  var pageStack = <int>[0].obs;
+  var showNotification = false.obs;
   var camera;
-  // 페이지 변경 메서드
   void changePage(int index) {
-    if (currentIndex.value != index) {
-      currentIndex.value = index;
-      switch (index) {
-        case 0:
+    currentIndex.value = index;
+    switch (index) {
+      case 0:
+        if (Get.currentRoute != '/home') {
           Get.offAllNamed('/home');
           break;
-        case 1:
+        }
+      case 1:
+        if (Get.currentRoute != '/camera') {
           Get.offAllNamed('/camera');
           break;
-        case 2:
+        }
+      case 2:
+        if (Get.currentRoute != '/history') {
           Get.offAllNamed('/history');
           break;
-        case 3:
+        }
+      case 3:
+        if (Get.currentRoute != '/setting') {
           Get.offAllNamed('/setting');
           break;
-      }
+        }
     }
   }
 
