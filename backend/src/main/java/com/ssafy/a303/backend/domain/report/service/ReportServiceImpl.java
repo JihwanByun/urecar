@@ -36,7 +36,7 @@ public class ReportServiceImpl implements ReportService {
     public void createReport(CreateReportRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
-        saveOutboxReport(report, imageInfoDto);
+        saveOutboxReport(report);
     }
 
     private Report saveReport(CreateReportRequestDto requestDto, ImageInfoDto imageInfoDto) {
@@ -53,11 +53,11 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.save(report);
     }
 
-    private void saveOutboxReport(Report report, ImageInfoDto imageInfoDto) {
+    private void saveOutboxReport(Report report) {
         OutboxReport outboxReport = OutboxReport.builder()
                 .report(report)
                 .member(memberRepository.findById(report.getMember().getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID)))
-                .firstImage(imageInfoDto.getFullPathName())
+                .firstImage(report.getFirstImage())
                 .outboxStatus(OutboxStatus.FIRST_WAIT)
                 .build();
 
