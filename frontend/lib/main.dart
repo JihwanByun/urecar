@@ -4,10 +4,12 @@ import 'package:frontend/screens/camera_screen.dart';
 import 'package:frontend/screens/history_screen.dart';
 import 'package:frontend/screens/home_screen.dart';
 import 'package:frontend/screens/landing_screen.dart';
+import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/screens/setting_screen.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 import 'package:frontend/components/common/spinner.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 late List<CameraDescription> cameras;
 
@@ -25,7 +27,10 @@ Future<void> main() async {
     firstCamera = null;
   }
   controller.camera = firstCamera;
-
+  await dotenv.load(fileName: 'assets/config/.env.development');
+  runApp(
+    const App(),
+  );
   runApp(const App());
 }
 
@@ -44,7 +49,6 @@ class LoadingApp extends StatelessWidget {
 
 class App extends StatelessWidget {
   const App({super.key});
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -61,7 +65,8 @@ class App extends StatelessWidget {
         GetPage(name: '/camera', page: () => const CameraScreen()),
         GetPage(name: '/history', page: () => const HistoryScreen()),
         GetPage(name: '/setting', page: () => const SettingScreen()),
-        GetPage(name: '/landing', page: () => LandingScreen())
+        GetPage(name: '/landing', page: () => LandingScreen()),
+        GetPage(name: '/login', page: () => const LoginScreen())
       ],
     );
   }

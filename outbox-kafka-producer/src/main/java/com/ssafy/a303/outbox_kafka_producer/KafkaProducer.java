@@ -1,9 +1,11 @@
 package com.ssafy.a303.outbox_kafka_producer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class KafkaProducer {
@@ -19,7 +21,18 @@ public class KafkaProducer {
                 System.err.println("Message sending failed: " + ex.getMessage());
                 return null;
             });
-
     }
 
+    public void sendMessageKey(String topic, String key,String message){
+
+        kafkaTemplate.send(topic, key,message).thenAccept(result -> {
+                    System.out.println("Message sent to partition: " + result.getRecordMetadata().partition());
+                    log.info("key = {}", key);
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Message sending failed: " + ex.getMessage());
+                    return null;
+                });
+
+    }
 }

@@ -1,30 +1,34 @@
 import 'package:get/get.dart';
-import 'package:camera/camera.dart';
 
 class MainController extends GetxController {
+  var accessToken = "".obs;
   var currentIndex = 10.obs;
   var pageStack = <int>[0].obs;
   var showNotification = false.obs;
-  var showLanding = true.obs;
   var camera;
-
   void changePage(int index) {
-    if (currentIndex.value != index) {
-      currentIndex.value = index;
-      switch (index) {
-        case 0:
+    currentIndex.value = index;
+    switch (index) {
+      case 0:
+        if (Get.currentRoute != '/home') {
           Get.offAllNamed('/home');
           break;
-        case 1:
+        }
+      case 1:
+        if (Get.currentRoute != '/camera') {
           Get.offAllNamed('/camera');
           break;
-        case 2:
+        }
+      case 2:
+        if (Get.currentRoute != '/history') {
           Get.offAllNamed('/history');
           break;
-        case 3:
+        }
+      case 3:
+        if (Get.currentRoute != '/setting') {
           Get.offAllNamed('/setting');
           break;
-      }
+        }
     }
   }
 

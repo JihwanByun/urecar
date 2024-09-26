@@ -1,6 +1,7 @@
 package com.ssafy.a303.backend.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.member.service.MemberService;
 import com.ssafy.a303.backend.security.dto.LoginResponseDto;
 import com.ssafy.a303.backend.security.jwt.JwtService;
@@ -27,7 +28,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        String accessToken = JwtUtil.createAccessToken(memberService.getMemberByEmail(authentication.getName()));
+        Member member = memberService.getMemberByEmail(authentication.getName());
+
+        String accessToken = JwtUtil.createAccessToken(member.getEmail());
         String refreshToken = JwtUtil.createRefreshToken(authentication.getName());
         jwtService.saveRefreshToken(authentication.getName(), refreshToken);
 
@@ -35,7 +38,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        objectMapper.writeValue(response.getWriter(), LoginResponseDto.builder().accessToken(accessToken).build());
+        objectMapper.writeValue(response.getWriter(),
+                LoginResponseDto.builder()
+                        .accessToken(accessToken)
+                        .memberId(member.getId())
+                        .memberName(member.getName())
+                        .build());
     }
 
 

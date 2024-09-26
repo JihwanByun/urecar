@@ -3,7 +3,6 @@ package com.ssafy.a303.backend.security.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
-import com.ssafy.a303.backend.domain.member.entity.Member;
 import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -43,12 +42,12 @@ public class JwtUtil {
         KEY = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public static String createAccessToken(Member member){
+    public static String createAccessToken(String email){
         return Jwts.builder()
                 .issuer(ISSUER)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRED_TIME))
-                .claim(MEMBER_EMAIL, member.getEmail())
+                .claim(MEMBER_EMAIL, email)
                 .signWith(KEY)
                 .compact();
     }
