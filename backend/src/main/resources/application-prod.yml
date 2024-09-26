@@ -12,6 +12,7 @@ spring:
     username: ssafy
     password: ssafy
 
+
   data:
     redis:
       host: redis
@@ -23,12 +24,19 @@ jwt:
     secret: 18CB6A32EFEE1C3D5873D7D35F28D18CB6A32EFEE1C3D5873D7D35F28D18CB6A32EFEE1C3D5873D7D35F28D
     access-expired-time: 3000 #10s
     refresh-expired-time: 1209600000 #14d
-
 server:
   port: 8080
-
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  server:
+    port: 8081

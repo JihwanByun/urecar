@@ -163,10 +163,15 @@ class _SignupScreenState extends State<SignupScreen> {
         'zipCode': formData.remove('zip_code') ?? ''
       };
       try {
-        await apiService.signUp(formData);
-        Get.offAllNamed('/login');
+        final res = await apiService.signUp(formData);
+        if (res == 200) {
+          Get.offAllNamed('/login');
+        } else {
+          Get.snackbar('오류', '${res["message"]}',
+              snackPosition: SnackPosition.BOTTOM);
+        }
       } catch (e) {
-        Get.snackbar('오류', '회원가입 중 오류가 발생했습니다.',
+        Get.snackbar('오류', '로그인 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
             snackPosition: SnackPosition.BOTTOM);
       }
     }

@@ -37,17 +37,17 @@ class BottomNavigation extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.person_pin_rounded,
+            Icons.description,
             size: 25,
           ),
           label: "내역",
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.settings,
+            Icons.person_pin_rounded,
             size: 25,
           ),
-          label: "설정",
+          label: "마이",
         ),
       ],
     );

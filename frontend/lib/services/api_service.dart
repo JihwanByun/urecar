@@ -68,14 +68,15 @@ class ApiService {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         controller.accessToken.value = responseData['accessToken'];
+        controller.userId.value = responseData['memberId'];
+        controller.userName.value = responseData['memberName'];
 
         return response.statusCode;
       } else {
         final responseData = jsonDecode(response.body);
-        print(responseData);
+        return responseData;
       }
     } catch (e) {
-      print(e);
       return e;
     }
   }

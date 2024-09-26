@@ -24,7 +24,7 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
 
     private static final String DEFAULT_LOGIN_REQUEST_URL = "/login";
     private static final String HTTP_METHOD = "POST";
-    private static final String CONTENT_TYPE = "application/json charset=utf-8";
+    private static final String CONTENT_TYPE = "application/json; charset=utf-8";
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER =
             new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD);
 

@@ -61,10 +61,11 @@ class _LoginScreenState extends State<LoginScreen> {
         if (res == 200) {
           controller.changePage(0);
         } else {
-          Get.snackbar('오류', '$res', snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar('오류', '${res["message"]}',
+              snackPosition: SnackPosition.BOTTOM);
         }
       } catch (e) {
-        Get.snackbar('오류', '로그인 중 오류가 발생했습니다.',
+        Get.snackbar('오류', '로그인 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
             snackPosition: SnackPosition.BOTTOM);
       }
     }
@@ -143,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 vertical: 10,
                 fontSize: 15,
               ),
-            )
+            ),
           ],
         ),
       ),
