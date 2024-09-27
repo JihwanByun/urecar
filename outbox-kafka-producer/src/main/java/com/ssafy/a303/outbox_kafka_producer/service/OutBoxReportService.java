@@ -2,13 +2,11 @@ package com.ssafy.a303.outbox_kafka_producer.service;
 
 import com.ssafy.a303.outbox_kafka_producer.KafkaProducer;
 import com.ssafy.a303.outbox_kafka_producer.repository.OutboxReportRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Slf4j
 @Service
