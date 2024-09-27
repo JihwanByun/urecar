@@ -92,24 +92,28 @@ class ApiService {
 
     try {
       dio_pkg.FormData formDataWithFile = dio_pkg.FormData.fromMap({
-        'dto': jsonEncode(formData['dto']),
+        'dto': dio_pkg.MultipartFile.fromString(
+          jsonEncode(formData['dto']),
+          contentType: dio_pkg.DioMediaType.parse('application/json'),
+        ),
         'file': await dio_pkg.MultipartFile.fromFile(image.path)
       });
-
       dio_pkg.Response response = await dio.post(
         url,
         data: formDataWithFile,
+        options: dio_pkg.Options(
+          validateStatus: (status) => true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
       );
-
       if (response.statusCode == 200) {
-        print('Response data: ${response.data}');
         return response.data;
       } else {
-        print('Error: ${response.statusCode}');
         return response.data;
       }
     } catch (e) {
-      print("Error: $e");
       return e;
     }
   }

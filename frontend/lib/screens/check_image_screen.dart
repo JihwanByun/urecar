@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/screens/preparation_screen.dart';
+import 'package:frontend/screens/report_screen.dart';
 import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,7 +34,7 @@ class CheckImageScreen extends StatelessWidget {
       try {
         final res = await apiService.createReport(formData, image);
         if (res == 200) {
-          Get.to(() => const PreparationScreen());
+          Get.to(() => const ReportScreen());
         } else {
           Get.snackbar('오류', '${res["message"]}',
               snackPosition: SnackPosition.BOTTOM);
