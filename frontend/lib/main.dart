@@ -27,7 +27,7 @@ Future<void> main() async {
     firstCamera = null;
   }
   controller.camera = firstCamera;
-  await dotenv.load(fileName: 'assets/config/.env');
+  await dotenv.load(fileName: 'assets/config/.env.development');
   runApp(
     const App(),
   );
