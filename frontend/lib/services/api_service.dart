@@ -108,10 +108,11 @@ class ApiService {
           },
         ),
       );
+      final responseData = jsonDecode(response.data);
       if (response.statusCode == 200) {
-        return response.data;
+        return responseData;
       } else {
-        return response.data;
+        return responseData;
       }
     } catch (e) {
       return e;
