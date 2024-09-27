@@ -62,7 +62,6 @@ public class ReportServiceImpl implements ReportService {
     private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
         Report report = Report.builder()
                 .member(memberRepository.findById(requestDto.getMemberId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID)))
-                .content(requestDto.getContent())
                 .firstImage(imageInfoDto.getFullPathName())
                 .createdAt(imageInfoDto.getCreateDateTime())
                 .longitude(requestDto.getLongitude())
