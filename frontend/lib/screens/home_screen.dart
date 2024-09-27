@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 vertical: 20,
               ),
               child: Text(
-                "${controller.userName.value != "" ? controller.userName.value : "Guest"}님, 안녕하세요!",
+                "${controller.memberName.value != "" ? controller.memberName.value : "Guest"}님, 안녕하세요!",
                 style: const TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.w600,
