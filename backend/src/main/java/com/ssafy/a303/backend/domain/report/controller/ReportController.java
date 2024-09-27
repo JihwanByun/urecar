@@ -32,7 +32,7 @@ public class ReportController {
             @RequestPart(value = "file") MultipartFile file
     ) {
         reportService.createReport(reportCreateRequestDto, file);
-
+        reportService.
 
         return ResponseEntity.ok().build();
     }

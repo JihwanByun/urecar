@@ -16,4 +16,5 @@ public interface ReportService {
 
     GalleryResponseDto getGallery(long memberId);
 
+    boolean findLocation(double longitude, double latitude);
 }

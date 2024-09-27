@@ -113,7 +113,10 @@ public class ReportServiceImpl implements ReportService {
         return GalleryResponseDto.builder().imageUrls(imageUrls).build();
     }
 
-
+    @Override
+    public boolean findLocation(double longitude, double latitude) {
+        reportRepository.
+    }
 
 
 }
