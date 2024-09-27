@@ -40,7 +40,9 @@ public class ReportServiceImpl implements ReportService {
 
 
         //GPU 서버에 해당 이미지 분류 요청, 번호판 분석
+        if(!file.isEmpty()){
 
+        }
         //받아온 위치정보 기반 DB내 불법 주정차 위치랑 근처인지 확인하기
 
 
