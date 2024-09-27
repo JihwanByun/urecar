@@ -59,4 +59,12 @@ public class Member {
         this.role = role;
     }
 
+    public void removeMember() {
+        isDeleted = true;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
 }
