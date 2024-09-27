@@ -56,7 +56,11 @@ public class ReportServiceImpl implements ReportService {
     public void createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
+
+
         saveOutboxReport(report);
+
+
     }
 
     private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
@@ -107,5 +111,8 @@ public class ReportServiceImpl implements ReportService {
         }
         return GalleryResponseDto.builder().imageUrls(imageUrls).build();
     }
+
+
+
 
 }

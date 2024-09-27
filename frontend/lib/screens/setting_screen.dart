@@ -39,7 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => controller.userName.value != ""
+                  Get.to(() => controller.memberName.value != ""
                       ? const PreparationScreen()
                       : const LoginScreen());
                 },
@@ -73,13 +73,13 @@ class _SettingScreenState extends State<SettingScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                controller.userName.value != ""
-                                    ? controller.userName.value
+                                controller.memberName.value != ""
+                                    ? controller.memberName.value
                                     : "로그인",
                                 style: const TextStyle(
                                     fontSize: 28, color: Colors.black),
                               ),
-                              controller.userName.value != ""
+                              controller.memberName.value != ""
                                   ? const Text("정보 수정")
                                   : Container()
                             ],

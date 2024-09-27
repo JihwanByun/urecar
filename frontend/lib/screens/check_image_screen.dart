@@ -3,65 +3,47 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/screens/camera_screen.dart';
+import 'package:frontend/screens/report_screen.dart';
+import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
-class CheckImageScreen extends StatefulWidget {
-  final String imagePath;
-  const CheckImageScreen({super.key, required this.imagePath});
-
-  @override
-  State<CheckImageScreen> createState() => _CheckImageScreenState();
-}
-
-class _CheckImageScreenState extends State<CheckImageScreen> {
-  int totalSeconds = 6000;
-  bool isRunning = false;
-  late Timer timer;
-  void onTick(Timer timer) {
-    if (totalSeconds == 0) {
-      setState(() {
-        isRunning = false;
-      });
-      timer.cancel();
-    } else {
-      setState(() {
-        totalSeconds -= 1;
-      });
-    }
-  }
-
-  void onStart() {
-    timer = Timer.periodic(const Duration(milliseconds: 10), onTick);
-    setState(() {
-      isRunning = true;
-    });
-  }
-
-  @override
-  void initState() {
-    onStart();
-    super.initState();
-  }
-
-  String formatTime() {
-    int seconds = (totalSeconds / 100).floor();
-    int milliseconds = totalSeconds % 100;
-    return '${seconds.toString().padLeft(2, '0')}:${milliseconds.toString().padLeft(2, '0')}';
-  }
-
-  @override
-  void dispose() {
-    if (isRunning == true) {
-      isRunning = false;
-      timer.cancel();
-    }
-    super.dispose();
-  }
+class CheckImageScreen extends StatelessWidget {
+  final XFile image;
+  final double longitude;
+  final double latitude;
+  const CheckImageScreen({
+    super.key,
+    required this.image,
+    required this.longitude,
+    required this.latitude,
+  });
 
   @override
   Widget build(BuildContext context) {
     final MainController controller = Get.put(MainController());
+    Map<String, dynamic> formData = {
+      'dto': {
+        "memberId": controller.memberId.value,
+        "latitude": latitude,
+        "longitude": longitude
+      }
+    };
+    sendPicture() async {
+      final apiService = ApiService();
+      try {
+        final res = await apiService.createReport(formData, image);
+        if (res == 200) {
+          Get.to(() => const ReportScreen());
+        } else {
+          Get.snackbar('오류', '${res["message"]}',
+              snackPosition: SnackPosition.BOTTOM);
+        }
+      } catch (e) {
+        Get.snackbar('오류', '사진 전송 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -75,22 +57,9 @@ class _CheckImageScreenState extends State<CheckImageScreen> {
       ),
       body: Column(
         children: [
-          Stack(children: [
-            Image.file(
-              File(widget.imagePath),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
-              child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    formatTime(),
-                    style: const TextStyle(
-                      fontSize: 40,
-                    ),
-                  )),
-            )
-          ]),
+          Image.file(
+            File(image.path),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
@@ -99,7 +68,7 @@ class _CheckImageScreenState extends State<CheckImageScreen> {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      Get.to(const CameraScreen());
+                      controller.changePage(1);
                     },
                     child: const Text(
                       "취소",
@@ -122,11 +91,9 @@ class _CheckImageScreenState extends State<CheckImageScreen> {
                 ),
                 Expanded(
                   child: TextButton(
-                    onPressed: () {
-                      Get.to(const CameraScreen());
-                    },
+                    onPressed: sendPicture,
                     child: const Text(
-                      "재촬영",
+                      "확인",
                       style: TextStyle(
                         fontSize: 27,
                         color: Colors.black,

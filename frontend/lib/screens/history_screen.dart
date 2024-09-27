@@ -4,6 +4,7 @@ import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/history_screen/date_button.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/screens/report_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -145,17 +146,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   : const Text(""),
             ],
           ),
-          const Column(
+          Column(
             children: [
-              ScreenCard(title: "24.06.30 소방구역 불법 주정차 신고", contents: [
-                Text(
-                  "진행중",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.indigo),
-                )
-              ])
+              GestureDetector(
+                onTap: () => Get.to(() => const ReportScreen()),
+                child: const ScreenCard(
+                    title: "24.06.30 소방구역 불법 주정차 신고",
+                    contents: [
+                      Text(
+                        "진행중",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.indigo),
+                      )
+                    ]),
+              )
             ],
           )
         ],
