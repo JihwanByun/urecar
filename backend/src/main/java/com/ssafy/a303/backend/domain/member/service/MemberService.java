@@ -1,10 +1,14 @@
 package com.ssafy.a303.backend.domain.member.service;
 
+import com.ssafy.a303.backend.domain.member.dto.SignupRequestDto;
+import com.ssafy.a303.backend.domain.member.entity.Member;
 
-import com.ssafy.a303.backend.domain.member.repository.MemberRepository;
-import org.springframework.stereotype.Service;
-
-@Service
 public interface MemberService {
+
+    void saveMember(SignupRequestDto signupRequestDto);
+
+    Member getMemberByEmail(String email);
+
+    boolean isExistEmail(String email);
 
 }

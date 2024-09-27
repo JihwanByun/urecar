@@ -4,6 +4,8 @@ import com.ssafy.a303.backend.domain.report.entity.Report;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -23,7 +25,7 @@ public class Member {
     @Id
     @GeneratedValue
     @Column(name = "MEMBER_ID")
-    private int id;
+    private long id;
 
     @Column(nullable = false)
     private String email;
@@ -33,6 +35,10 @@ public class Member {
     private String name;
     @Column(nullable = false)
     private String tel;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Embedded
     private Address address;
@@ -44,12 +50,13 @@ public class Member {
     private boolean isDeleted;
 
     @Builder
-    public Member(String email, String password, String name, String tel, Address address) {
+    public Member(String email, String password, String name, String tel, Address address, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.tel = tel;
         this.address = address;
+        this.role = role;
     }
 
 }

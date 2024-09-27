@@ -1,12 +1,19 @@
 package com.ssafy.a303.backend.domain.report.service;
 
-import com.ssafy.a303.backend.domain.report.dto.CreateReportRequestDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
+import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ReportService {
 
-    void createReport(CreateReportRequestDto requestDto);
+    ReportResponseDto getReport(Long reportId);
 
-    void uploadFirstImage(MultipartFile file);
-    void uploadSecondImage(MultipartFile file);
+    void createReport(ReportCreateRequestDto requestDto, MultipartFile file);
+
+    void updateReport(ReportUpdateRequestDto reportUpdateRequestDto, MultipartFile file);
+
+    GalleryResponseDto getGallery(long memberId);
+
 }
