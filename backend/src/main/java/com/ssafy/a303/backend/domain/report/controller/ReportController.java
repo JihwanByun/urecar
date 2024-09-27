@@ -32,6 +32,8 @@ public class ReportController {
             @RequestPart(value = "file") MultipartFile file
     ) {
         reportService.createReport(reportCreateRequestDto, file);
+
+
         return ResponseEntity.ok().build();
     }
 

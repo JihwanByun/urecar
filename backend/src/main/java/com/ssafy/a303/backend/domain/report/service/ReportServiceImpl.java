@@ -56,7 +56,11 @@ public class ReportServiceImpl implements ReportService {
     public void createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
+
+
         saveOutboxReport(report);
+
+
     }
 
     private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
@@ -109,24 +113,6 @@ public class ReportServiceImpl implements ReportService {
         return GalleryResponseDto.builder().imageUrls(imageUrls).build();
     }
 
-    @Transactional
-    public void uploadFirstImage(MultipartFile file) {
-
-
-        //GPU 서버에 해당 이미지 분류 요청, 번호판 분석
-        if(!file.isEmpty()){
-
-        }
-        //받아온 위치정보 기반 DB내 불법 주정차 위치랑 근처인지 확인하기
-
-
-    }
-
-    @Transactional
-    public void uploadSecondImage(MultipartFile file) {
-        //이전 사진정보에 들어있는 위치랑 유사도 확인하기
-        
-    }
 
 
 
