@@ -33,6 +33,12 @@ public class ReportController {
     ) {
         reportService.createReport(reportCreateRequestDto, file);
 
+        boolean illegalParkingZone = reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+
+        //AI 검사 보내기
+
+        if(illegalParkingZone ) //&& AI 검사 결과
+            return ResponseEntity.ok().build();
 
         return ResponseEntity.ok().build();
     }

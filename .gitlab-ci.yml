@@ -50,35 +50,27 @@ backend-docker-build-job:
   script:
     - echo "backend docker build start"
     - cd backend
-    - echo "docker info"
-    # - docker info
     - echo "whoami"
-    # - ls -l /var/run/docker.sock
     - whoami
     - echo "ls -la"
     - ls -la    
     - echo "pwd"
     - pwd
-    - docker build -t imjunhyuk/urecar:latest .
+    - export TAG=$(date +%Y%m%d%H%M%S)
+    - docker build -t imjunhyuk/urecar:$TAG .
+    - docker tag imjunhyuk/urecar:$TAG imjunhyuk/urecar:latest
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
     - docker push imjunhyuk/urecar:latest  # Docker Hub로 이미지 푸시
+    - docker push imjunhyuk/urecar:$TAG
     - echo "backend docker build end"
   only:
     - develop
-  # dependencies:
-  #   - backend-build-job 
   after_script:
     - docker logout
 
 
 backend-deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  # environment: production
-  # services:
-  #   - docker:dind 
-  # variables:
-  #   DOCKER_HOST: tcp://docker:2375  # Docker 데몬 연결을 위한 환경 변수
-  #   DOCKER_TLS_CERTDIR: ""  # Docker의 TLS 비활성화
   script:
     - echo "backend deploy start"
     - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
@@ -99,6 +91,36 @@ before_script:
   - ssh-add <(echo "$SSH_PRIVATE_KEY")
   - mkdir -p ~/.ssh
   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+ai-docker-build-job:
+  stage: docker-build
+  script:
+    - echo "ai docker build start"
+    - cd ai/server
+    - export TAG=$(date +%Y%m%d%H%M%S)
+    - docker build -t imjunhyuk/urecar_ai:$TAG .
+    - docker tag imjunhyuk/urecar_ai:$TAG imjunhyuk/urecar_ai:latest
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
+    - docker push imjunhyuk/urecar_ai:latest  # Docker Hub로 이미지 푸시
+    - docker push imjunhyuk/urecar_ai:$TAG
+    - echo "ai docker build end"
+  only:
+    - develop
+  after_script:
+    - docker logout
+
+ai-deploy-job:
+  stage: deploy
+  script:
+    - echo "ai deploy start"
+    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
+      docker pull imjunhyuk/urecar_ai:latest &&  
+      docker-compose -f /home/ubuntu/docker/ai/docker-compose.yml up -d " # image pull from hub and docker-compose로 컨테이너 실행
+    - echo "ai deploy end"
+  only:
+    - develop
+  after_script:
+    - docker logout
 
 #sonarqube-check:
 #  image: gradle:jdk21

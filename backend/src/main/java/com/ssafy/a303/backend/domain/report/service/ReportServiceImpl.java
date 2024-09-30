@@ -112,7 +112,13 @@ public class ReportServiceImpl implements ReportService {
         return GalleryResponseDto.builder().imageUrls(imageUrls).build();
     }
 
+    @Override
+    public boolean isIllegalParkingZone(double longitude, double latitude) {
+        // AI -->  DB에 적용을 해야함
+    return true;
 
+        // 위치 정보
+    }
 
 
 }
