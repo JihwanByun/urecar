@@ -1,14 +1,13 @@
 package com.ssafy.a303.outbox_kafka_producer.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class OutboxReport {
 
     @Id
@@ -18,26 +17,14 @@ public class OutboxReport {
     @Enumerated(EnumType.STRING)
     private OutboxStatus outboxStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private int memberId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REPORT_ID")
-    private Report report;
 
-    @Column(nullable = false)
+    private long reportId;
+
     private String firstImage;
-    private String secondImage;
 
-    @Builder
-    public OutboxReport(Report report, Member member, String firstImage, String secondImage, OutboxStatus outboxStatus) {
-        this.report = report;
-        this.member = member;
-        this.firstImage = firstImage;
-        this.secondImage = secondImage;
-        this.outboxStatus = outboxStatus;
-    }
+    private String secondImage;
 
 }
 
