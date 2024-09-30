@@ -70,13 +70,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: TopBar(
-          onNotificationPressed: () {
-            controller.showNotification;
-          },
-        ),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: TopBar(),
       ),
       body: _controller == null
           ? const Center(child: Text('카메라를 사용할 수 없습니다.'))
