@@ -40,7 +40,7 @@ public class ReportController {
         if(illegalParkingZone ) //&& AI 검사 결과
             return ResponseEntity.ok().build();
 
-        return ResponseEntity.
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/secondImage")
