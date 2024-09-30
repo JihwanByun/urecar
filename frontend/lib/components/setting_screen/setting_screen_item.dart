@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 class SettingScreenItem extends StatelessWidget {
   final String title;
   final Widget screen;
+  final Color? fontColor;
   const SettingScreenItem(
-      {super.key, required this.title, required this.screen});
+      {super.key, required this.title, required this.screen, this.fontColor});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +23,10 @@ class SettingScreenItem extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
+                    color: fontColor),
               ),
             ),
             const Icon(
