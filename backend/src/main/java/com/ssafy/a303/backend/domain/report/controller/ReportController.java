@@ -6,6 +6,8 @@ import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
+import com.ssafy.a303.backend.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,13 +34,7 @@ public class ReportController {
             @RequestPart(value = "file") MultipartFile file
     ) {
         reportService.createReport(reportCreateRequestDto, file);
-
-        boolean illegalParkingZone = reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
-
-        //AI 검사 보내기
-
-        if(illegalParkingZone ) //&& AI 검사 결과
-            return ResponseEntity.ok().build();
+        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
 
         return ResponseEntity.ok().build();
     }
