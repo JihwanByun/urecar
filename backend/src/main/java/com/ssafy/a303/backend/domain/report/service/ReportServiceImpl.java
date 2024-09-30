@@ -114,8 +114,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public boolean findLocation(double longitude, double latitude) {
-        reportRepository.
+    public boolean isIllegalParkingZone(double longitude, double latitude) {
+        // AI -->  DB에 적용을 해야함
+
+
+        // 위치 정보
     }
 
 
