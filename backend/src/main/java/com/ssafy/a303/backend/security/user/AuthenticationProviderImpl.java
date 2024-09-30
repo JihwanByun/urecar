@@ -27,6 +27,10 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
         }
 
+        if (((UserDetailsImpl)user).isDeleted()) {
+            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+        }
+
         return new UsernamePasswordAuthenticationToken(username,password,user.getAuthorities());
     }
 
