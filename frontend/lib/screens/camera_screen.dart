@@ -56,7 +56,6 @@ class _CameraScreenState extends State<CameraScreen> {
     Position position = await Geolocator.getCurrentPosition();
     longitude = position.longitude;
     latitude = position.latitude;
-    print("longitude: $longitude, latitude: $latitude");
   }
 
   @override
@@ -87,7 +86,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return CameraPreview(_controller!);
                 } else {
-                  return Spinner();
+                  return const Spinner();
                 }
               },
             ),
@@ -115,8 +114,11 @@ class _CameraScreenState extends State<CameraScreen> {
                         Get.back();
 
                         if (!mounted) return;
-                        await Get.to(
-                            () => CheckImageScreen(imagePath: image.path));
+                        Get.to(() => CheckImageScreen(
+                              image: image,
+                              longitude: longitude,
+                              latitude: latitude,
+                            ));
                       } catch (e) {
                         print(e);
                         Get.back();
