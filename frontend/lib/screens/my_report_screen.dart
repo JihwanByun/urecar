@@ -35,7 +35,6 @@ class _MyReportScreenState extends State<MyReportScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            // 첫 번째 박스: 총 신고 건수
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(

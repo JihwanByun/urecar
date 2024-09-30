@@ -89,7 +89,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void submitForm() async {
     setState(() {
-      // 에러 메시지 초기화
       emailError = null;
       passwordError = null;
       confirmPasswordError = null;
@@ -100,7 +99,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
     bool isValid = true;
 
-    // 유효성 검사: 각 필드마다 조건을 확인하여 에러 메시지 설정
     if (emailController.text.isEmpty) {
       setState(() {
         emailError = "이메일을 입력하세요.";
@@ -114,7 +112,7 @@ class _SignupScreenState extends State<SignupScreen> {
       isValid = false;
     } else if (emailSuccess == null) {
       setState(() {
-        emailError = "이메일 중복을 확인해주세요."; // 중복 확인 필요
+        emailError = "이메일 중복을 확인해주세요.";
       });
       isValid = false;
     }
