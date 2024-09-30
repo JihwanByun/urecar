@@ -115,7 +115,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
                         if (!mounted) return;
                         Get.to(() => CheckImageScreen(
-                              image: image,
+                              imagePath: image.path,
                               longitude: longitude,
                               latitude: latitude,
                             ));

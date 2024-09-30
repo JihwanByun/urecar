@@ -1,13 +1,10 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio_pkg;
-import 'package:http_parser/http_parser.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ApiService {
   final MainController controller = Get.put(MainController());
@@ -85,9 +82,35 @@ class ApiService {
     }
   }
 
+  Future<dynamic> withdraw(Map<String, dynamic> formData) async {
+    final url = Uri.parse('$baseUrl/members');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(formData),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        controller.accessToken.value = "";
+        controller.memberId.value = 0;
+        controller.memberName.value = "";
+
+        return response.statusCode;
+      } else {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   Future<dynamic> createReport(
-      Map<String, dynamic> formData, XFile image) async {
-    Dio dio = Dio();
+      Map<String, dynamic> formData, String imagePath) async {
+    dio_pkg.Dio dio = dio_pkg.Dio();
     final url = '$baseUrl/reports';
 
     try {
@@ -96,7 +119,7 @@ class ApiService {
           jsonEncode(formData['dto']),
           contentType: dio_pkg.DioMediaType.parse('application/json'),
         ),
-        'file': await dio_pkg.MultipartFile.fromFile(image.path)
+        'file': await dio_pkg.MultipartFile.fromFile(imagePath)
       });
       dio_pkg.Response response = await dio.post(
         url,
@@ -112,6 +135,67 @@ class ApiService {
       if (response.statusCode == 200) {
         return responseData;
       } else {
+        return responseData;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> sendSecondImage(
+      Map<String, dynamic> formData, String imagePath) async {
+    dio_pkg.Dio dio = dio_pkg.Dio();
+    final url = '$baseUrl/reports/secondImage';
+
+    try {
+      dio_pkg.FormData formDataWithFile = dio_pkg.FormData.fromMap({
+        'dto': dio_pkg.MultipartFile.fromString(
+          jsonEncode(formData['dto']),
+          contentType: dio_pkg.DioMediaType.parse('application/json'),
+        ),
+        'file': await dio_pkg.MultipartFile.fromFile(imagePath)
+      });
+      dio_pkg.Response response = await dio.post(
+        url,
+        data: formDataWithFile,
+        options: dio_pkg.Options(
+          validateStatus: (status) => true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
+      final responseData = jsonDecode(response.data);
+      if (response.statusCode == 200) {
+        return responseData;
+      } else {
+        return responseData;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findReports(Map<String, dynamic> formData) async {
+    final url = Uri.parse('$baseUrl/reports');
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'startDate': formData["startDate"],
+          'endDate': formData["endDate"],
+          'state': formData["state"]
+        },
+      );
+      if (response.statusCode == 200) {
+        if (response.body == "true") {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        final responseData = jsonDecode(response.body);
         return responseData;
       }
     } catch (e) {
