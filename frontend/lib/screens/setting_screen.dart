@@ -5,6 +5,8 @@ import 'package:frontend/components/setting_screen/setting_screen_item.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/screens/preparation_screen.dart';
+import 'package:frontend/screens/notification_setting_screen.dart';
+import 'package:frontend/screens/my_report_screen.dart';
 import 'package:get/get.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -104,7 +106,7 @@ class _SettingScreenState extends State<SettingScreen> {
               children: [
                 SettingScreenItem(
                   title: "알림 설정",
-                  screen: PreparationScreen(),
+                  screen: NotificationSettingScreen(),
                 ),
                 SettingScreenItem(
                   title: "고객센터",
@@ -112,7 +114,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 SettingScreenItem(
                   title: "나의 신고",
-                  screen: PreparationScreen(),
+                  screen: MyReportScreen(),
                 ),
                 SettingScreenItem(
                   title: "내 저장소",
