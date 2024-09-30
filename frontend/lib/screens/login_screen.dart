@@ -74,78 +74,80 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 150),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100),
-              child: Image.asset(
-                'assets/images/logo.png',
-                width: 350,
+      body: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 150),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 350,
+                ),
               ),
-            ),
-            const SizedBox(height: 50),
-            const InputLabel(name: "이메일"),
-            Input(
-              controller: emailController,
-              inputType: TextInputType.emailAddress,
-              onSaved: (value) {
-                formData['email'] = value ?? '';
-              },
-            ),
-            if (emailError != null) ValidatorText(text: emailError!),
-            const InputLabel(name: "비밀번호"),
-            Input(
-              controller: passwordController,
-              inputType: TextInputType.visiblePassword,
-              obscure: true,
-              onSaved: (value) {
-                formData['password'] = value ?? '';
-              },
-            ),
-            if (passwordError != null) ValidatorText(text: passwordError!),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Get.to(() => const SignupScreen());
-                  },
-                  child: const Text(
-                    "회원가입",
-                    style: TextStyle(
-                      color: Colors.black,
+              const SizedBox(height: 50),
+              const InputLabel(name: "이메일"),
+              Input(
+                controller: emailController,
+                inputType: TextInputType.emailAddress,
+                onSaved: (value) {
+                  formData['email'] = value ?? '';
+                },
+              ),
+              if (emailError != null) ValidatorText(text: emailError!),
+              const InputLabel(name: "비밀번호"),
+              Input(
+                controller: passwordController,
+                inputType: TextInputType.visiblePassword,
+                obscure: true,
+                onSaved: (value) {
+                  formData['password'] = value ?? '';
+                },
+              ),
+              if (passwordError != null) ValidatorText(text: passwordError!),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Get.to(() => const SignupScreen());
+                    },
+                    child: const Text(
+                      "회원가입",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-                const Text("ㅣ"),
-                TextButton(
-                  onPressed: () {
-                    Get.to(const SignupScreen());
-                  },
-                  child: const Text(
-                    "ID/PW 찾기",
-                    style: TextStyle(
-                      color: Colors.black,
+                  const Text("ㅣ"),
+                  TextButton(
+                    onPressed: () {
+                      Get.to(const SignupScreen());
+                    },
+                    child: const Text(
+                      "ID/PW 찾기",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 60),
-              child: Button(
-                text: "로그인",
-                onPressed: submitForm,
-                horizontal: 100,
-                vertical: 10,
-                fontSize: 15,
+                ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 60),
+                child: Button(
+                  text: "로그인",
+                  onPressed: submitForm,
+                  horizontal: 100,
+                  vertical: 10,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

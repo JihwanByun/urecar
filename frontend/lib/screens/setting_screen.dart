@@ -7,6 +7,7 @@ import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/screens/preparation_screen.dart';
 import 'package:frontend/screens/notification_setting_screen.dart';
 import 'package:frontend/screens/my_report_screen.dart';
+import 'package:frontend/screens/member_withdraw_screen.dart';
 import 'package:get/get.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -122,7 +123,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 SettingScreenItem(
                   title: "회원 탈퇴",
-                  screen: PreparationScreen(),
+                  screen: MemberWithdrawScreen(),
                 ),
               ],
             )

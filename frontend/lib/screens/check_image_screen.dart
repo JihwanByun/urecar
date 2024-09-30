@@ -79,56 +79,58 @@ class CheckImageScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Column(
-        children: [
-          Image.file(
-            File(imagePath),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      controller.changePage(1);
-                    },
-                    child: const Text(
-                      "취소",
-                      style: TextStyle(
-                        fontSize: 27,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                  child: Center(
-                    child: Container(
-                      width: 1,
-                      height: 55,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: TextButton(
-                    onPressed: sendImage,
-                    child: const Text(
-                      "확인",
-                      style: TextStyle(
-                        fontSize: 27,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Image.file(
+              File(imagePath),
             ),
-          )
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        controller.changePage(1);
+                      },
+                      child: const Text(
+                        "취소",
+                        style: TextStyle(
+                          fontSize: 27,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                    child: Center(
+                      child: Container(
+                        width: 1,
+                        height: 55,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: sendImage,
+                      child: const Text(
+                        "확인",
+                        style: TextStyle(
+                          fontSize: 27,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
