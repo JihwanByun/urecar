@@ -3,17 +3,17 @@ import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/components/common/button.dart'; // Button 컴포넌트 import
+import 'package:frontend/components/common/button.dart';
 
-class DeleteAccountScreen extends StatefulWidget {
-  const DeleteAccountScreen({super.key});
+class MemberWithdrawScreen extends StatefulWidget {
+  const MemberWithdrawScreen({super.key});
 
   @override
-  State<DeleteAccountScreen> createState() => _DeleteAccountScreenState();
+  State<MemberWithdrawScreen> createState() => _MemberWithdrawScreenState();
 }
 
-class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
-  bool isChecked = false; // 체크박스 상태 관리
+class _MemberWithdrawScreenState extends State<MemberWithdrawScreen> {
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +44,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            // 경고 아이콘
             Icon(
               Icons.delete_forever,
               size: 100,
               color: Colors.red,
             ),
             const SizedBox(height: 20),
-            // 경고 문구
             const Text(
               '정말로 탈퇴하시겠습니까?',
               style: TextStyle(
@@ -68,7 +66,6 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            // 체크박스와 설명 텍스트
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -90,15 +87,13 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            // 취소 및 확인 버튼
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // 취소 버튼
                 Button(
                   text: '취소',
                   onPressed: () {
-                    Navigator.of(context).pop(); // 취소 시 뒤로 이동
+                    Navigator.of(context).pop();
                   },
                   horizontal: 20,
                   vertical: 10,
@@ -107,11 +102,11 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                   backgroundColor: Colors.grey,
                   contentColor: Colors.black,
                 ),
-                // 탈퇴 버튼
                 Button(
                   text: '확인',
                   onPressed: isChecked
                       ? () {
+                          print("탈퇴 처리됨");
                           Navigator.of(context).pop();
                         }
                       : null,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed; // VoidCallback? 로 수정 (null 허용)
   final double horizontal;
   final double vertical;
   final double fontSize;
@@ -15,7 +15,7 @@ class Button extends StatelessWidget {
   const Button({
     super.key,
     required this.text,
-    required this.onPressed,
+    required this.onPressed, // onPressed가 null일 수 있도록 허용
     required this.horizontal,
     required this.vertical,
     required this.fontSize,
@@ -31,9 +31,13 @@ class Button extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius ?? 10))),
+        backgroundColor: onPressed == null
+            ? Colors.grey
+            : backgroundColor ?? Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius ?? 10),
+        ),
+      ),
       child: Padding(
         padding: EdgeInsets.symmetric(
           vertical: vertical,
@@ -41,13 +45,12 @@ class Button extends StatelessWidget {
         ),
         child: Column(
           children: [
-            icon != null
-                ? Icon(
-                    icon,
-                    size: iconSize ?? 15,
-                    color: contentColor ?? Colors.white,
-                  )
-                : const SizedBox.shrink(),
+            if (icon != null)
+              Icon(
+                icon,
+                size: iconSize ?? 15,
+                color: contentColor ?? Colors.white,
+              ),
             Text(
               text,
               style: TextStyle(
