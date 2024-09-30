@@ -1,5 +1,6 @@
 # 베이스 이미지 선택
-FROM python:3.12.6-slim
+# FROM python:3.12.6-slim
+FROM continuumio/anaconda3:latest
 
 # 작업 디렉토리 설정
 WORKDIR /app
