@@ -59,9 +59,12 @@ backend-docker-build-job:
     - ls -la    
     - echo "pwd"
     - pwd
-    - docker build -t imjunhyuk/urecar:latest .
+    - export TAG=$(date +%Y%m%d%H%M%S)
+    - docker build -t imjunhyuk/urecar:$TAG .
+    - docker tag imjunhyuk/urecar:$TAG imjunhyuk/urecar:latest
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
     - docker push imjunhyuk/urecar:latest  # Docker Hub로 이미지 푸시
+    - docker push imjunhyuk/urecar:$TAG
     - echo "backend docker build end"
   only:
     - develop
