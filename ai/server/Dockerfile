@@ -9,7 +9,8 @@ WORKDIR /app
 COPY ./requirements.txt /app/requirements.txt
 
 # 필요한 패키지 설치
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+# RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN conda install --yes --file /app/requirements.txt
 
 # FastAPI 소스 코드 복사
 COPY . /app
