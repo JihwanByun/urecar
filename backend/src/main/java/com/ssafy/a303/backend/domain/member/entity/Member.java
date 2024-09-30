@@ -46,6 +46,8 @@ public class Member {
     @OneToMany(mappedBy = "member")
     List<Report> reports = new ArrayList<>();
 
+    private String notificationToken;
+
     @ColumnDefault("false")
     private boolean isDeleted;
 
@@ -65,6 +67,10 @@ public class Member {
 
     public boolean isDeleted() {
         return isDeleted;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
     }
 
 }
