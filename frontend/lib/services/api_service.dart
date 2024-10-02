@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
@@ -224,6 +223,26 @@ class ApiService {
       } else {
         final responseData = jsonDecode(response.body);
         return responseData;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findGallery() async {
+    final url = Uri.parse('$baseUrl/reports/gallery');
+    final formData = {"memberId": controller.memberId.value};
+    try {
+      final response = await http.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(formData));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        print(responseData);
+        return responseData;
+      } else {
+        final Map<String, dynamic> errorData = jsonDecode(response.body);
+        return errorData;
       }
     } catch (e) {
       return e;

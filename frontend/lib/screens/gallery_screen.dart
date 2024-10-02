@@ -4,6 +4,7 @@ import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/common/spinner.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
+import 'package:frontend/services/api_service.dart';
 
 class GalleryScreen extends StatefulWidget {
   const GalleryScreen({super.key});
@@ -22,31 +23,35 @@ class _GalleryScreenState extends State<GalleryScreen> {
   @override
   void initState() {
     super.initState();
-    _loadMoreImages();
+    fetchGallery();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&
           !isLoading) {
-        _loadMoreImages();
+        fetchGallery();
       }
     });
   }
 
-  void _loadMoreImages() async {
+  void fetchGallery() async {
+    final apiService = ApiService();
     setState(() {
       isLoading = true;
     });
 
-    await Future.delayed(const Duration(seconds: 1));
-
-    List<String> newImages =
-        List.generate(36, (index) => 'assets/images/etc_guide_image.png');
-
-    setState(() {
-      images.addAll(newImages);
-      loadedItems += newImages.length;
-      isLoading = false;
-    });
+    try {
+      List<String> galleryImages = await apiService.findGallery();
+      print(galleryImages);
+      setState(() {
+        images.addAll(galleryImages);
+        loadedItems += galleryImages.length;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -95,7 +100,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(
+                        child: Image.network(
                           images[index],
                           fit: BoxFit.cover,
                         ),
