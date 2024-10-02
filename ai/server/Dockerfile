@@ -1,5 +1,6 @@
 # 베이스 이미지 선택
-FROM python:3.12.6-slim
+# FROM python:3.12.6-slim
+FROM continuumio/anaconda3:latest
 
 # 작업 디렉토리 설정
 WORKDIR /app
@@ -9,6 +10,7 @@ COPY ./requirements.txt /app/requirements.txt
 
 # 필요한 패키지 설치
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+# RUN conda install --yes --file /app/requirements.txt
 
 # FastAPI 소스 코드 복사
 COPY . /app

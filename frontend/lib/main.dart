@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/camera_screen.dart';
@@ -10,15 +12,30 @@ import 'package:get/get.dart';
 import 'package:camera/camera.dart';
 import 'package:frontend/components/common/spinner.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 late List<CameraDescription> cameras;
 
 Future<void> main() async {
-  final MainController controller = Get.put(MainController());
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   runApp(const LoadingApp());
+  void checkPermissions() async {
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
+    }
 
+    if (await Permission.location.isDenied) {
+      await Permission.location.request();
+    }
+    if (await Permission.camera.isDenied) {
+      await Permission.location.request();
+    }
+  }
+
+  checkPermissions();
   final cameras = await availableCameras();
   CameraDescription? firstCamera;
   if (cameras.isNotEmpty) {
@@ -26,12 +43,40 @@ Future<void> main() async {
   } else {
     firstCamera = null;
   }
+
+  final MainController controller = Get.put(MainController());
   controller.camera = firstCamera;
+
   await dotenv.load(fileName: 'assets/config/.env');
-  runApp(
-    const App(),
-  );
+
+  final fcmToken = await FirebaseMessaging.instance.getToken(
+      vapidKey:
+          "BDhKNwXXy_46EWu4VB9JscpR2qoRj_mSqpmp_cKVSJ1g7dmU4g48YRk0i5jhjpTixK9IlA5kaTNCUwe__vP2dY4");
+  if (fcmToken != null) {
+    controller.fcmToken.value = fcmToken;
+  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? storedToken = prefs.getString('fcm_token');
+  print(storedToken);
+  if (storedToken == null || storedToken.isEmpty) {
+    String? newToken = await FirebaseMessaging.instance.getToken();
+    if (newToken != null) {
+      prefs.setString('fcm_token', newToken);
+      controller.fcmToken.value = newToken;
+    }
+  } else {
+    controller.fcmToken.value = storedToken;
+  }
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('포어그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
+  });
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const App());
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('백그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
 }
 
 class LoadingApp extends StatelessWidget {
@@ -49,6 +94,7 @@ class LoadingApp extends StatelessWidget {
 
 class App extends StatelessWidget {
   const App({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -66,7 +112,7 @@ class App extends StatelessWidget {
         GetPage(name: '/history', page: () => const HistoryScreen()),
         GetPage(name: '/setting', page: () => const SettingScreen()),
         GetPage(name: '/landing', page: () => LandingScreen()),
-        GetPage(name: '/login', page: () => const LoginScreen())
+        GetPage(name: '/login', page: () => const LoginScreen()),
       ],
     );
   }

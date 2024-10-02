@@ -24,8 +24,8 @@ class _SettingScreenState extends State<SettingScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(60),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
         child: TopBar(),
       ),
       body: Center(
@@ -120,6 +120,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 SettingScreenItem(
                   title: "회원 탈퇴",
                   screen: MemberWithdrawScreen(),
+                  fontColor: Colors.red,
                 ),
               ],
             )
