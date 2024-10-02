@@ -19,12 +19,12 @@ public class OutboxReport {
 
     private int memberId;
 
-
     private long reportId;
 
     private String firstImage;
 
     private String secondImage;
 
+    private String token;
 }
 
