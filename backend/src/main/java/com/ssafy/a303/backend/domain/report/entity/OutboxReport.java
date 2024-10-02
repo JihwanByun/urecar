@@ -40,13 +40,16 @@ public class OutboxReport {
     private String firstImage;
     private String secondImage;
 
+    private String token;
+
     @Builder
-    public OutboxReport(Report report, Member member, String firstImage, String secondImage, OutboxStatus outboxStatus) {
+    public OutboxReport(Report report, Member member, String firstImage, String secondImage, OutboxStatus outboxStatus, String token) {
         this.report = report;
         this.member = member;
         this.firstImage = firstImage;
         this.secondImage = secondImage;
         this.outboxStatus = outboxStatus;
+        this.token = token;
     }
 
 }
