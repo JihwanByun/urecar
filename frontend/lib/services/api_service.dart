@@ -71,6 +71,7 @@ class ApiService {
         controller.accessToken.value = responseData['accessToken'];
         controller.memberId.value = responseData['memberId'];
         controller.memberName.value = responseData['memberName'];
+        await sendFCMToken();
 
         return response.statusCode;
       } else {
@@ -83,7 +84,7 @@ class ApiService {
   }
 
   Future<dynamic> sendFCMToken() async {
-    final url = Uri.parse('$baseUrl/token');
+    final url = Uri.parse('$baseUrl/members/token');
     if (controller.memberId.value == 0 || controller.fcmToken.value == "") {
       return 0;
     }
@@ -104,6 +105,8 @@ class ApiService {
         return responseData;
       }
     } catch (e) {
+      print(e);
+
       return e;
     }
   }
@@ -123,7 +126,6 @@ class ApiService {
         controller.accessToken.value = "";
         controller.memberId.value = 0;
         controller.memberName.value = "";
-        await sendFCMToken();
 
         return response.statusCode;
       } else {
