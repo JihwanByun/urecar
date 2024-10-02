@@ -82,6 +82,32 @@ class ApiService {
     }
   }
 
+  Future<dynamic> sendFCMToken() async {
+    final url = Uri.parse('$baseUrl/token');
+    if (controller.memberId.value == 0 || controller.fcmToken.value == "") {
+      return 0;
+    }
+    final formData = {
+      "memberId": controller.memberId.value,
+      "token": controller.fcmToken.value
+    };
+    try {
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(formData));
+      if (response.statusCode == 200) {
+        return 200;
+      } else {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   Future<dynamic> withdraw(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/members');
     try {
@@ -97,6 +123,7 @@ class ApiService {
         controller.accessToken.value = "";
         controller.memberId.value = 0;
         controller.memberName.value = "";
+        await sendFCMToken();
 
         return response.statusCode;
       } else {
