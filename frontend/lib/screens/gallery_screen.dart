@@ -1,0 +1,122 @@
+import 'package:flutter/material.dart';
+import 'package:frontend/components/common/bottom_navigation.dart';
+import 'package:frontend/components/common/top_bar.dart';
+import 'package:frontend/components/common/spinner.dart';
+import 'package:frontend/controller.dart';
+import 'package:get/get.dart';
+
+class GalleryScreen extends StatefulWidget {
+  const GalleryScreen({super.key});
+
+  @override
+  State<GalleryScreen> createState() => _GalleryScreenState();
+}
+
+class _GalleryScreenState extends State<GalleryScreen> {
+  final MainController controller = Get.put(MainController());
+  final ScrollController _scrollController = ScrollController();
+  List<String> images = [];
+  bool isLoading = false;
+  int loadedItems = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMoreImages();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent &&
+          !isLoading) {
+        _loadMoreImages();
+      }
+    });
+  }
+
+  void _loadMoreImages() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    List<String> newImages =
+        List.generate(36, (index) => 'assets/images/etc_guide_image.png');
+
+    setState(() {
+      images.addAll(newImages);
+      loadedItems += newImages.length;
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: TopBar(),
+      ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  '내 저장소',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '총 $loadedItems건',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: GridView.builder(
+                    controller: _scrollController,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: images.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          images[index],
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (isLoading)
+            const Center(
+              child: Spinner(),
+            ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigation(
+        onTap: (int index) async {
+          controller.changePage(index);
+        },
+      ),
+    );
+  }
+}

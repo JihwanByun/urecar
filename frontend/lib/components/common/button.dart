@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
   final String text;
-  final VoidCallback? onPressed; // VoidCallback? 로 수정 (null 허용)
+  final VoidCallback? onPressed;
   final double horizontal;
   final double vertical;
   final double fontSize;
@@ -15,7 +15,7 @@ class Button extends StatelessWidget {
   const Button({
     super.key,
     required this.text,
-    required this.onPressed, // onPressed가 null일 수 있도록 허용
+    required this.onPressed,
     required this.horizontal,
     required this.vertical,
     required this.fontSize,

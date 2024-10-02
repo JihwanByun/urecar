@@ -8,7 +8,7 @@ class Spinner extends StatelessWidget {
 
   const Spinner(
       {super.key,
-      this.color = Colors.white,
+      this.color = Colors.black,
       this.size = 50.0,
       this.duration = const Duration(milliseconds: 1200)});
 
