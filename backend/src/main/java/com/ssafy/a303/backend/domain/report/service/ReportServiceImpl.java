@@ -5,11 +5,9 @@ import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
-import com.ssafy.a303.backend.domain.report.entity.OutboxReport;
-import com.ssafy.a303.backend.domain.report.entity.OutboxStatus;
-import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
-import com.ssafy.a303.backend.domain.report.entity.Report;
+import com.ssafy.a303.backend.domain.report.entity.*;
 import com.ssafy.a303.backend.domain.report.handler.ImageHandler;
+import com.ssafy.a303.backend.domain.report.repository.IllegalParkingZoneRepository;
 import com.ssafy.a303.backend.domain.report.repository.OutboxReportRepository;
 import com.ssafy.a303.backend.domain.report.repository.ReportRepository;
 import com.ssafy.a303.backend.exception.CustomException;
@@ -30,13 +28,16 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final ImageHandler imageHandler;
     private final OutboxReportRepository outboxReportRepository;
+    private final IllegalParkingZoneRepository illegalParkingZoneRepository;
 
     public ReportServiceImpl(MemberRepository memberRepository, ReportRepository reportRepository,
-            OutboxReportRepository outboxReportRepository) {
+            OutboxReportRepository outboxReportRepository, IllegalParkingZoneRepository illegalParkingZoneRepository) {
         this.memberRepository = memberRepository;
         this.reportRepository = reportRepository;
         this.outboxReportRepository = outboxReportRepository;
         this.imageHandler = new ImageHandler();
+        this.illegalParkingZoneRepository = illegalParkingZoneRepository;
+
     }
 
     @Override
@@ -118,8 +119,11 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public boolean isIllegalParkingZone(double longitude, double latitude) {
         // 위치정보 가져오기
+    List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
 
-
+    if(isNearTheIllegalParkingLocation == null) {
+        new CustomException(ErrorCode.REPORT_SAVE_FAILED);
+    }
 
     return true;
     }

@@ -40,6 +40,7 @@ public class Report {
     private String firstImage;
     private String secondImage;
 
+
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
