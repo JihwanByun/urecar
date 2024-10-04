@@ -67,6 +67,7 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+        controller.memberEmail.value = formData['email'];
         controller.accessToken.value = responseData['accessToken'];
         controller.memberId.value = responseData['memberId'];
         controller.memberName.value = responseData['memberName'];
@@ -238,11 +239,31 @@ class ApiService {
           body: jsonEncode(formData));
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        print(responseData);
         return responseData;
       } else {
         final Map<String, dynamic> errorData = jsonDecode(response.body);
         return errorData;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> updateMember(Map<String, dynamic> formData) async {
+    final url = Uri.parse('$baseUrl/members');
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(formData),
+      );
+      if (response.statusCode == 200) {
+        return response.statusCode;
+      } else {
+        final responseData = jsonDecode(response.body);
+        return responseData;
       }
     } catch (e) {
       return e;
