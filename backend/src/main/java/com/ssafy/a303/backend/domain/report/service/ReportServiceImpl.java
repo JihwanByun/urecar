@@ -1,5 +1,6 @@
 package com.ssafy.a303.backend.domain.report.service;
 
+import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
@@ -78,12 +79,14 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private void saveOutboxReport(Report report) {
+        Member member = memberRepository.findById(report.getMember().getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID));
         OutboxReport outboxReport = OutboxReport.builder()
                 .report(report)
-                .member(memberRepository.findById(report.getMember().getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID)))
+                .member(member)
                 .firstImage(report.getFirstImage())
                 .secondImage(report.getSecondImage() == null ? null : report.getSecondImage())
                 .outboxStatus(OutboxStatus.FIRST_WAIT)
+                .token(member.getNotificationToken())
                 .build();
 
         outboxReportRepository.save(outboxReport);
