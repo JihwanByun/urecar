@@ -117,16 +117,14 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public boolean isIllegalParkingZone(double longitude, double latitude) {
+    public void isIllegalParkingZone(double longitude, double latitude) {
         // 위치정보 가져오기
     List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
 
     if(isNearTheIllegalParkingLocation == null) {
-        new CustomException(ErrorCode.REPORT_SAVE_FAILED);
+        throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
     }
 
-    return true;
     }
-
 
 }

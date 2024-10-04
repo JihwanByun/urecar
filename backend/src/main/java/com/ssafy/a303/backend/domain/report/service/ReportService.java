@@ -16,5 +16,5 @@ public interface ReportService {
 
     GalleryResponseDto getGallery(long memberId);
 
-    boolean isIllegalParkingZone(double longitude, double latitude);
+    void isIllegalParkingZone(double longitude, double latitude);
 }
