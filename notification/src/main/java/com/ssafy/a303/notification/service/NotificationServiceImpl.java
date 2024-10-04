@@ -13,30 +13,60 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+    private final static String TITLE = "UreCar";
+    private final static String FIRST_SUCCESS = "첫 번째 사진이 수용되었습니다.";
+    private final static String FIRST_FAILURE = "첫 번째 사진이 불수용되었습니다.";
+    private final static String SECOND_SUCCESS = "두 번째 사진이 수용되었습니다.";
+    private final static String SECOND_FAILURE = "두 번째 사진이 불수용되었습니다.";
+
+
     @Override
     public void sendFirstNotification(NotificationRequestDto dto) {
+        if (dto.getResult()) {
+            sendByToken(NotificationSendToFcmServerDto.builder()
+                    .memberId(dto.getMemberId())
+                    .title(TITLE)
+                    .content(FIRST_SUCCESS)
+                    .clientToken(dto.getToken())
+                    .build());
+            return;
+        }
+
         sendByToken(NotificationSendToFcmServerDto.builder()
                 .memberId(dto.getMemberId())
-                .title("테스트 메시지 제목")
-                .content("테스트 메시지 본문")
-                .build(),
-        dto.getToken());
+                .title(TITLE)
+                .content(FIRST_FAILURE)
+                .clientToken(dto.getToken())
+                .build());
     }
 
     @Override
     public void sendSecondNotification(NotificationRequestDto dto) {
+        if (dto.getResult()) {
+            sendByToken(NotificationSendToFcmServerDto.builder()
+                    .memberId(dto.getMemberId())
+                    .title(TITLE)
+                    .content(SECOND_SUCCESS)
+                    .clientToken(dto.getToken())
+                    .build());
+            return;
+        }
 
+        sendByToken(NotificationSendToFcmServerDto.builder()
+                .memberId(dto.getMemberId())
+                .title(TITLE)
+                .content(SECOND_FAILURE)
+                .clientToken(dto.getToken())
+                .build());
     }
 
-    public void sendByToken(NotificationSendToFcmServerDto dto, String token) {
+    public void sendByToken(NotificationSendToFcmServerDto dto) {
         Message message = Message.builder()
                 .setNotification(Notification.builder()
                         .setTitle(dto.getTitle())
                         .setBody(dto.getContent())
                         .build())
-                .putData("score", "850")
-                .putData("time", "2:45")
-                .setToken(token)
+                .setToken(dto.getClientToken())
                 .build();
         try {
             String response = FirebaseMessaging.getInstance().send(message);

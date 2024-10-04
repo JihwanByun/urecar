@@ -11,5 +11,6 @@ public class NotificationSendToFcmServerDto {
     private Long contentId;
     private String title;
     private String content;
+    private String clientToken;
 
 }
