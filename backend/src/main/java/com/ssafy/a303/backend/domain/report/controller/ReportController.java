@@ -29,12 +29,19 @@ public class ReportController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createReport(
+    public ResponseEntity<?> createReport(
             @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
             @RequestPart(value = "file") MultipartFile file
     ) {
         reportService.createReport(reportCreateRequestDto, file);
-        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+
+        try {
+            reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorCode.IMAGE_SAVE_FAILED);
+        }
 
         return ResponseEntity.ok().build();
     }
