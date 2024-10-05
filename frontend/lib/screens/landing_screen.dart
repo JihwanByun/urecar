@@ -23,44 +23,56 @@ class LandingScreen extends StatelessWidget {
             const SizedBox(
               height: 40,
             ),
-            Button(
-              text: "사진 촬영",
-              onPressed: () {
-                controller.changePage(1);
-              },
-              horizontal: 90,
-              vertical: 80,
-              fontSize: 30,
-              icon: Icons.camera_alt_outlined,
-              iconSize: 60,
-              backgroundColor: Theme.of(context).primaryColorLight,
-              contentColor: Colors.black,
+            SizedBox(
+              width: 350,
+              child: Button(
+                text: "사진 촬영",
+                onPressed: () {
+                  controller.changePage(1);
+                },
+                horizontal: 90,
+                vertical: 80,
+                fontSize: 30,
+                icon: Icons.camera_alt_outlined,
+                iconSize: 60,
+                backgroundColor: Theme.of(context).primaryColorLight,
+                contentColor: Colors.black,
+              ),
             ),
             const SizedBox(
               height: 30,
             ),
-            Button(
-              text: "메인으로",
-              onPressed: () {
-                controller.changePage(0);
-              },
-              horizontal: 95,
-              vertical: 20,
-              fontSize: 30,
-              backgroundColor: Theme.of(context).primaryColorLight,
-              contentColor: Colors.black,
+            SizedBox(
+              width: 350,
+              child: Button(
+                text: "메인으로",
+                onPressed: () {
+                  controller.changePage(0);
+                },
+                horizontal: 95,
+                vertical: 20,
+                fontSize: 30,
+                backgroundColor: Theme.of(context).primaryColorLight,
+                contentColor: Colors.black,
+              ),
             ),
-            Button(
-              text: "로그인",
-              onPressed: () {
-                Get.to(const LoginScreen());
-              },
-              horizontal: 95,
-              vertical: 20,
-              fontSize: 30,
-              backgroundColor: Theme.of(context).primaryColorLight,
-              contentColor: Colors.black,
+            const SizedBox(
+              height: 30,
             ),
+            SizedBox(
+              width: 350,
+              child: Button(
+                text: "로그인",
+                onPressed: () {
+                  Get.to(const LoginScreen());
+                },
+                horizontal: 95,
+                vertical: 20,
+                fontSize: 30,
+                backgroundColor: Theme.of(context).primaryColorLight,
+                contentColor: Colors.black,
+              ),
+            )
           ],
         ),
       ),

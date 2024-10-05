@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/notification_screen.dart';
+import 'package:get/get.dart';
 
 class TopBar extends StatelessWidget {
-  final VoidCallback onNotificationPressed;
-
-  const TopBar({super.key, required this.onNotificationPressed});
+  const TopBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class TopBar extends StatelessWidget {
           child: IconButton(
             iconSize: 28,
             icon: const Icon(Icons.notifications),
-            onPressed: onNotificationPressed,
+            onPressed: () => Get.to(() => const NotificationScreen()),
           ),
         ),
       ],

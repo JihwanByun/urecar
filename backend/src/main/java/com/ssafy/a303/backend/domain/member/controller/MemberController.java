@@ -1,9 +1,12 @@
 package com.ssafy.a303.backend.domain.member.controller;
 
 import com.ssafy.a303.backend.domain.member.dto.EmailCheckRequestDto;
+import com.ssafy.a303.backend.domain.member.dto.MemberDeleteRequestDto;
+import com.ssafy.a303.backend.domain.member.dto.NotificationTokenDto;
 import com.ssafy.a303.backend.domain.member.dto.SignupRequestDto;
 import com.ssafy.a303.backend.domain.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +31,18 @@ public class MemberController {
     @PostMapping("/emailCheck")
     public ResponseEntity<Boolean> emailCheck(@RequestBody EmailCheckRequestDto emailCheckRequestDto) {
         return ResponseEntity.ok().body(memberService.isExistEmail(emailCheckRequestDto.getEmail()));
+    }
+
+    @PostMapping("/token")
+    public ResponseEntity<Void> setNotificationToken(@RequestBody NotificationTokenDto notificationTokenDto) {
+        memberService.setNotificationToken(notificationTokenDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestBody MemberDeleteRequestDto memberDeleteRequestDto) {
+        memberService.deleteMember(memberDeleteRequestDto);
+        return ResponseEntity.ok().build();
     }
 
 }

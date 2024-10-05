@@ -3,6 +3,11 @@ import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/setting_screen/setting_screen_item.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/screens/login_screen.dart';
+import 'package:frontend/screens/preparation_screen.dart';
+import 'package:frontend/screens/notification_setting_screen.dart';
+import 'package:frontend/screens/my_report_screen.dart';
+import 'package:frontend/screens/member_withdraw_screen.dart';
 import 'package:get/get.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -21,11 +26,7 @@ class _SettingScreenState extends State<SettingScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
-        child: TopBar(
-          onNotificationPressed: () {
-            controller.showNotification;
-          },
-        ),
+        child: TopBar(),
       ),
       body: Center(
         child: Column(
@@ -35,52 +36,63 @@ class _SettingScreenState extends State<SettingScreen> {
                 vertical: 20.0,
                 horizontal: 30,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 40.0, // 전체 크기 (테두리 포함)
-                        height: 40.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.black, // 테두리 색상
-                            width: 2.0, // 테두리 두께
-                          ),
-                        ),
-                        child: const CircleAvatar(
-                          radius: 20.0,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.person,
-                            size: 35,
-                          ),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "김 혁",
-                              style:
-                                  TextStyle(fontSize: 28, color: Colors.black),
+              child: GestureDetector(
+                onTap: () {
+                  Get.to(() => controller.memberName.value != ""
+                      ? const PreparationScreen()
+                      : const LoginScreen());
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 40.0,
+                          height: 40.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2.0,
                             ),
-                            Text("정보 수정")
-                          ],
+                          ),
+                          child: const CircleAvatar(
+                            radius: 20.0,
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.person,
+                              size: 35,
+                            ),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                  const Icon(
-                    Icons.chevron_right,
-                    color: Colors.black,
-                    size: 40,
-                  )
-                ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                controller.memberName.value != ""
+                                    ? controller.memberName.value
+                                    : "로그인",
+                                style: const TextStyle(
+                                    fontSize: 28, color: Colors.black),
+                              ),
+                              controller.memberName.value != ""
+                                  ? const Text("정보 수정")
+                                  : Container()
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: Colors.black,
+                      size: 40,
+                    )
+                  ],
+                ),
               ),
             ),
             Container(
@@ -89,11 +101,27 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             const Column(
               children: [
-                SettingScreenItem(title: "알림 설정"),
-                SettingScreenItem(title: "고객센터"),
-                SettingScreenItem(title: "나의 신고"),
-                SettingScreenItem(title: "내 저장소"),
-                SettingScreenItem(title: "회원 탈퇴"),
+                SettingScreenItem(
+                  title: "알림 설정",
+                  screen: NotificationSettingScreen(),
+                ),
+                SettingScreenItem(
+                  title: "고객센터",
+                  screen: PreparationScreen(),
+                ),
+                SettingScreenItem(
+                  title: "나의 신고",
+                  screen: MyReportScreen(),
+                ),
+                SettingScreenItem(
+                  title: "내 저장소",
+                  screen: PreparationScreen(),
+                ),
+                SettingScreenItem(
+                  title: "회원 탈퇴",
+                  screen: MemberWithdrawScreen(),
+                  fontColor: Colors.red,
+                ),
               ],
             )
           ],

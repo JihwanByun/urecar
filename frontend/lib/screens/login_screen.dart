@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
+import 'package:frontend/components/common/validator_text.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/signup_screen.dart';
 import 'package:frontend/services/api_service.dart';
@@ -60,10 +61,11 @@ class _LoginScreenState extends State<LoginScreen> {
         if (res == 200) {
           controller.changePage(0);
         } else {
-          Get.snackbar('오류', '$res', snackPosition: SnackPosition.BOTTOM);
+          Get.snackbar('오류', '${res["message"]}',
+              snackPosition: SnackPosition.BOTTOM);
         }
       } catch (e) {
-        Get.snackbar('오류', '로그인 중 오류가 발생했습니다.',
+        Get.snackbar('오류', '로그인 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
             snackPosition: SnackPosition.BOTTOM);
       }
     }
@@ -72,94 +74,80 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 150),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100),
-              child: Image.asset(
-                'assets/images/logo.png',
-                width: 350,
-              ),
-            ),
-            const SizedBox(height: 50),
-            const InputLabel(name: "이메일"),
-            Input(
-              controller: emailController,
-              inputType: TextInputType.emailAddress,
-              onSaved: (value) {
-                formData['email'] = value ?? '';
-              },
-            ),
-            if (emailError != null) // 에러 메시지를 별도로 렌더링
+      body: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 150),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                child: Text(
-                  emailError!,
-                  style: const TextStyle(color: Colors.red),
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 350,
                 ),
               ),
-            const InputLabel(name: "비밀번호"),
-            Input(
-              controller: passwordController,
-              inputType: TextInputType.visiblePassword,
-              obscure: true,
-              onSaved: (value) {
-                formData['password'] = value ?? '';
-              },
-            ),
-            if (passwordError != null)
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                child: Text(
-                  passwordError!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+              const SizedBox(height: 50),
+              const InputLabel(name: "이메일"),
+              Input(
+                controller: emailController,
+                inputType: TextInputType.emailAddress,
+                onSaved: (value) {
+                  formData['email'] = value ?? '';
+                },
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Get.to(() => const SignupScreen());
-                  },
-                  child: const Text(
-                    "회원가입",
-                    style: TextStyle(
-                      color: Colors.black,
+              if (emailError != null) ValidatorText(text: emailError!),
+              const InputLabel(name: "비밀번호"),
+              Input(
+                controller: passwordController,
+                inputType: TextInputType.visiblePassword,
+                obscure: true,
+                onSaved: (value) {
+                  formData['password'] = value ?? '';
+                },
+              ),
+              if (passwordError != null) ValidatorText(text: passwordError!),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Get.to(() => const SignupScreen());
+                    },
+                    child: const Text(
+                      "회원가입",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-                const Text("ㅣ"),
-                TextButton(
-                  onPressed: () {
-                    Get.to(const SignupScreen());
-                  },
-                  child: const Text(
-                    "ID/PW 찾기",
-                    style: TextStyle(
-                      color: Colors.black,
+                  const Text("ㅣ"),
+                  TextButton(
+                    onPressed: () {
+                      Get.to(const SignupScreen());
+                    },
+                    child: const Text(
+                      "ID/PW 찾기",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 60),
-              child: Button(
-                text: "로그인",
-                onPressed: submitForm,
-                horizontal: 100,
-                vertical: 10,
-                fontSize: 15,
+                ],
               ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 60),
+                child: Button(
+                  text: "로그인",
+                  onPressed: submitForm,
+                  horizontal: 100,
+                  vertical: 10,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

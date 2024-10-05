@@ -62,7 +62,7 @@ public class SecurityConfig  {
         http
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/*", "/api-docs", "/api-docs/*", "/v3/api-docs/*").permitAll()
+                                .requestMatchers("/actuator/**","/actuator/prometheus", "/swagger", "/swagger-ui.html", "/swagger-ui/*", "/api-docs", "/api-docs/*", "/v3/api-docs/*").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                                 .anyRequest().permitAll()

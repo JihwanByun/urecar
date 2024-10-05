@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: notification
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/urecar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ssafy
+    password: ssafy
+
+
+server:
+  port: 8082
+
+firebase:
+  key-path: service-account.json

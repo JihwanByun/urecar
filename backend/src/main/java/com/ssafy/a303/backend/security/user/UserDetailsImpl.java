@@ -30,4 +30,8 @@ public class UserDetailsImpl implements UserDetails {
         return member.getPassword();
     }
 
+    public boolean isDeleted() {
+        return member.isDeleted();
+    }
+
 }

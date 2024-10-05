@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
+import 'package:frontend/components/common/spinner.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/screens/check_image_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -54,12 +56,11 @@ class _CameraScreenState extends State<CameraScreen> {
     Position position = await Geolocator.getCurrentPosition();
     longitude = position.longitude;
     latitude = position.latitude;
-    print("longitude: $longitude, latitude: $latitude");
   }
 
   @override
   void dispose() {
-    _controller?.dispose(); // 카메라 리소스 해제
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -69,13 +70,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: TopBar(
-          onNotificationPressed: () {
-            controller.showNotification;
-          },
-        ),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: TopBar(),
       ),
       body: _controller == null
           ? const Center(child: Text('카메라를 사용할 수 없습니다.'))
@@ -85,7 +82,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return CameraPreview(_controller!);
                 } else {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Spinner();
                 }
               },
             ),
@@ -100,14 +97,27 @@ class _CameraScreenState extends State<CameraScreen> {
                     backgroundColor: Colors.white,
                     onPressed: () async {
                       try {
+                        Get.dialog(
+                          const Spinner(),
+                          barrierDismissible: false,
+                        );
+
                         await _initializeControllerFuture;
                         final image = await _controller!.takePicture();
+
                         await getLocation();
+
+                        Get.back();
+
                         if (!mounted) return;
-                        await Get.to(
-                            () => CheckImageScreen(imagePath: image.path));
+                        Get.to(() => CheckImageScreen(
+                              imagePath: image.path,
+                              longitude: longitude,
+                              latitude: latitude,
+                            ));
                       } catch (e) {
                         print(e);
+                        Get.back();
                       }
                     },
                   ),

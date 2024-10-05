@@ -1,42 +1,100 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/camera_screen.dart';
 import 'package:frontend/screens/history_screen.dart';
 import 'package:frontend/screens/home_screen.dart';
 import 'package:frontend/screens/landing_screen.dart';
+import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/screens/setting_screen.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
+import 'package:frontend/components/common/spinner.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 late List<CameraDescription> cameras;
 
 Future<void> main() async {
-  final MainController controller = Get.put(MainController());
-  // 비동기 데이터 다룸으로 아래 코드 추가
-  // 다음에 호출되는 함수 모두 실행 끝날 때까지 기다림
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
-  // 기기에서 사용 가능한 카메라 목록 불러오기
+  runApp(const LoadingApp());
+  void checkPermissions() async {
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
+    }
+
+    if (await Permission.location.isDenied) {
+      await Permission.location.request();
+    }
+    if (await Permission.camera.isDenied) {
+      await Permission.location.request();
+    }
+  }
+
+  checkPermissions();
   final cameras = await availableCameras();
-
-  // 사용 가능한 카메라 중 첫 번째 카메라 사용
   CameraDescription? firstCamera;
   if (cameras.isNotEmpty) {
     firstCamera = cameras.first;
   } else {
     firstCamera = null;
   }
+
+  final MainController controller = Get.put(MainController());
   controller.camera = firstCamera;
-  await dotenv.load(fileName: 'assets/config/.env.development');
-  runApp(
-    const App(),
-  );
+
+  await dotenv.load(fileName: 'assets/config/.env');
+
+  final fcmToken = await FirebaseMessaging.instance.getToken(
+      vapidKey:
+          "BDhKNwXXy_46EWu4VB9JscpR2qoRj_mSqpmp_cKVSJ1g7dmU4g48YRk0i5jhjpTixK9IlA5kaTNCUwe__vP2dY4");
+  if (fcmToken != null) {
+    controller.fcmToken.value = fcmToken;
+  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? storedToken = prefs.getString('fcm_token');
+  print(storedToken);
+  if (storedToken == null || storedToken.isEmpty) {
+    String? newToken = await FirebaseMessaging.instance.getToken();
+    if (newToken != null) {
+      prefs.setString('fcm_token', newToken);
+      controller.fcmToken.value = newToken;
+    }
+  } else {
+    controller.fcmToken.value = storedToken;
+  }
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('포어그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
+  });
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  runApp(const App());
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('백그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
+}
+
+class LoadingApp extends StatelessWidget {
+  const LoadingApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(
+        body: Spinner(),
+      ),
+    );
+  }
 }
 
 class App extends StatelessWidget {
   const App({super.key});
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -53,7 +111,8 @@ class App extends StatelessWidget {
         GetPage(name: '/camera', page: () => const CameraScreen()),
         GetPage(name: '/history', page: () => const HistoryScreen()),
         GetPage(name: '/setting', page: () => const SettingScreen()),
-        GetPage(name: '/landing', page: () => LandingScreen())
+        GetPage(name: '/landing', page: () => LandingScreen()),
+        GetPage(name: '/login', page: () => const LoginScreen()),
       ],
     );
   }

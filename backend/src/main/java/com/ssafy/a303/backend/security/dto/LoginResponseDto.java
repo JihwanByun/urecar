@@ -7,6 +7,8 @@ import lombok.Getter;
 @Builder
 public class LoginResponseDto {
 
-    String accessToken;
+    private String accessToken;
+    private Long memberId;
+    private String memberName;
 
 }

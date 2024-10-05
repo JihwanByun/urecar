@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
+import 'package:frontend/components/common/validator_text.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/services/api_service.dart';
@@ -34,7 +35,7 @@ class _SignupScreenState extends State<SignupScreen> {
   String? passwordError;
   String? confirmPasswordError;
   String? nameError;
-  String? phoneError;
+  String? telError;
   String? addressError;
 
   void searchAddress(BuildContext context) async {
@@ -66,15 +67,15 @@ class _SignupScreenState extends State<SignupScreen> {
       final isAvailable =
           await apiService.emailCheck({'email': emailController.text});
 
-      if (isAvailable) {
+      if (!isAvailable) {
         setState(() {
-          emailSuccess = "사용 가능한 이메일입니다."; // 중복 없음, 성공 메시지
-          emailError = null; // 에러 메시지 없음
-          formData["email"] = emailController.text; // 이메일 저장
+          emailSuccess = "사용 가능한 이메일입니다.";
+          emailError = null;
+          formData["email"] = emailController.text;
         });
       } else {
         setState(() {
-          emailError = "이미 사용 중인 이메일입니다."; // 중복 있음, 에러 메시지
+          emailError = "이미 사용 중인 이메일입니다.";
           emailSuccess = null;
         });
       }
@@ -88,18 +89,16 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void submitForm() async {
     setState(() {
-      // 에러 메시지 초기화
       emailError = null;
       passwordError = null;
       confirmPasswordError = null;
       nameError = null;
-      phoneError = null;
+      telError = null;
       addressError = null;
     });
 
     bool isValid = true;
 
-    // 유효성 검사: 각 필드마다 조건을 확인하여 에러 메시지 설정
     if (emailController.text.isEmpty) {
       setState(() {
         emailError = "이메일을 입력하세요.";
@@ -113,7 +112,7 @@ class _SignupScreenState extends State<SignupScreen> {
       isValid = false;
     } else if (emailSuccess == null) {
       setState(() {
-        emailError = "이메일 중복을 확인해주세요."; // 중복 확인 필요
+        emailError = "이메일 중복을 확인해주세요.";
       });
       isValid = false;
     }
@@ -141,7 +140,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (phoneController.text.isEmpty) {
       setState(() {
-        phoneError = "전화번호를 입력하세요.";
+        telError = "전화번호를 입력하세요.";
       });
       isValid = false;
     }
@@ -162,10 +161,15 @@ class _SignupScreenState extends State<SignupScreen> {
         'zipCode': formData.remove('zip_code') ?? ''
       };
       try {
-        await apiService.signUp(formData);
-        Get.to(() => const LoginScreen());
+        final res = await apiService.signUp(formData);
+        if (res == 200) {
+          Get.offAllNamed('/login');
+        } else {
+          Get.snackbar('오류', '${res["message"]}',
+              snackPosition: SnackPosition.BOTTOM);
+        }
       } catch (e) {
-        Get.snackbar('오류', '회원가입 중 오류가 발생했습니다.',
+        Get.snackbar('오류', '로그인 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
             snackPosition: SnackPosition.BOTTOM);
       }
     }
@@ -196,39 +200,22 @@ class _SignupScreenState extends State<SignupScreen> {
                 buttonText: "중복 확인",
                 onPressed: checkEmailDuplicate,
               ),
-              if (emailError != null)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                  child: Text(
-                    emailError!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+              if (emailError != null) ValidatorText(text: emailError!),
               if (emailSuccess != null)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                  child: Text(
-                    emailSuccess!,
-                    style: const TextStyle(color: Colors.blue),
-                  ),
+                ValidatorText(
+                  text: emailSuccess!,
+                  color: Colors.blue,
                 ),
               const InputLabel(name: "비밀번호"),
               Input(
                 controller: passwordController,
                 inputType: TextInputType.visiblePassword,
                 obscure: true,
+                onSaved: (value) {
+                  formData['password'] = value ?? '';
+                },
               ),
-              if (passwordError != null)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                  child: Text(
-                    passwordError!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+              if (passwordError != null) ValidatorText(text: passwordError!),
               const InputLabel(name: "비밀번호 확인"),
               Input(
                 controller: confirmPasswordController,
@@ -236,58 +223,36 @@ class _SignupScreenState extends State<SignupScreen> {
                 obscure: true,
               ),
               if (confirmPasswordError != null)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                  child: Text(
-                    confirmPasswordError!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+                ValidatorText(text: confirmPasswordError!),
               const InputLabel(name: "이름"),
               Input(
                 controller: nameController,
+                onSaved: (value) {
+                  formData['name'] = value ?? '';
+                },
               ),
-              if (nameError != null)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                  child: Text(
-                    nameError!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+              if (nameError != null) ValidatorText(text: nameError!),
               const InputLabel(name: "휴대전화 번호"),
               Input(
                 controller: phoneController,
                 inputType: TextInputType.phone,
+                onSaved: (value) {
+                  formData['tel'] = value ?? '';
+                },
               ),
-              if (phoneError != null)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                  child: Text(
-                    phoneError!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+              if (telError != null) ValidatorText(text: telError!),
               const InputLabel(name: "주소"),
               Input(
                 controller: addressController,
                 onTap: () => searchAddress(context),
                 readonly: true,
               ),
-              if (addressError != null)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
-                  child: Text(
-                    addressError!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+              if (addressError != null) ValidatorText(text: addressError!),
               Input(
                 controller: addressDetailController,
+                onSaved: (value) {
+                  formData['address_detail'] = value ?? '';
+                },
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 60),
