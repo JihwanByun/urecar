@@ -18,10 +18,13 @@ import jakarta.transaction.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 public class ReportServiceImpl implements ReportService {
 
     private final MemberRepository memberRepository;
@@ -122,7 +125,7 @@ public class ReportServiceImpl implements ReportService {
     List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
 
         if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
-        throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
+            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
         }
 
     }
