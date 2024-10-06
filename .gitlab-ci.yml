@@ -43,6 +43,9 @@ backend-build-job:       # This job runs in the build stage, which runs first.
     expire_in: 1 week
   before_script:
     - echo "Starting CI/CD pipeline"
+  rules:
+    - changes:
+      - backend/**
 
 backend-docker-build-job:
   image: docker:latest
@@ -67,7 +70,9 @@ backend-docker-build-job:
     - develop
   after_script:
     - docker logout
-
+  rules:
+    - changes:
+      - backend/**
 
 backend-deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
@@ -84,6 +89,9 @@ backend-deploy-job:      # This job runs in the deploy stage.
     - develop
   after_script:
     - docker logout
+  rules:
+    - changes:
+      - backend/**
 
 before_script:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -108,6 +116,9 @@ ai-docker-build-job:
     - develop
   after_script:
     - docker logout
+  rules:
+    - changes:
+      - ai/**
 
 ai-deploy-job:
   stage: deploy
@@ -121,7 +132,9 @@ ai-deploy-job:
     - develop
   after_script:
     - docker logout
-
+  rules:
+    - changes:
+      - ai/**
 #sonarqube-check:
 #  image: gradle:jdk21
 #  stage: sonar
