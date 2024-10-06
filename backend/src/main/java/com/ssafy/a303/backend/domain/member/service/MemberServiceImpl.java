@@ -1,6 +1,7 @@
 package com.ssafy.a303.backend.domain.member.service;
 
 import com.ssafy.a303.backend.domain.member.dto.MemberDeleteRequestDto;
+import com.ssafy.a303.backend.domain.member.dto.MemberUpdateRequestDto;
 import com.ssafy.a303.backend.domain.member.dto.NotificationTokenDto;
 import com.ssafy.a303.backend.domain.member.dto.SignupRequestDto;
 import com.ssafy.a303.backend.domain.member.entity.Address;
@@ -64,6 +65,14 @@ public class MemberServiceImpl implements MemberService {
     public void setNotificationToken(NotificationTokenDto notificationTokenDto) {
         Member member = memberRepository.findById(notificationTokenDto.getMemberId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID));
         member.setNotificationToken(notificationTokenDto.getToken());
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
+        Member member = memberRepository.findByEmail(memberUpdateRequestDto.getEmail());
+        member.setPassword(passwordEncoder.encode(memberUpdateRequestDto.getPassword()));
+        member.setTel(memberUpdateRequestDto.getTel());
         memberRepository.save(member);
     }
 
