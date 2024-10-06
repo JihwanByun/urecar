@@ -43,7 +43,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                         .accessToken(accessToken)
                         .memberId(member.getId())
                         .memberName(member.getName())
-                        .memberRole(member.getRole().getRole())
+                        .memberRole(member.getRole())
                         .build());
     }
 
