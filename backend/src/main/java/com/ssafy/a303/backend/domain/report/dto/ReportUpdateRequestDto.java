@@ -7,5 +7,6 @@ public class ReportUpdateRequestDto {
 
     private Long memberId;
     private Long reportId;
+    private String content;
 
 }
