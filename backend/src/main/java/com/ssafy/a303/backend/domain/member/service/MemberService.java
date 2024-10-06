@@ -1,7 +1,7 @@
 package com.ssafy.a303.backend.domain.member.service;
 
 import com.ssafy.a303.backend.domain.member.dto.MemberDeleteRequestDto;
-import com.ssafy.a303.backend.domain.member.dto.MemberUpdateRequest;
+import com.ssafy.a303.backend.domain.member.dto.MemberUpdateRequestDto;
 import com.ssafy.a303.backend.domain.member.dto.NotificationTokenDto;
 import com.ssafy.a303.backend.domain.member.dto.SignupRequestDto;
 import com.ssafy.a303.backend.domain.member.entity.Member;
@@ -18,5 +18,5 @@ public interface MemberService {
 
     void setNotificationToken(NotificationTokenDto notificationTokenDto);
 
-    void updateMember(MemberUpdateRequest memberUpdateRequestDto);
+    void updateMember(MemberUpdateRequestDto memberUpdateRequestDto);
 }

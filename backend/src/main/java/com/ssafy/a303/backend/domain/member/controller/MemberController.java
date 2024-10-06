@@ -2,7 +2,7 @@ package com.ssafy.a303.backend.domain.member.controller;
 
 import com.ssafy.a303.backend.domain.member.dto.EmailCheckRequestDto;
 import com.ssafy.a303.backend.domain.member.dto.MemberDeleteRequestDto;
-import com.ssafy.a303.backend.domain.member.dto.MemberUpdateRequest;
+import com.ssafy.a303.backend.domain.member.dto.MemberUpdateRequestDto;
 import com.ssafy.a303.backend.domain.member.dto.NotificationTokenDto;
 import com.ssafy.a303.backend.domain.member.dto.SignupRequestDto;
 import com.ssafy.a303.backend.domain.member.service.MemberService;
@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody MemberUpdateRequest memberUpdateRequestDto) {
+    public ResponseEntity<Void> update(@RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
         memberService.updateMember(memberUpdateRequestDto);
         return ResponseEntity.ok().build();
     }

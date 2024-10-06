@@ -1,7 +1,7 @@
 package com.ssafy.a303.backend.domain.member.service;
 
 import com.ssafy.a303.backend.domain.member.dto.MemberDeleteRequestDto;
-import com.ssafy.a303.backend.domain.member.dto.MemberUpdateRequest;
+import com.ssafy.a303.backend.domain.member.dto.MemberUpdateRequestDto;
 import com.ssafy.a303.backend.domain.member.dto.NotificationTokenDto;
 import com.ssafy.a303.backend.domain.member.dto.SignupRequestDto;
 import com.ssafy.a303.backend.domain.member.entity.Address;
@@ -69,7 +69,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMember(MemberUpdateRequest memberUpdateRequestDto) {
+    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
         Member member = memberRepository.findByEmail(memberUpdateRequestDto.getEmail());
         member.setPassword(passwordEncoder.encode(memberUpdateRequestDto.getPassword()));
         member.setTel(memberUpdateRequestDto.getTel());
