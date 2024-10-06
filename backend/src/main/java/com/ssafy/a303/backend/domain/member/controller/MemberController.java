@@ -2,12 +2,14 @@ package com.ssafy.a303.backend.domain.member.controller;
 
 import com.ssafy.a303.backend.domain.member.dto.EmailCheckRequestDto;
 import com.ssafy.a303.backend.domain.member.dto.MemberDeleteRequestDto;
+import com.ssafy.a303.backend.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.a303.backend.domain.member.dto.NotificationTokenDto;
 import com.ssafy.a303.backend.domain.member.dto.SignupRequestDto;
 import com.ssafy.a303.backend.domain.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +38,12 @@ public class MemberController {
     @PostMapping("/token")
     public ResponseEntity<Void> setNotificationToken(@RequestBody NotificationTokenDto notificationTokenDto) {
         memberService.setNotificationToken(notificationTokenDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody MemberUpdateRequest memberUpdateRequestDto) {
+        memberService.updateMember(memberUpdateRequestDto);
         return ResponseEntity.ok().build();
     }
 
