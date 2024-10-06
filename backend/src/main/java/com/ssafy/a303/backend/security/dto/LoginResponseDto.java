@@ -10,5 +10,6 @@ public class LoginResponseDto {
     private String accessToken;
     private Long memberId;
     private String memberName;
+    private String memberRole;
 
 }
