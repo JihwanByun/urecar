@@ -45,6 +45,8 @@ backend-build-job:       # This job runs in the build stage, which runs first.
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       changes:
       - backend/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 backend-docker-build-job:
   image: docker:latest
@@ -71,6 +73,8 @@ backend-docker-build-job:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       changes:
       - backend/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 backend-deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
@@ -89,6 +93,8 @@ backend-deploy-job:      # This job runs in the deploy stage.
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       changes:
       - backend/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 before_script:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -115,6 +121,8 @@ ai-docker-build-job:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       changes:
       - ai/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 ai-deploy-job:
   stage: deploy
@@ -130,6 +138,8 @@ ai-deploy-job:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       changes:
       - ai/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 #sonarqube-check:
 #  image: gradle:jdk21
 #  stage: sonar
