@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,14 +33,16 @@ public class ReportServiceImpl implements ReportService {
     private final ImageHandler imageHandler;
     private final OutboxReportRepository outboxReportRepository;
     private final IllegalParkingZoneRepository illegalParkingZoneRepository;
+    private final GeoCoderServiceImpl geoCoderService;
 
     public ReportServiceImpl(MemberRepository memberRepository, ReportRepository reportRepository,
-            OutboxReportRepository outboxReportRepository, IllegalParkingZoneRepository illegalParkingZoneRepository) {
+            OutboxReportRepository outboxReportRepository, IllegalParkingZoneRepository illegalParkingZoneRepository, GeoCoderServiceImpl geoCoderService) {
         this.memberRepository = memberRepository;
         this.reportRepository = reportRepository;
         this.outboxReportRepository = outboxReportRepository;
         this.imageHandler = new ImageHandler();
         this.illegalParkingZoneRepository = illegalParkingZoneRepository;
+        this.geoCoderService =geoCoderService;
 
     }
 
@@ -62,9 +65,7 @@ public class ReportServiceImpl implements ReportService {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
 
-
         saveOutboxReport(report);
-
 
     }
 
@@ -121,13 +122,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void isIllegalParkingZone(double longitude, double latitude) {
-        // 위치정보 가져오기
-    List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
+//    List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
+//
+//        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
+//            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
+//        }
+    String response = geoCoderService.getSeoulBorough(longitude,latitude);
 
-        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
-            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
-        }
-
+        System.out.println(response);
     }
 
 }
