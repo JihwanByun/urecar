@@ -64,9 +64,7 @@ public class ReportServiceImpl implements ReportService {
     public void createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
-
         saveOutboxReport(report);
-
     }
 
     private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
@@ -89,7 +87,7 @@ public class ReportServiceImpl implements ReportService {
                 .member(member)
                 .firstImage(report.getFirstImage())
                 .secondImage(report.getSecondImage() == null ? null : report.getSecondImage())
-                .outboxStatus(OutboxStatus.FIRST_WAIT)
+                .outboxStatus(report.getSecondImage() == null ? OutboxStatus.FIRST_WAIT : OutboxStatus.SECOND_WAIT)
                 .token(member.getNotificationToken())
                 .build();
 
@@ -106,7 +104,7 @@ public class ReportServiceImpl implements ReportService {
 
     private Report saveSecondImageInReport(ReportUpdateRequestDto requestDto, ImageInfoDto imageInfoDto) {
         Report report = reportRepository.getReportById(requestDto.getReportId());
-        report.updateSecondImage(imageInfoDto.getFullPathName());
+        report.updateSecondImage(imageInfoDto.getFullPathName(), requestDto.getContent());
         return report;
     }
 

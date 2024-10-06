@@ -34,14 +34,7 @@ public class ReportController {
             @RequestPart(value = "file") MultipartFile file
     ) {
         reportService.createReport(reportCreateRequestDto, file);
-
-        try {
-            reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorCode.IMAGE_SAVE_FAILED);
-        }
-
+        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
         return ResponseEntity.ok().build();
     }
 
