@@ -15,7 +15,7 @@ public class PollingScheduler {
     
     private final OutBoxReportService outBoxReportService;
 
-    @Scheduled(fixedDelay = 1004)
+    @Scheduled(fixedDelay = 1000)
     public void pollingDatabase(){
         log.info("polling");
         outBoxReportService.publishMessage();

@@ -1,17 +1,21 @@
 package com.ssafy.a303.outbox_kafka_producer;
 
+import com.ssafy.a303.outbox_kafka_producer.entity.OutboxReport;
 import com.ssafy.a303.outbox_kafka_producer.repository.OutboxReportRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class KafkaProducer {
     
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, OutboxReport> kafkaTemplate;
     private final OutboxReportRepository outboxReportRepository;
 
     public void sendMessage(String topic, String message){
@@ -25,16 +29,9 @@ public class KafkaProducer {
             });
     }
 
-    public void sendMessageKey(String topic, String key,String message){
+    public CompletableFuture<SendResult<String, OutboxReport>> sendMessageWithKey(String topic, String key, OutboxReport report){
 
-        kafkaTemplate.send(topic, key, message).thenAccept(result -> {
-                    System.out.println("Message sent to partition: " + result.getRecordMetadata().partition());
-                    log.info("key = {}", key);
-                })
-                .exceptionally(ex -> {
-                    System.err.println("Message sending failed: " + ex.getMessage());
-                    return null;
-                });
+        return kafkaTemplate.send(topic, key, report);
 
     }
 }
