@@ -29,7 +29,7 @@ public class ImageHandler {
                 .format(new Date(Long.parseLong(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))));
         File folder = new File(imageUrl + memberId);
         if (!folder.exists() && !folder.mkdir()) {
-                throw new CustomException(ErrorCode.IMAGE_SAVE_FAILED);
+                throw new CustomException(ErrorCode.CANT_FOUND_FOLDER);
         }
 
         String fullPathName =  folder.getPath() + "\\" + fileName + ".jpg";
