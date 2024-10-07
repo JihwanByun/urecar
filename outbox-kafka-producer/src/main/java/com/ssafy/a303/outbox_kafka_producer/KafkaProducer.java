@@ -16,18 +16,6 @@ import java.util.concurrent.CompletableFuture;
 public class KafkaProducer {
     
     private final KafkaTemplate<String, OutboxReport> kafkaTemplate;
-    private final OutboxReportRepository outboxReportRepository;
-
-    public void sendMessage(String topic, String message){
-
-    kafkaTemplate.send(topic, message).thenAccept(result -> {
-                log.info("Message sent to partition: " + result.getRecordMetadata().partition());
-            })
-            .exceptionally(ex -> {
-                System.err.println("Message sending failed: " + ex.getMessage());
-                return null;
-            });
-    }
 
     public CompletableFuture<SendResult<String, OutboxReport>> sendMessageWithKey(String topic, String key, OutboxReport report){
 

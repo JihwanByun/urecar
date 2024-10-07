@@ -22,7 +22,7 @@ spring:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}  # 카프카 브로커 주소
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.JsonSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: ${KAFKA_ACKS}
       retries: 3
       batch-size: 16384
