@@ -254,7 +254,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   formData['address_detail'] = value ?? '';
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Padding(

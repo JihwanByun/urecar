@@ -20,7 +20,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
   DateTime startDate = DateTime.now().subtract(const Duration(days: 92));
   int selectedIndex = 0;
 
-
   List<Map<String, dynamic>> reportList = [
     {
       "date": "24.06.30",
@@ -124,7 +123,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
       }).toList();
     }
 
-    // 필터링된 리스트
     List<Map<String, dynamic>> filteredReportList = getFilteredReportList();
 
     return Scaffold(

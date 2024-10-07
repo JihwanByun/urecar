@@ -3,6 +3,7 @@ import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
 import 'package:frontend/components/common/validator_text.dart';
+import 'package:frontend/screens/setting_screen.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
@@ -69,6 +70,7 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
         if (res == 200) {
           Get.snackbar('성공', '회원 정보가 업데이트되었습니다.',
               snackPosition: SnackPosition.BOTTOM);
+          Get.offAll(() => const SettingScreen());
         } else {
           Get.snackbar('오류', '${res["message"]}',
               snackPosition: SnackPosition.BOTTOM);
@@ -118,7 +120,7 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
                 inputType: TextInputType.phone,
               ),
               if (telError != null) ValidatorText(text: telError!),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Padding(
