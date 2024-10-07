@@ -40,6 +40,7 @@ public class Report {
     private String firstImage;
     private String secondImage;
 
+
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
@@ -51,10 +52,9 @@ public class Report {
     private ProcessStatus processStatus;
 
     @Builder
-    public Report(Member member, String content, String firstImage,
+    public Report(Member member, String firstImage,
             LocalDateTime createdAt, double latitude, double longitude, ProcessStatus processStatus) {
         this.member = member;
-        this.content = content;
         this.firstImage = firstImage;
         this.createdAt = createdAt;
         this.latitude = latitude;
@@ -62,8 +62,9 @@ public class Report {
         this.processStatus = processStatus;
     }
 
-    public void updateSecondImage(String secondImage) {
+    public void updateSecondImage(String secondImage, String content) {
         this.secondImage = secondImage;
+        this.content = content;
     }
 
 }

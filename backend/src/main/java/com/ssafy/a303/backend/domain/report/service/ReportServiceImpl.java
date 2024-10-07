@@ -1,14 +1,14 @@
 package com.ssafy.a303.backend.domain.report.service;
 
+import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
-import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
-import com.ssafy.a303.backend.domain.report.entity.OutboxReport;
-import com.ssafy.a303.backend.domain.report.entity.OutboxStatus;
-import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
-import com.ssafy.a303.backend.domain.report.entity.Report;
+import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
+import com.ssafy.a303.backend.domain.report.entity.*;
 import com.ssafy.a303.backend.domain.report.handler.ImageHandler;
+import com.ssafy.a303.backend.domain.report.repository.IllegalParkingZoneRepository;
 import com.ssafy.a303.backend.domain.report.repository.OutboxReportRepository;
 import com.ssafy.a303.backend.domain.report.repository.ReportRepository;
 import com.ssafy.a303.backend.exception.CustomException;
@@ -16,26 +16,36 @@ import com.ssafy.a303.backend.exception.ErrorCode;
 import com.ssafy.a303.backend.domain.member.repository.MemberRepository;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import jakarta.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 public class ReportServiceImpl implements ReportService {
 
     private final MemberRepository memberRepository;
     private final ReportRepository reportRepository;
     private final ImageHandler imageHandler;
     private final OutboxReportRepository outboxReportRepository;
+    private final IllegalParkingZoneRepository illegalParkingZoneRepository;
+    //    private final GeoCoderServiceImpl geoCoderService;
 
     public ReportServiceImpl(MemberRepository memberRepository, ReportRepository reportRepository,
-            OutboxReportRepository outboxReportRepository) {
+            OutboxReportRepository outboxReportRepository,IllegalParkingZoneRepository illegalParkingZoneRepository ,GeoCoderServiceImpl geoCoderService) {
         this.memberRepository = memberRepository;
         this.reportRepository = reportRepository;
         this.outboxReportRepository = outboxReportRepository;
         this.imageHandler = new ImageHandler();
+        this.illegalParkingZoneRepository = illegalParkingZoneRepository;
+//        this.geoCoderService =geoCoderService;
     }
 
     @Override
@@ -53,20 +63,26 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public void createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
+    public ReportCreateResponseDto createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
-
-
         saveOutboxReport(report);
 
-
+        try {
+            return ReportCreateResponseDto.builder()
+                    .reportId(report.getId())
+                    .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                    .firstImage(IOUtils.toByteArray(new FileInputStream(report.getFirstImage())))
+                    .processStatus(report.getProcessStatus())
+                    .build();
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.IMAGE_CHANGE_FAILED);
+        }
     }
 
     private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
         Report report = Report.builder()
                 .member(memberRepository.findById(requestDto.getMemberId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID)))
-                .content(requestDto.getContent())
                 .firstImage(imageInfoDto.getFullPathName())
                 .createdAt(imageInfoDto.getCreateDateTime())
                 .longitude(requestDto.getLongitude())
@@ -78,12 +94,14 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private void saveOutboxReport(Report report) {
+        Member member = memberRepository.findById(report.getMember().getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID));
         OutboxReport outboxReport = OutboxReport.builder()
                 .report(report)
-                .member(memberRepository.findById(report.getMember().getId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID)))
+                .member(member)
                 .firstImage(report.getFirstImage())
                 .secondImage(report.getSecondImage() == null ? null : report.getSecondImage())
-                .outboxStatus(OutboxStatus.FIRST_WAIT)
+                .outboxStatus(report.getSecondImage() == null ? OutboxStatus.FIRST_WAIT : OutboxStatus.SECOND_WAIT)
+                .token(member.getNotificationToken())
                 .build();
 
         outboxReportRepository.save(outboxReport);
@@ -91,15 +109,21 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public void updateReport(ReportUpdateRequestDto requestDto, MultipartFile file) {
+    public void uploadSecondReportImage(uploadSecondReportImageRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveSecondImageInReport(requestDto, imageInfoDto);
         saveOutboxReport(report);
     }
 
-    private Report saveSecondImageInReport(ReportUpdateRequestDto requestDto, ImageInfoDto imageInfoDto) {
+    private Report saveSecondImageInReport(uploadSecondReportImageRequestDto requestDto, ImageInfoDto imageInfoDto) {
         Report report = reportRepository.getReportById(requestDto.getReportId());
-        report.updateSecondImage(imageInfoDto.getFullPathName());
+
+        if(Math.abs(report.getLongitude() - requestDto.getLongitude()) >= 0.001 ||
+            Math.abs(report.getLatitude() - requestDto.getLatitude()) >= 0.001){
+            throw new CustomException(ErrorCode.SECOND_IMAGE_SAVE_FAILED);
+        }
+
+        report.updateSecondImage(imageInfoDto.getFullPathName(), requestDto.getContent());
         return report;
     }
 
@@ -114,6 +138,24 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
+    @Override
+    public void isIllegalParkingZone(double longitude, double latitude) {
+        double latMargin = 0.00018; // 약 20미터
+        double longMargin = 0.00018 / Math.cos(Math.toRadians(latitude)); // 위도에 따른 경도 차이
 
+        double latitudeMin = latitude - latMargin;
+        double latitudeMax = latitude + latMargin;
+        double longitudeMin = longitude - longMargin;
+        double longitudeMax = longitude + longMargin;
+
+        List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitudeMin, longitudeMax, latitudeMin, latitudeMax);
+
+        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
+            throw new CustomException(ErrorCode.REPORT_POINT_CHECK_FAILED);
+        }
+
+//        String response = geoCoderService.getSeoulBorough(longitude,latitude);
+//        System.out.println(response);
+    }
 
 }

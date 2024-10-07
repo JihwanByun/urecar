@@ -22,60 +22,58 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: TopBar(
-          onNotificationPressed: () {
-            controller.showNotification;
-          },
-        ),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: TopBar(),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 27.0,
-                vertical: 20,
-              ),
-              child: Text(
-                "${controller.memberName.value != "" ? controller.memberName.value : "Guest"}님, 안녕하세요!",
-                style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 27.0,
+                  vertical: 20,
                 ),
-                textAlign: TextAlign.start,
-              )),
-          const Column(
-            children: [
-              ScreenCard(title: "나의 신고 현황", contents: [
-                Text(
-                  "100",
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20,
+                child: Text(
+                  "${controller.memberName.value != "" ? controller.memberName.value : "Guest"}님, 안녕하세요!",
+                  style: const TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
                   ),
-                ),
-                Text(
-                  " 건",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20,
+                  textAlign: TextAlign.start,
+                )),
+            const Column(
+              children: [
+                ScreenCard(title: "나의 신고 현황", contents: [
+                  Text(
+                    "100",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                    ),
                   ),
-                ),
-              ]),
-              HomeScreenImageCard(
-                  imageLink: "assets/images/guide_link.png",
-                  screen: GuideScreen(),
-                  title: "신고 가이드 보러 가기"),
-              HomeScreenImageCard(
-                  imageLink: "assets/images/safety_news.png",
-                  screen: SafetyNewsScreen(),
-                  title: "안전 뉴스 보러 가기")
-            ],
-          ),
-        ],
+                  Text(
+                    " 건",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                    ),
+                  ),
+                ]),
+                HomeScreenImageCard(
+                    imageLink: "assets/images/guide_link.png",
+                    screen: GuideScreen(),
+                    title: "신고 가이드 보러 가기"),
+                HomeScreenImageCard(
+                    imageLink: "assets/images/safety_news.png",
+                    screen: SafetyNewsScreen(),
+                    title: "안전 뉴스 보러 가기")
+              ],
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigation(
         onTap: (int index) async {

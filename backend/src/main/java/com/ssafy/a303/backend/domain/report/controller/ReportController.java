@@ -3,9 +3,11 @@ package com.ssafy.a303.backend.domain.report.controller;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
-import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
+import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
+import java.util.Arrays;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,22 +29,22 @@ public class ReportController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createReport(
+    public ResponseEntity<ReportCreateResponseDto> createReport(
             @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
             @RequestPart(value = "file") MultipartFile file
     ) {
-        reportService.createReport(reportCreateRequestDto, file);
-
-
-        return ResponseEntity.ok().build();
+        ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
+        System.out.println(Arrays.toString(responseDto.getFirstImage()));
+//        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @PostMapping("/secondImage")
-    public ResponseEntity<Void> updateReport(
-            @RequestPart(value = "dto") ReportUpdateRequestDto reportUpdateRequestDto,
+    public ResponseEntity<Void> uploadSecondReportImage(
+            @RequestPart(value = "dto") uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto,
             @RequestPart(value = "file") MultipartFile file
     ) {
-        reportService.updateReport(reportUpdateRequestDto, file);
+        reportService.uploadSecondReportImage(uploadSecondReportImageRequestDto, file);
         return ResponseEntity.ok().build();
     }
 

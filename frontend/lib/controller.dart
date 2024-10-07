@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 class MainController extends GetxController {
+  var fcmToken = "".obs;
   var accessToken = "".obs;
   var memberName = "".obs;
   var memberId = 0.obs;

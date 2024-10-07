@@ -46,6 +46,8 @@ public class Member {
     @OneToMany(mappedBy = "member")
     List<Report> reports = new ArrayList<>();
 
+    private String notificationToken;
+
     @ColumnDefault("false")
     private boolean isDeleted;
 
@@ -57,6 +59,26 @@ public class Member {
         this.tel = tel;
         this.address = address;
         this.role = role;
+    }
+
+    public void removeMember() {
+        isDeleted = true;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
 }
