@@ -17,7 +17,9 @@ public class ImageHandler {
     public ImageInfoDto save(Long memberId, MultipartFile image) {
         String fileName = new SimpleDateFormat("yyyyMMddkkmmss")
                 .format(new Date(Long.parseLong(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))));
-        File folder = new File("C:\\Users\\SSAFY\\Desktop\\imageFolder\\" + memberId);
+//      File folder = new File("C:\\Users\\SSAFY\\Desktop\\imageFolder\\" + memberId);
+        File folder = new File("C:\\Users\\USER\\OneDrive - 홍익대학교\\바탕 화면" + memberId);
+
         if (!folder.exists() && !folder.mkdir()) {
                 throw new CustomException(ErrorCode.IMAGE_SAVE_FAILED);
         }

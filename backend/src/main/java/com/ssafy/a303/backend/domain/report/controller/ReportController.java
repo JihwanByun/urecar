@@ -39,7 +39,7 @@ public class ReportController {
             reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
         }
         catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorCode.IMAGE_SAVE_FAILED);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorCode.NOT_PROPER_POSITION);
         }
 
         return ResponseEntity.ok().build();

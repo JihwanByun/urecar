@@ -1,5 +1,6 @@
 package com.ssafy.a303.backend.domain.report.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
@@ -122,13 +123,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void isIllegalParkingZone(double longitude, double latitude) {
-//    List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
-//
-//        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
-//            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
-//        }
-    String response = geoCoderService.getSeoulBorough(longitude,latitude);
 
+        String response="";
+
+        try {
+            response = geoCoderService.getSeoulBorough(longitude,latitude);
+        }  catch (Exception e) {
+            throw new CustomException(ErrorCode.NOT_FOUND_LOCATION);
+        }
         System.out.println(response);
     }
 

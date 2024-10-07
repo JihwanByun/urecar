@@ -1,5 +1,8 @@
 package com.ssafy.a303.backend.domain.report.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,16 +25,27 @@ public class GeoCoderServiceImpl implements GeoCoderService {
     private String url;
 
     @Override
-    public String getSeoulBorough(double longitude, double latitude) {
+    public String getSeoulBorough(double longitude, double latitude) throws Exception {
 
         String requestUrl = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("key",geocoderKey)
-                .queryParam("point", longitude + ", " + latitude)
+                .queryParam("point", longitude + "," + latitude)
                 .toUriString();
 
         String response = restTemplate.getForObject(requestUrl, String.class);
 
-        return response;
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode rootNode = objectMapper.readTree(response);
+
+        return rootNode.path("response")
+                .path("result")
+                .get(0)
+                .path("structure")
+                .path("level2")
+                .asText();
+
+        return requestUrl;
     }
 
 }
