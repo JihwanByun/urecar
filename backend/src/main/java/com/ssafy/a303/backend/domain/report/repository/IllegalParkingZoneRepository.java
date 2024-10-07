@@ -28,7 +28,8 @@ public interface IllegalParkingZoneRepository extends JpaRepository<IllegalParki
             @Param("longitudeMin") double longitudeMin,
             @Param("longitudeMax") double longitudeMax,
             @Param("latitudeMin") double latitudeMin,
-            @Param("latitudeMax") double latitudeMax);
+            @Param("latitudeMax") double latitudeMax
+    );
 
 
 }
