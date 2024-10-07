@@ -32,8 +32,8 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final ImageHandler imageHandler;
     private final OutboxReportRepository outboxReportRepository;
-    private final GeoCoderServiceImpl geoCoderService;
     private final IllegalParkingZoneRepository illegalParkingZoneRepository;
+    //    private final GeoCoderServiceImpl geoCoderService;
 
     public ReportServiceImpl(MemberRepository memberRepository, ReportRepository reportRepository,
             OutboxReportRepository outboxReportRepository,IllegalParkingZoneRepository illegalParkingZoneRepository ,GeoCoderServiceImpl geoCoderService) {
@@ -42,8 +42,7 @@ public class ReportServiceImpl implements ReportService {
         this.outboxReportRepository = outboxReportRepository;
         this.imageHandler = new ImageHandler();
         this.illegalParkingZoneRepository = illegalParkingZoneRepository;
-        this.geoCoderService =geoCoderService;
-
+//        this.geoCoderService =geoCoderService;
     }
 
     @Override
@@ -144,7 +143,7 @@ public class ReportServiceImpl implements ReportService {
         List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitudeMin, longitudeMax, latitudeMin, latitudeMax);
 
         if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
-            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
+            throw new CustomException(ErrorCode.REPORT_POINT_CHECK_FAILED);
         }
 
 //        String response = geoCoderService.getSeoulBorough(longitude,latitude);
