@@ -47,4 +47,4 @@ geocoder:
     secret-access-key: 5AD60FBD-952F-3953-9FCC-6E9694A17B63
 
 image:
-  url: /home/ubuntu/imageFolder
+  url: /home/ubuntu/imageFolder/
