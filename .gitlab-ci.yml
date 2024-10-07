@@ -167,7 +167,7 @@ outbox-build-job:       # This job runs in the build stage, which runs first.
     - echo "outbox build end"
   artifacts:
     paths:
-      - outbox/build/libs/*.jar  # JAR 파일을 빌드 아티팩트로 저장
+      - outbox-kafka-producer/build/libs/*.jar  # JAR 파일을 빌드 아티팩트로 저장
     expire_in: 1 week
   before_script:
     - echo "Starting CI/CD pipeline"
