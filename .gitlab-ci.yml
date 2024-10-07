@@ -46,7 +46,7 @@ backend-build-job:       # This job runs in the build stage, which runs first.
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       changes:
-      - backend/**
+        - backend/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -72,9 +72,9 @@ backend-docker-build-job:
   after_script:
     - docker logout
   rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       changes:
-      - backend/**
+        - backend/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -94,7 +94,7 @@ backend-deploy-job:      # This job runs in the deploy stage.
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-      - backend/**
+        - backend/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -122,7 +122,7 @@ ai-docker-build-job:
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-      - ai/**
+        - ai/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -139,7 +139,7 @@ ai-deploy-job:
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-      - ai/**
+        - ai/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 #sonarqube-check:
