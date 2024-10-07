@@ -5,6 +5,7 @@ import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio_pkg;
+import 'package:intl/intl.dart';
 
 class ApiService {
   final MainController controller = Get.put(MainController());
@@ -141,7 +142,6 @@ class ApiService {
       Map<String, dynamic> formData, String imagePath) async {
     dio_pkg.Dio dio = dio_pkg.Dio();
     final url = '$baseUrl/reports';
-
     try {
       dio_pkg.FormData formDataWithFile = dio_pkg.FormData.fromMap({
         'dto': dio_pkg.MultipartFile.fromString(
@@ -160,13 +160,20 @@ class ApiService {
           },
         ),
       );
-      final responseData = jsonDecode(response.data);
+      print(response);
+      final responseData = response;
+      print(responseData);
       if (response.statusCode == 200) {
+        print(responseData);
         return responseData;
       } else {
+        print(1);
+        print(responseData);
         return responseData;
       }
     } catch (e) {
+      print(3);
+      print(e);
       return e;
     }
   }
@@ -207,27 +214,32 @@ class ApiService {
 
   Future<dynamic> findReports(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/reports');
+    String formattedStartDate =
+        DateFormat('yyyy-MM-dd').format(formData["startDate"]);
+    String formattedLastDate =
+        DateFormat('yyyy-MM-dd').format(formData["lastDate"]);
     try {
       final response = await http.get(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'startDate': formData["startDate"],
-          'endDate': formData["endDate"],
+          'startDate': formattedStartDate,
+          'endDate': formattedLastDate,
           'state': formData["state"]
         },
       );
+      print(response);
+      final responseData = jsonDecode(response.body);
+
       if (response.statusCode == 200) {
-        if (response.body == "true") {
-          return true;
-        } else {
-          return false;
-        }
+        print(responseData);
+        return responseData;
       } else {
-        final responseData = jsonDecode(response.body);
+        print(responseData);
         return responseData;
       }
     } catch (e) {
+      print(e);
       return e;
     }
   }

@@ -11,14 +11,16 @@ class CheckImageScreen extends StatelessWidget {
   final String imagePath;
   final double longitude;
   final double latitude;
-  final int? reportId;
+  final String? reportId;
+  final String? reportContent;
 
   const CheckImageScreen(
       {super.key,
       required this.imagePath,
       required this.longitude,
       required this.latitude,
-      this.reportId});
+      this.reportId,
+      this.reportContent});
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,7 @@ class CheckImageScreen extends StatelessWidget {
         'dto': {
           "memberId": controller.memberId.value,
           "reportId": reportId,
+          "content": reportContent
         }
       };
       final apiService = ApiService();
@@ -112,7 +115,7 @@ class CheckImageScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: sendImage,
+                      onPressed: reportId == null ? sendImage : sendSecondImage,
                       child: const Text(
                         "확인",
                         style: TextStyle(

@@ -5,6 +5,7 @@ import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/history_screen/date_button.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/report_screen.dart';
+import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -20,8 +21,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
   DateTime startDate = DateTime.now().subtract(const Duration(days: 92));
   int selectedIndex = 0;
   bool landed = true;
+  Map<String, dynamic> formData = {};
+  final apiService = ApiService();
+  List<Map> reportList = [];
+  @override
+  void initState() async {
+    // TODO: implement initState
+    super.initState();
+    formData["startDate"] = startDate;
+    formData["lastDate"] = lastDate;
+    formData["state"] = "all";
+    final response = apiService.findReports(formData);
+    print(response);
+  }
+
   @override
   Widget build(BuildContext context) {
+    formData["startDate"] = startDate;
+
     final MainController controller = Get.put(MainController());
     String lastDateFormat = DateFormat('yy.MM.dd').format(lastDate);
     String startDateFormat = DateFormat('yy.MM.dd').format(startDate);
@@ -64,6 +81,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     setState(() {
                       startDate = temp;
                     });
+                    formData["startDate"] = startDate;
                   }
                 },
               ),

@@ -47,7 +47,6 @@ class NotificationController extends GetxController {
       storedNotifications ??= [];
       storedNotifications.add("$title:$content");
       await prefs.setStringList('notifications', storedNotifications);
-      List<String>? result = prefs.getStringList('notifications');
     }
   }
 
