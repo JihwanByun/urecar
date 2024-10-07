@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/S11P21A303.iml" filepath="$PROJECT_DIR$/.idea/S11P21A303.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/outbox-kafka-producer.iml" filepath="$PROJECT_DIR$/.idea/modules/outbox-kafka-producer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/outbox-kafka-producer.main.iml" filepath="$PROJECT_DIR$/.idea/modules/outbox-kafka-producer.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/outbox-kafka-producer.test.iml" filepath="$PROJECT_DIR$/.idea/modules/outbox-kafka-producer.test.iml" />
     </modules>
   </component>
 </project>
