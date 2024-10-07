@@ -192,7 +192,7 @@ outbox-docker-build-job:
     - pwd
     - export TAG=$(date +%Y%m%d%H%M%S)
     - docker build -t imjunhyuk/urecar_outbox:$TAG .
-    - docker tag imjunhyuk/urecar:$TAG imjunhyuk/urecar_outbox:latest
+    - docker tag imjunhyuk/urecar_outbox:$TAG imjunhyuk/urecar_outbox:latest
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
     - docker push imjunhyuk/urecar_outbox:latest  # Docker Hub로 이미지 푸시
     - docker push imjunhyuk/urecar_outbox:$TAG
