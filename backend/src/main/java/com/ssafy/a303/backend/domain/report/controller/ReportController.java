@@ -3,11 +3,10 @@ package com.ssafy.a303.backend.domain.report.controller;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
-import com.ssafy.a303.backend.exception.ErrorCode;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,13 +28,13 @@ public class ReportController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createReport(
+    public ResponseEntity<ReportCreateResponseDto> createReport(
             @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
             @RequestPart(value = "file") MultipartFile file
     ) {
-        reportService.createReport(reportCreateRequestDto, file);
+        ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
         reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @PostMapping("/secondImage")
