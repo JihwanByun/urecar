@@ -3,11 +3,11 @@ package com.ssafy.a303.backend.domain.report.service;
 import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
 import com.ssafy.a303.backend.domain.report.entity.*;
 import com.ssafy.a303.backend.domain.report.handler.ImageHandler;
-import com.ssafy.a303.backend.domain.report.repository.IllegalParkingZoneRepository;
 import com.ssafy.a303.backend.domain.report.repository.OutboxReportRepository;
 import com.ssafy.a303.backend.domain.report.repository.ReportRepository;
 import com.ssafy.a303.backend.exception.CustomException;
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,16 +31,14 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final ImageHandler imageHandler;
     private final OutboxReportRepository outboxReportRepository;
-    private final IllegalParkingZoneRepository illegalParkingZoneRepository;
     private final GeoCoderServiceImpl geoCoderService;
 
     public ReportServiceImpl(MemberRepository memberRepository, ReportRepository reportRepository,
-            OutboxReportRepository outboxReportRepository, IllegalParkingZoneRepository illegalParkingZoneRepository, GeoCoderServiceImpl geoCoderService) {
+            OutboxReportRepository outboxReportRepository, GeoCoderServiceImpl geoCoderService) {
         this.memberRepository = memberRepository;
         this.reportRepository = reportRepository;
         this.outboxReportRepository = outboxReportRepository;
         this.imageHandler = new ImageHandler();
-        this.illegalParkingZoneRepository = illegalParkingZoneRepository;
         this.geoCoderService =geoCoderService;
 
     }
@@ -61,10 +58,16 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public void createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
+    public ReportCreateResponseDto createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
         saveOutboxReport(report);
+        return ReportCreateResponseDto.builder()
+                .reportId(report.getId())
+                .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                .firstImage(report.getFirstImage())
+                .processStatus(report.getProcessStatus())
+                .build();
     }
 
     private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
