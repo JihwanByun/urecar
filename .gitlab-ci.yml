@@ -23,6 +23,13 @@ stages:          # List of stages for jobs, and their order of execution
 #   - test
   - deploy
 
+test:
+  stage: build
+  script:
+    - echo "merge request"
+  rules:
+  - if: '$CI_COMMIT_BRANCH == "develop"'
+
 backend-build-job:       # This job runs in the build stage, which runs first.
   stage: build
   image: openjdk:21-jdk-slim
@@ -43,7 +50,6 @@ backend-build-job:       # This job runs in the build stage, which runs first.
   before_script:
     - echo "Starting CI/CD pipeline"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       changes:
         - backend/**
@@ -140,6 +146,84 @@ ai-deploy-job:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
         - ai/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+
+
+
+
+outbox-build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  image: openjdk:21-jdk-slim
+  script:
+    - echo "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "outbox build start"
+    - ls -la    
+    - cd outbox-kafka-producer
+    - ls -la   
+    - chmod +x ./gradlew 
+    - ./gradlew wrapper
+    - ./gradlew clean build
+    - echo "outbox build end"
+  artifacts:
+    paths:
+      - outbox/build/libs/*.jar  # JAR 파일을 빌드 아티팩트로 저장
+    expire_in: 1 week
+  before_script:
+    - echo "Starting CI/CD pipeline"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      changes:
+        - outbox-kafka-producer/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+
+outbox-docker-build-job:
+  image: docker:latest
+  stage: docker-build
+  script:
+    - echo "outbox docker build start"
+    - cd outbox-kafka-producer
+    - echo "whoami"
+    - whoami
+    - echo "ls -la"
+    - ls -la    
+    - echo "pwd"
+    - pwd
+    - export TAG=$(date +%Y%m%d%H%M%S)
+    - docker build -t imjunhyuk/urecar_outbox:$TAG .
+    - docker tag imjunhyuk/urecar:$TAG imjunhyuk/urecar_outbox:latest
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
+    - docker push imjunhyuk/urecar_outbox:latest  # Docker Hub로 이미지 푸시
+    - docker push imjunhyuk/urecar_outbox:$TAG
+    - echo "outbox docker build end"
+  after_script:
+    - docker logout
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      changes:
+        - outbox-kafka-producer/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+
+outbox-deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script:
+    - echo "outbox deploy start"
+    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
+      docker pull imjunhyuk/urecar_outbox:latest &&  
+      docker-compose -f /home/ubuntu/docker/outbox/docker-compose.yml up -d " # image pull from hub and docker-compose로 컨테이너 실행
+
+#    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose down"
+#    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose up -d"
+    - echo "outbox deploy end"
+  after_script:
+    - docker logout
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - outbox-kafka-producer/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 #sonarqube-check:
