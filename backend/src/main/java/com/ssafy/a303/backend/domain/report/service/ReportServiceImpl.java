@@ -16,11 +16,14 @@ import com.ssafy.a303.backend.exception.ErrorCode;
 import com.ssafy.a303.backend.domain.member.repository.MemberRepository;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import jakarta.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,12 +67,17 @@ public class ReportServiceImpl implements ReportService {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
         saveOutboxReport(report);
-        return ReportCreateResponseDto.builder()
-                .reportId(report.getId())
-                .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
-                .firstImage(report.getFirstImage())
-                .processStatus(report.getProcessStatus())
-                .build();
+
+        try {
+            return ReportCreateResponseDto.builder()
+                    .reportId(report.getId())
+                    .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                    .firstImage(IOUtils.toByteArray(new FileInputStream(report.getFirstImage())))
+                    .processStatus(report.getProcessStatus())
+                    .build();
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.IMAGE_CHANGE_FAILED);
+        }
     }
 
     private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
