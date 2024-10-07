@@ -42,7 +42,7 @@ backend-build-job:       # This job runs in the build stage, which runs first.
   before_script:
     - echo "Starting CI/CD pipeline"
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
       - backend/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
@@ -70,7 +70,7 @@ backend-docker-build-job:
   after_script:
     - docker logout
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
       - backend/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
@@ -90,7 +90,7 @@ backend-deploy-job:      # This job runs in the deploy stage.
   after_script:
     - docker logout
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
       - backend/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
@@ -118,7 +118,7 @@ ai-docker-build-job:
   after_script:
     - docker logout
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
       - ai/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
@@ -135,7 +135,7 @@ ai-deploy-job:
   after_script:
     - docker logout
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
       - ai/**
     - if: '$CI_PIPELINE_SOURCE == "web"'
