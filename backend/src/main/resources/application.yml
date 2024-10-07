@@ -12,8 +12,6 @@ spring:
     username: root
     password: ssafy
 
-
-
   data:
     redis:
       host: localhost
@@ -47,3 +45,7 @@ geocoder:
   url: https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&format=json&type=both&zipcode=true&simple=false
   credentials:
     secret-access-key: 5AD60FBD-952F-3953-9FCC-6E9694A17B63
+
+
+image:
+  url: C:\Users\SSAFY\Desktop\imageFolder\
