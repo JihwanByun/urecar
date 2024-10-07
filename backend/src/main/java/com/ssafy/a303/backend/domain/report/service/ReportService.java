@@ -17,5 +17,5 @@ public interface ReportService {
 
     GalleryResponseDto getGallery(long memberId);
 
-    void isIllegalParkingZone(double longitude, double latitude);
+    void isIllegalParkingZone(double longitude, double latitude) throws Exception;
 }

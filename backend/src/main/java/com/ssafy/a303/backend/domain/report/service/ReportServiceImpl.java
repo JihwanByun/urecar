@@ -122,13 +122,13 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void isIllegalParkingZone(double longitude, double latitude) {
+    public void isIllegalParkingZone(double longitude, double latitude) throws Exception {
 //    List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
 //
 //        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
 //            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
 //        }
-    String response = geoCoderService.getSeoulBorough(longitude,latitude);
+        String response = geoCoderService.getSeoulBorough(longitude,latitude);
 
         System.out.println(response);
     }

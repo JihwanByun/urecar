@@ -7,6 +7,8 @@ import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
+import com.ssafy.a303.backend.exception.CustomException;
+import com.ssafy.a303.backend.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +35,12 @@ public class ReportController {
             @RequestPart(value = "file") MultipartFile file
     ) {
         ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
-        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+
+        try{
+            reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return ResponseEntity.ok().body(responseDto);
     }
 
