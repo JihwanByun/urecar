@@ -254,16 +254,22 @@ class _SignupScreenState extends State<SignupScreen> {
                   formData['address_detail'] = value ?? '';
                 },
               ),
+              SizedBox(
+                height: 10,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 60),
-                child: Button(
-                  text: "회원가입",
-                  onPressed: submitForm,
-                  horizontal: 95,
-                  vertical: 10,
-                  fontSize: 15,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Button(
+                    text: "회원가입",
+                    onPressed: submitForm,
+                    horizontal: 95,
+                    vertical: 13,
+                    fontSize: 15,
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),

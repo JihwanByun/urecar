@@ -4,7 +4,7 @@ import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/history_screen/date_button.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/screens/report_screen.dart';
+import 'package:frontend/screens/history_detail_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -19,7 +19,71 @@ class _HistoryScreenState extends State<HistoryScreen> {
   DateTime lastDate = DateTime.now();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 92));
   int selectedIndex = 0;
-  bool landed = true;
+
+
+  List<Map<String, dynamic>> reportList = [
+    {
+      "date": "24.06.30",
+      "title": "소방구역 불법 주정차 신고",
+      "status": "진행중",
+      "color": Colors.indigo
+    },
+    {
+      "date": "24.06.28",
+      "title": "도로변 무단 주차 신고",
+      "status": "수용",
+      "color": Colors.green
+    },
+    {
+      "date": "24.06.25",
+      "title": "인도 위 불법 주정차 신고",
+      "status": "불수용",
+      "color": Colors.red
+    },
+    {
+      "date": "24.06.22",
+      "title": "공사장 불법 주차 신고",
+      "status": "진행중",
+      "color": Colors.indigo
+    },
+    {
+      "date": "24.06.20",
+      "title": "자전거 도로 주정차 신고",
+      "status": "취소",
+      "color": Colors.grey
+    },
+    {
+      "date": "24.06.15",
+      "title": "전기차 충전구역 불법 주차 신고",
+      "status": "수용",
+      "color": Colors.green
+    },
+    {
+      "date": "24.06.10",
+      "title": "장애인 주차구역 불법 주정차 신고",
+      "status": "불수용",
+      "color": Colors.red
+    },
+    {
+      "date": "24.06.05",
+      "title": "공원 출입구 불법 주정차 신고",
+      "status": "진행중",
+      "color": Colors.indigo
+    },
+    {
+      "date": "24.06.02",
+      "title": "아파트 단지 내 불법 주정차 신고",
+      "status": "취소",
+      "color": Colors.grey
+    },
+    {
+      "date": "24.05.30",
+      "title": "주차장 입구 불법 주정차 신고",
+      "status": "수용",
+      "color": Colors.green
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     final MainController controller = Get.put(MainController());
@@ -37,6 +101,31 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
       return pickedDate ?? selectedDate;
     }
+
+    List<Map<String, dynamic>> getFilteredReportList() {
+      return reportList.where((report) {
+        final String dateString = report["date"] as String;
+        final DateTime reportDate = DateFormat('yy.MM.dd').parse(dateString);
+        final isInDateRange =
+            reportDate.isAfter(startDate) && reportDate.isBefore(lastDate);
+
+        if (selectedIndex == 0) {
+          return isInDateRange;
+        } else if (selectedIndex == 1) {
+          return isInDateRange && report["status"] == "진행중";
+        } else if (selectedIndex == 2) {
+          return isInDateRange && report["status"] == "수용";
+        } else if (selectedIndex == 3) {
+          return isInDateRange && report["status"] == "불수용";
+        } else if (selectedIndex == 4) {
+          return isInDateRange && report["status"] == "취소";
+        }
+        return isInDateRange;
+      }).toList();
+    }
+
+    // 필터링된 리스트
+    List<Map<String, dynamic>> filteredReportList = getFilteredReportList();
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -129,36 +218,46 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              landed
-                  ? const Padding(
-                      padding: EdgeInsets.only(top: 8, right: 20),
-                      child: Text(
-                        "최근(10건)",
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  : const Text(""),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, right: 20),
+                child: Text(
+                  "최근(${filteredReportList.length}건)",
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+              ),
             ],
           ),
-          Column(
-            children: [
-              GestureDetector(
-                onTap: () => Get.to(() => const ReportScreen()),
-                child: const ScreenCard(
-                    title: "24.06.30 소방구역 불법 주정차 신고",
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredReportList.length,
+              itemBuilder: (context, index) {
+                final String dateString = filteredReportList[index]['date'];
+                final DateTime reportDate =
+                    DateFormat('yy.MM.dd').parse(dateString);
+
+                return GestureDetector(
+                  onTap: () => Get.to(() => HistoryDetailScreen(
+                        reportData: filteredReportList[index],
+                      )),
+                  child: ScreenCard(
+                    title:
+                        "${DateFormat('yy.MM.dd').format(reportDate)} ${filteredReportList[index]['title']}",
                     contents: [
                       Text(
-                        "진행중",
+                        filteredReportList[index]['status'],
                         style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.indigo),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: filteredReportList[index]['color'],
+                        ),
                       )
-                    ]),
-              )
-            ],
+                    ],
+                  ),
+                );
+              },
+            ),
           )
         ],
       ),
@@ -175,7 +274,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          landed = false;
           selectedIndex = index;
         });
       },

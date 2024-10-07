@@ -118,16 +118,22 @@ class _UpdateMemberScreenState extends State<UpdateMemberScreen> {
                 inputType: TextInputType.phone,
               ),
               if (telError != null) ValidatorText(text: telError!),
+              SizedBox(
+                height: 10,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 60),
-                child: Button(
-                  text: '수정',
-                  onPressed: submitForm,
-                  horizontal: 100,
-                  vertical: 10,
-                  fontSize: 15,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Button(
+                    text: '수정',
+                    onPressed: submitForm,
+                    horizontal: 95,
+                    vertical: 13,
+                    fontSize: 15,
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),
