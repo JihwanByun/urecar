@@ -6,7 +6,7 @@ spring:
     name: outbox-kafka-producer
   datasource:
     url: jdbc:mysql://localhost:3306/urecar
-    username: root
+    username: ssafy
     password: ssafy
     driver-class-name: com.mysql.cj.jdbc.Driver
 
@@ -26,7 +26,7 @@ spring:
       acks: all
       retries: 3
       batch-size: 16384
-      linger-ms: 31
+      linger-ms: 5
       buffer-memory: 33554432
     partitioner:
       class: org.apache.kafka.clients.producer.RoundRobinPartitioner
