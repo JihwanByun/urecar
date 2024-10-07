@@ -67,4 +67,8 @@ public class Report {
         this.content = content;
     }
 
+    public void decideReportOutcome(ProcessStatus processStatus) {
+        this.processStatus = processStatus;
+    }
+
 }

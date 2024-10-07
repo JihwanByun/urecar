@@ -1,6 +1,7 @@
 package com.ssafy.a303.backend.domain.member.service;
 
 import com.ssafy.a303.backend.domain.member.dto.OngoingReportResponseDto;
+import com.ssafy.a303.backend.domain.member.dto.ReportDecisionRequestDTO;
 import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
 import com.ssafy.a303.backend.domain.report.entity.Report;
 import com.ssafy.a303.backend.domain.report.handler.ImageHandler;
@@ -36,6 +37,13 @@ public class OfficialServiceImpl implements OfficialService {
         }
 
         return responseDtos;
+    }
+
+    @Override
+    public void decideReportOutcome(ReportDecisionRequestDTO requestDto) {
+        Report report = reportRepository.getReportById(requestDto.getReportId());
+        report.decideReportOutcome(requestDto.getDecision() ? ProcessStatus.ACCEPTED : ProcessStatus.UNACCEPTED);
+        reportRepository.save(report);
     }
 
 }
