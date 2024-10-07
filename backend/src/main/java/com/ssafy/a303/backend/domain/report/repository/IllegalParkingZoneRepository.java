@@ -19,4 +19,16 @@ public interface IllegalParkingZoneRepository extends JpaRepository<IllegalParki
             "COS(RADIANS(z.location.longitude) - RADIANS(:longitude)) + " +
             "SIN(RADIANS(:latitude)) * SIN(RADIANS(z.location.latitude)))) <= 20")
     List<IllegalParkingZone> findWithin20Meters(@Param("longitude") double longitude, @Param("latitude") double latitude);
+
+
+    @Query("SELECT z FROM IllegalParkingZone z WHERE " +
+            "z.location.latitude BETWEEN :latitudeMin AND :latitudeMax AND " +
+            "z.location.longitude BETWEEN :longitudeMin AND :longitudeMax")
+    List<IllegalParkingZone> findWithin20Meters(
+            @Param("longitudeMin") double longitudeMin,
+            @Param("longitudeMax") double longitudeMax,
+            @Param("latitudeMin") double latitudeMin,
+            @Param("latitudeMax") double latitudeMax);
+
+
 }

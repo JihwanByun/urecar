@@ -5,9 +5,10 @@ import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
-import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
+import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
 import com.ssafy.a303.backend.domain.report.entity.*;
 import com.ssafy.a303.backend.domain.report.handler.ImageHandler;
+import com.ssafy.a303.backend.domain.report.repository.IllegalParkingZoneRepository;
 import com.ssafy.a303.backend.domain.report.repository.OutboxReportRepository;
 import com.ssafy.a303.backend.domain.report.repository.ReportRepository;
 import com.ssafy.a303.backend.exception.CustomException;
@@ -32,13 +33,15 @@ public class ReportServiceImpl implements ReportService {
     private final ImageHandler imageHandler;
     private final OutboxReportRepository outboxReportRepository;
     private final GeoCoderServiceImpl geoCoderService;
+    private final IllegalParkingZoneRepository illegalParkingZoneRepository;
 
     public ReportServiceImpl(MemberRepository memberRepository, ReportRepository reportRepository,
-            OutboxReportRepository outboxReportRepository, GeoCoderServiceImpl geoCoderService) {
+            OutboxReportRepository outboxReportRepository,IllegalParkingZoneRepository illegalParkingZoneRepository ,GeoCoderServiceImpl geoCoderService) {
         this.memberRepository = memberRepository;
         this.reportRepository = reportRepository;
         this.outboxReportRepository = outboxReportRepository;
         this.imageHandler = new ImageHandler();
+        this.illegalParkingZoneRepository = illegalParkingZoneRepository;
         this.geoCoderService =geoCoderService;
 
     }
@@ -99,14 +102,20 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public void updateReport(ReportUpdateRequestDto requestDto, MultipartFile file) {
+    public void uploadSecondReportImage(uploadSecondReportImageRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveSecondImageInReport(requestDto, imageInfoDto);
         saveOutboxReport(report);
     }
 
-    private Report saveSecondImageInReport(ReportUpdateRequestDto requestDto, ImageInfoDto imageInfoDto) {
+    private Report saveSecondImageInReport(uploadSecondReportImageRequestDto requestDto, ImageInfoDto imageInfoDto) {
         Report report = reportRepository.getReportById(requestDto.getReportId());
+
+        if(Math.abs(report.getLongitude() - requestDto.getLongitude()) >= 0.001 ||
+            Math.abs(report.getLatitude() - requestDto.getLatitude()) >= 0.001){
+            throw new CustomException(ErrorCode.SECOND_IMAGE_SAVE_FAILED);
+        }
+
         report.updateSecondImage(imageInfoDto.getFullPathName(), requestDto.getContent());
         return report;
     }
@@ -121,16 +130,25 @@ public class ReportServiceImpl implements ReportService {
         return GalleryResponseDto.builder().imageUrls(imageUrls).build();
     }
 
-    @Override
-    public void isIllegalParkingZone(double longitude, double latitude) throws Exception {
-//    List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
-//
-//        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
-//            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
-//        }
-        String response = geoCoderService.getSeoulBorough(longitude,latitude);
 
-        System.out.println(response);
+    @Override
+    public void isIllegalParkingZone(double longitude, double latitude) {
+        double latMargin = 0.00018; // 약 20미터
+        double longMargin = 0.00018 / Math.cos(Math.toRadians(latitude)); // 위도에 따른 경도 차이
+
+        double latitudeMin = latitude - latMargin;
+        double latitudeMax = latitude + latMargin;
+        double longitudeMin = longitude - longMargin;
+        double longitudeMax = longitude + longMargin;
+
+        List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitudeMin, longitudeMax, latitudeMin, latitudeMax);
+
+        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
+            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
+        }
+
+//        String response = geoCoderService.getSeoulBorough(longitude,latitude);
+//        System.out.println(response);
     }
 
 }
