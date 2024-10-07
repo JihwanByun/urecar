@@ -3,11 +3,11 @@ package com.ssafy.a303.backend.domain.report.service;
 import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
+import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportUpdateRequestDto;
 import com.ssafy.a303.backend.domain.report.entity.*;
 import com.ssafy.a303.backend.domain.report.handler.ImageHandler;
-import com.ssafy.a303.backend.domain.report.repository.IllegalParkingZoneRepository;
 import com.ssafy.a303.backend.domain.report.repository.OutboxReportRepository;
 import com.ssafy.a303.backend.domain.report.repository.ReportRepository;
 import com.ssafy.a303.backend.exception.CustomException;
@@ -18,25 +18,28 @@ import jakarta.transaction.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 public class ReportServiceImpl implements ReportService {
 
     private final MemberRepository memberRepository;
     private final ReportRepository reportRepository;
     private final ImageHandler imageHandler;
     private final OutboxReportRepository outboxReportRepository;
-    private final IllegalParkingZoneRepository illegalParkingZoneRepository;
+    private final GeoCoderServiceImpl geoCoderService;
 
     public ReportServiceImpl(MemberRepository memberRepository, ReportRepository reportRepository,
-            OutboxReportRepository outboxReportRepository, IllegalParkingZoneRepository illegalParkingZoneRepository) {
+            OutboxReportRepository outboxReportRepository, GeoCoderServiceImpl geoCoderService) {
         this.memberRepository = memberRepository;
         this.reportRepository = reportRepository;
         this.outboxReportRepository = outboxReportRepository;
         this.imageHandler = new ImageHandler();
-        this.illegalParkingZoneRepository = illegalParkingZoneRepository;
+        this.geoCoderService =geoCoderService;
 
     }
 
@@ -55,14 +58,16 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public void createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
+    public ReportCreateResponseDto createReport(ReportCreateRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = imageHandler.save(requestDto.getMemberId(), file);
         Report report = saveReport(requestDto, imageInfoDto);
-
-
         saveOutboxReport(report);
-
-
+        return ReportCreateResponseDto.builder()
+                .reportId(report.getId())
+                .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                .firstImage(report.getFirstImage())
+                .processStatus(report.getProcessStatus())
+                .build();
     }
 
     private Report saveReport(ReportCreateRequestDto requestDto, ImageInfoDto imageInfoDto) {
@@ -85,7 +90,7 @@ public class ReportServiceImpl implements ReportService {
                 .member(member)
                 .firstImage(report.getFirstImage())
                 .secondImage(report.getSecondImage() == null ? null : report.getSecondImage())
-                .outboxStatus(OutboxStatus.FIRST_WAIT)
+                .outboxStatus(report.getSecondImage() == null ? OutboxStatus.FIRST_WAIT : OutboxStatus.SECOND_WAIT)
                 .token(member.getNotificationToken())
                 .build();
 
@@ -102,7 +107,7 @@ public class ReportServiceImpl implements ReportService {
 
     private Report saveSecondImageInReport(ReportUpdateRequestDto requestDto, ImageInfoDto imageInfoDto) {
         Report report = reportRepository.getReportById(requestDto.getReportId());
-        report.updateSecondImage(imageInfoDto.getFullPathName());
+        report.updateSecondImage(imageInfoDto.getFullPathName(), requestDto.getContent());
         return report;
     }
 
@@ -117,16 +122,15 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public boolean isIllegalParkingZone(double longitude, double latitude) {
-        // 위치정보 가져오기
-    List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
+    public void isIllegalParkingZone(double longitude, double latitude) throws Exception {
+//    List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitude, latitude);
+//
+//        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
+//            throw new CustomException(ErrorCode.REPORT_SAVE_FAILED);
+//        }
+        String response = geoCoderService.getSeoulBorough(longitude,latitude);
 
-    if(isNearTheIllegalParkingLocation == null) {
-        new CustomException(ErrorCode.REPORT_SAVE_FAILED);
+        System.out.println(response);
     }
-
-    return true;
-    }
-
 
 }

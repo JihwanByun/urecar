@@ -35,14 +35,18 @@ backend-build-job:       # This job runs in the build stage, which runs first.
     - ./gradlew wrapper
     - ./gradlew clean build
     - echo "backend build end"
-  only:
-    - develop
   artifacts:
     paths:
       - backend/build/libs/*.jar  # JAR 파일을 빌드 아티팩트로 저장
     expire_in: 1 week
   before_script:
     - echo "Starting CI/CD pipeline"
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      changes:
+      - backend/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 backend-docker-build-job:
   image: docker:latest
@@ -63,11 +67,14 @@ backend-docker-build-job:
     - docker push imjunhyuk/urecar:latest  # Docker Hub로 이미지 푸시
     - docker push imjunhyuk/urecar:$TAG
     - echo "backend docker build end"
-  only:
-    - develop
   after_script:
     - docker logout
-
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      changes:
+      - backend/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 backend-deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
@@ -80,10 +87,14 @@ backend-deploy-job:      # This job runs in the deploy stage.
 #    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose down"
 #    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose up -d"
     - echo "backend deploy end"
-  only:
-    - develop
   after_script:
     - docker logout
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      changes:
+      - backend/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 before_script:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -104,10 +115,14 @@ ai-docker-build-job:
     - docker push imjunhyuk/urecar_ai:latest  # Docker Hub로 이미지 푸시
     - docker push imjunhyuk/urecar_ai:$TAG
     - echo "ai docker build end"
-  only:
-    - develop
   after_script:
     - docker logout
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      changes:
+      - ai/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 ai-deploy-job:
   stage: deploy
@@ -117,11 +132,14 @@ ai-deploy-job:
       docker pull imjunhyuk/urecar_ai:latest &&  
       docker-compose -f /home/ubuntu/docker/ai/docker-compose.yml up -d " # image pull from hub and docker-compose로 컨테이너 실행
     - echo "ai deploy end"
-  only:
-    - develop
   after_script:
     - docker logout
-
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      changes:
+      - ai/**
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 #sonarqube-check:
 #  image: gradle:jdk21
 #  stage: sonar
