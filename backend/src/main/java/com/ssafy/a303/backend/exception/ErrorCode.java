@@ -28,7 +28,8 @@ public enum ErrorCode {
     /* 500 */
     IMAGE_SAVE_FAILED(500, "IMAGE_SAVE_FAILED", "이미지 저장에 실패하였습니다."),
     SECOND_IMAGE_SAVE_FAILED(500, "SECOND_IMAGE_SAVE_FAILED", "두 번째 이미지 저장에 실패하였습니다."),
-    REPORT_SAVE_FAILED(500, "REPORT_SAVE_FAILED", "신고 저장에 실패하였습니다.");
+    REPORT_SAVE_FAILED(500, "REPORT_SAVE_FAILED", "신고 저장에 실패하였습니다."),
+    REPORT_POINT_CHECK_FAILED(500, "REPORT_POINT_CHECK_FAILED", "위치 비교에 실패하였습니다.");
 
     private final int status;
     private final String code;
