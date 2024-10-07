@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8084
 
 spring:
   application:
@@ -12,7 +12,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update  # 개발 환경에서는 'update', 배포 시에는 'validate' 또는 'none' 권장
+      ddl-auto: none  # 개발 환경에서는 'update', 배포 시에는 'validate' 또는 'none' 권장
     show-sql: true
     # properties:
     #   hibernate:
@@ -22,7 +22,7 @@ spring:
     bootstrap-servers: j11a303.p.ssafy.io:40000  # 카프카 브로커 주소
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: all
       retries: 3
       batch-size: 16384
