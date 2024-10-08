@@ -41,6 +41,7 @@ async def consume_kafka():
 
     while True:
         print("polling")
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
         msg = consumer.poll(timeout=1.0)
         if msg is None:
             continue
