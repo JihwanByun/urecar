@@ -299,7 +299,7 @@ class ApiService {
       final response =
           await http.get(url, headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
         return responseData;
       } else {
         return {

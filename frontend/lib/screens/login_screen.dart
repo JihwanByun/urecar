@@ -61,7 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
         final res = await apiService.login(formData);
         if (res == 200) {
           if (controller.memberRole.value == 'OFFICIAL') {
-            print(controller.memberRole.value);
             Get.offAllNamed('/officer');
           } else {
             controller.changePage(0);
