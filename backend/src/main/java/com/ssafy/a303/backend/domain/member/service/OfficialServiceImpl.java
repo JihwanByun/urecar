@@ -30,7 +30,7 @@ public class OfficialServiceImpl implements OfficialService {
                     AnalysisSuccessReportListResponseDto.builder()
                             .reportId(report.getId())
                             .memberName(report.getMember().getName())
-                            .content(report.getContent())
+                            .date(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
                             .type(report.getType())
                             .build()
             );
