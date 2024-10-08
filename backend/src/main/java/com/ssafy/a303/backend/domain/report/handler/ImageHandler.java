@@ -4,12 +4,14 @@ import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
 import com.ssafy.a303.backend.exception.CustomException;
 import com.ssafy.a303.backend.exception.ErrorCode;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +44,15 @@ public class ImageHandler {
         } catch (IOException e) {
             throw new CustomException(ErrorCode.IMAGE_SAVE_FAILED);
         }
+    }
+
+    public static byte[] urlToBytes(String url) throws CustomException {
+        try {
+            return IOUtils.toByteArray(new FileInputStream(url));
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.IMAGE_CHANGE_FAILED);
+        }
+
     }
 
 }
