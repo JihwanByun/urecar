@@ -61,9 +61,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-sonar {
-	properties {
-		property "sonar.projectKey", "J12A303"
-		property "sonar.qualitygate.wait", true
-	}
-}
