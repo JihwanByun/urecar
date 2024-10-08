@@ -1,6 +1,6 @@
 package com.ssafy.a303.backend.domain.member.controller;
 
-import com.ssafy.a303.backend.domain.member.dto.OngoingReportResponseDto;
+import com.ssafy.a303.backend.domain.member.dto.AnalysisSuccessReportResponseDto;
 import com.ssafy.a303.backend.domain.member.dto.ReportDecisionRequestDTO;
 import com.ssafy.a303.backend.domain.member.service.OfficialService;
 import java.util.List;
@@ -22,8 +22,8 @@ public class OfficialController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OngoingReportResponseDto>> getOngoingReports() {
-        return ResponseEntity.ok().body(officialService.getOngoingReports());
+    public ResponseEntity<List<AnalysisSuccessReportResponseDto>> getAnalysisSuccessReports() {
+        return ResponseEntity.ok().body(officialService.getAnalysisSuccessReports());
     }
 
     @PostMapping

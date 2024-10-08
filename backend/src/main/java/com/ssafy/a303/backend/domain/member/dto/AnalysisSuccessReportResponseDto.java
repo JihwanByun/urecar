@@ -5,13 +5,11 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class OngoingReportResponseDto {
+public class AnalysisSuccessReportResponseDto {
 
     private long reportId;
     private String memberName;
     private String content;
-    private byte[] firstImage;
-    private double latitude;
-    private double longitude;
+    private String type;
 
 }
