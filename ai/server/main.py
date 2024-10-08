@@ -9,7 +9,6 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
-@app.post("/inspectfirstimage/")
 async def validate_image(file: UploadFile = File(...)):
     try:
         # 이미지 파일 읽기
