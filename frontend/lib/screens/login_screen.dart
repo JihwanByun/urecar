@@ -6,6 +6,7 @@ import 'package:frontend/components/common/validator_text.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/signup_screen.dart';
 import 'package:frontend/services/api_service.dart';
+import 'package:frontend/screens/officer_screen.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -59,7 +60,12 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         final res = await apiService.login(formData);
         if (res == 200) {
-          controller.changePage(0);
+          if (controller.memberRole.value == 'OFFICIAL') {
+            print(controller.memberRole.value);
+            Get.offAllNamed('/officer');
+          } else {
+            controller.changePage(0);
+          }
         } else {
           Get.snackbar('오류', '${res["message"]}',
               snackPosition: SnackPosition.BOTTOM);

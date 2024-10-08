@@ -6,6 +6,7 @@ class MainController extends GetxController {
   var memberName = "".obs;
   var memberEmail = "".obs;
   var memberId = 0.obs;
+  var memberRole = "".obs;
   var currentIndex = 10.obs;
   var pageStack = <int>[0].obs;
   var showNotification = false.obs;

@@ -48,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       final address = model.address ?? '';
       addressController.text = address;
-      formData['address'] = address;
+      formData['address_base'] = address;
 
       final buildingName = model.buildingName ?? '';
       addressDetailController.text = buildingName;
@@ -155,11 +155,13 @@ class _SignupScreenState extends State<SignupScreen> {
     if (isValid) {
       formKey.currentState!.save();
       final apiService = ApiService();
+      print(formData);
       formData['address'] = {
-        'address': formData.remove('address') ?? '',
+        'address': formData.remove('address_base') ?? '',
         'addressDetail': formData.remove('address_detail') ?? '',
         'zipCode': formData.remove('zip_code') ?? ''
       };
+      print(formData);
       try {
         final res = await apiService.signUp(formData);
         if (res == 200) {
@@ -184,7 +186,7 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 150),
+              const SizedBox(height: 80),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: Image.asset(
@@ -269,6 +271,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     fontSize: 15,
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: 10,
               ),
             ],
           ),

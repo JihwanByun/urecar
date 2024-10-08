@@ -72,6 +72,7 @@ class ApiService {
         controller.accessToken.value = responseData['accessToken'];
         controller.memberId.value = responseData['memberId'];
         controller.memberName.value = responseData['memberName'];
+        controller.memberRole.value = responseData['memberRole'];
 
         return response.statusCode;
       } else {
@@ -277,6 +278,69 @@ class ApiService {
     try {
       final response =
           await http.get(url, headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        return {
+          'error': 'Failed to fetch report',
+          'status': response.statusCode
+        };
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findOfficialReport() async {
+    final url = Uri.parse('$baseUrl/officials');
+
+    try {
+      final response =
+          await http.get(url, headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        return {
+          'error': 'Failed to fetch report',
+          'status': response.statusCode
+        };
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findSpecificOfficialReport(String id) async {
+    final url = Uri.parse('$baseUrl/officials/reports/$id');
+
+    try {
+      final response =
+          await http.get(url, headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        return {
+          'error': 'Failed to fetch report',
+          'status': response.statusCode
+        };
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> acceptReport(Map<String, dynamic> formData) async {
+    final url = Uri.parse('$baseUrl/reports');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(formData),
+      );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         return responseData;
