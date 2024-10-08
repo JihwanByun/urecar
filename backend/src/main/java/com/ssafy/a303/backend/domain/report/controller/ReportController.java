@@ -5,9 +5,9 @@ import com.ssafy.a303.backend.domain.report.dto.GalleryRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SecondReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
-import java.util.Arrays;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,12 +39,11 @@ public class ReportController {
     }
 
     @PostMapping("/secondImage")
-    public ResponseEntity<Void> uploadSecondReportImage(
+    public ResponseEntity<SecondReportResponseDto> uploadSecondReportImage(
             @RequestPart(value = "dto") uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto,
             @RequestPart(value = "file") MultipartFile file
     ) {
-        reportService.uploadSecondReportImage(uploadSecondReportImageRequestDto, file);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(reportService.uploadSecondReportImage(uploadSecondReportImageRequestDto, file));
     }
 
     @GetMapping("/{reportId}")
