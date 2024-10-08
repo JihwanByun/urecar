@@ -1,11 +1,13 @@
 package com.ssafy.a303.backend.domain.member.controller;
 
+import com.ssafy.a303.backend.domain.member.dto.AnalysisSuccessReportListResponseDto;
 import com.ssafy.a303.backend.domain.member.dto.AnalysisSuccessReportResponseDto;
 import com.ssafy.a303.backend.domain.member.dto.ReportDecisionRequestDTO;
 import com.ssafy.a303.backend.domain.member.service.OfficialService;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +24,7 @@ public class OfficialController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AnalysisSuccessReportResponseDto>> getAnalysisSuccessReports() {
+    public ResponseEntity<List<AnalysisSuccessReportListResponseDto>> getAnalysisSuccessReports() {
         return ResponseEntity.ok().body(officialService.getAnalysisSuccessReports());
     }
 
@@ -30,6 +32,11 @@ public class OfficialController {
     public ResponseEntity<Void> selectReportAccept(@RequestBody ReportDecisionRequestDTO reportDecisionRequestDTO) {
         officialService.decideReportOutcome(reportDecisionRequestDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/reports/{id}")
+    public ResponseEntity<AnalysisSuccessReportResponseDto> getAnalysisSuccessReportById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(officialService.getAnalysisSuccessReport(id));
     }
 
 }
