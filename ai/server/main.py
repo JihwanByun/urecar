@@ -51,7 +51,7 @@ async def consume_kafka():
 
         # Kafka 메시지 처리
         print(f"Received message: {msg.value()}")
-        await asyncio.sleep(0.1)  # 비동기 작업이므로 조금 대기
+        await asyncio.sleep(1)  # 비동기 작업이므로 조금 대기
 
 async def validate_image(file: UploadFile = File(...)):
     try:
