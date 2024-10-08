@@ -9,7 +9,7 @@ public class AnalysisSuccessReportListResponseDto {
 
     private long reportId;
     private String memberName;
-    private String content;
+    private String date;
     private String type;
 
 }
