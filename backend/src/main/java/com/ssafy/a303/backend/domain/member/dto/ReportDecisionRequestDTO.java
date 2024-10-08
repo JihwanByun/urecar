@@ -8,6 +8,7 @@ import lombok.ToString;
 public class ReportDecisionRequestDTO {
 
     private Long reportId;
+    private String memberName;
     private Boolean decision;
 
 }

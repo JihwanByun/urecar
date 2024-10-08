@@ -42,7 +42,9 @@ public class OfficialServiceImpl implements OfficialService {
     @Override
     public void decideReportOutcome(ReportDecisionRequestDTO requestDto) {
         Report report = reportRepository.getReportById(requestDto.getReportId());
-        report.decideReportOutcome(requestDto.getDecision() ? ProcessStatus.ACCEPTED : ProcessStatus.UNACCEPTED);
+        report.decideReportOutcome(
+                requestDto.getMemberName(),
+                requestDto.getDecision() ? ProcessStatus.ACCEPTED : ProcessStatus.UNACCEPTED);
         reportRepository.save(report);
     }
 
