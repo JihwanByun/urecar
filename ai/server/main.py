@@ -4,8 +4,13 @@ from PIL import Image
 import io
 from confluent_kafka import Consumer, KafkaError
 import asyncio
+import logging
 
 app = FastAPI()
+
+# 로깅 설정
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # kafka setting
 KAFKA_BROKER_URL = "j11a303.p.ssafy.io:40000"
@@ -14,12 +19,15 @@ KAFKA_TOPIC = "first_wait"
 # consumer setting
 consumer_config = {
     'bootstrap.servers': KAFKA_BROKER_URL,
-    'group.id' : 'first-wait-consumer-group'
+    'group.id' : 'first-wait-consumer-group',
+    'auto.offset.reset': 'latest',  # 커밋부터 읽기
+    'enable.auto.commit': True,        # 자동 커밋 활성화
+    'auto.commit.interval.ms': 5000,   # 5초마다 오프셋 자동 커밋
 }
 
 @app.on_event("startup")
 async def startup_event():
-    print("app start")
+    logger.info("App startup initiated") 
     asyncio.create_task(consume_kafka())
 
 @app.get("/")
