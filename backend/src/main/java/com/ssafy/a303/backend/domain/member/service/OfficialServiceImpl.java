@@ -58,6 +58,7 @@ public class OfficialServiceImpl implements OfficialService {
                 .latitude(report.getLatitude())
                 .longitude(report.getLongitude())
                 .content(report.getContent())
+                .type(report.getType())
                 .firstImage(ImageHandler.urlToBytes(report.getFirstImage()))
                 .build();
     }

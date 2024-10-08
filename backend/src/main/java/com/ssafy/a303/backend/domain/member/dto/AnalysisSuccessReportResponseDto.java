@@ -14,5 +14,6 @@ public class AnalysisSuccessReportResponseDto {
     private byte[] firstImage;
     private double latitude;
     private double longitude;
+    private String type;
 
 }
