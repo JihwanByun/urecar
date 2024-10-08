@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/common/button.dart';
 
 class ReportScreenTimerButton extends StatefulWidget {
-  const ReportScreenTimerButton({super.key});
+  final VoidCallback onButtonPressed;
+  const ReportScreenTimerButton({super.key, required this.onButtonPressed});
 
   @override
   State<ReportScreenTimerButton> createState() =>
@@ -63,18 +64,13 @@ class _ReportScreenTimerButtonState extends State<ReportScreenTimerButton> {
           const SizedBox(height: 16),
           Button(
               text: "2차 사진 촬영하기",
-              onPressed: _isButtonEnabled == true ? _onButtonPressed : null,
+              onPressed:
+                  _isButtonEnabled == true ? widget.onButtonPressed : null,
               horizontal: 95,
               vertical: 10,
               fontSize: 16)
         ],
       ),
-    );
-  }
-
-  void _onButtonPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('버튼이 눌렸습니다!')),
     );
   }
 }

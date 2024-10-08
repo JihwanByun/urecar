@@ -28,22 +28,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     List<String> notifications = notificationController.notificationList;
-
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: notifications.isEmpty
           ? const Center(child: Text("알림이 없습니다."))
-          : SingleChildScrollView(
-              child: ListView.builder(
-                itemCount: notifications.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child:
-                        NotificationScreenCart(content: notifications[index]),
-                  );
-                },
-              ),
+          : ListView.builder(
+              itemCount: notifications.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: NotificationScreenCart(content: notifications[index]),
+                );
+              },
             ),
     );
   }

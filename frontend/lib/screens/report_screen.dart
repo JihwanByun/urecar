@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/top_bar.dart';
@@ -5,10 +8,15 @@ import 'package:frontend/components/report_screen/report_screen_content_input.da
 import 'package:frontend/components/report_screen/report_screen_list_item.dart';
 import 'package:frontend/components/report_screen/report_screen_timer_button.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/screens/camera_screen.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ReportScreen extends StatefulWidget {
-  const ReportScreen({super.key});
+  final Map<String, dynamic> res;
+  final bool? isSecond;
+
+  const ReportScreen({super.key, required this.res, this.isSecond});
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
@@ -16,11 +24,23 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   final MainController controller = Get.put(MainController());
-  bool isCompleted = false;
+  late bool isCompleted;
   final TextEditingController _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> result = widget.res;
+    final Uint8List bitesImage = result.containsKey("firstImage")
+        ? base64Decode(result["firstImage"])
+        : base64Decode(result["secondImage"]);
+    widget.isSecond == null ? isCompleted = true : isCompleted = false;
+    void onButtonPressed() {
+      Get.to(() => CameraScreen(
+            reportId: result["reportId"],
+            reportContent: _textController.text,
+          ));
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const PreferredSize(
@@ -32,20 +52,20 @@ class _ReportScreenState extends State<ReportScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              const Row(children: [
+              Row(children: [
                 Text(
-                  "24.07.01",
-                  style: TextStyle(
+                  DateFormat('yy.MM.dd').format(result["date"]),
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 15,
                 ),
                 Text(
-                  "정류장 불법 주정차 신고",
-                  style: TextStyle(
+                  result["type"],
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -54,9 +74,9 @@ class _ReportScreenState extends State<ReportScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SizedBox(
-                  width: 400,
-                  child: Image.asset(
-                    "assets/images/busstop_guide_image.png",
+                  width: 250,
+                  child: Image.memory(
+                    bitesImage,
                     fit: BoxFit.fitWidth,
                   ),
                 ),
@@ -94,7 +114,8 @@ class _ReportScreenState extends State<ReportScreen> {
                             height: 10,
                           ),
                           ReportScreenContentInput(controller: _textController),
-                          const ReportScreenTimerButton()
+                          ReportScreenTimerButton(
+                              onButtonPressed: onButtonPressed)
                         ],
                       ),
                     )
@@ -131,7 +152,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           content: "백승우",
                         ),
                       ],
-                    )
+                    ),
             ],
           ),
         ),

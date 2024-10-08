@@ -160,20 +160,11 @@ class ApiService {
           },
         ),
       );
-      print(response);
-      final responseData = response;
+
+      final responseData = response.data;
       print(responseData);
-      if (response.statusCode == 200) {
-        print(responseData);
-        return responseData;
-      } else {
-        print(1);
-        print(responseData);
-        return responseData;
-      }
+      return responseData;
     } catch (e) {
-      print(3);
-      print(e);
       return e;
     }
   }
@@ -201,12 +192,9 @@ class ApiService {
           },
         ),
       );
-      final responseData = jsonDecode(response.data);
-      if (response.statusCode == 200) {
-        return responseData;
-      } else {
-        return responseData;
-      }
+
+      final responseData = response.data;
+      return responseData;
     } catch (e) {
       return e;
     }
@@ -228,18 +216,14 @@ class ApiService {
           'state': formData["state"]
         },
       );
-      print(response);
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        print(responseData);
         return responseData;
       } else {
-        print(responseData);
         return responseData;
       }
     } catch (e) {
-      print(e);
       return e;
     }
   }

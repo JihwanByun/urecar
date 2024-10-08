@@ -163,7 +163,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Column(
             children: [
               GestureDetector(
-                onTap: () => Get.to(() => const ReportScreen()),
+                onTap: () => Get.to(() => {}),
                 child: const ScreenCard(
                     title: "24.06.30 소방구역 불법 주정차 신고",
                     contents: [

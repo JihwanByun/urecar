@@ -11,7 +11,7 @@ class CheckImageScreen extends StatelessWidget {
   final String imagePath;
   final double longitude;
   final double latitude;
-  final String? reportId;
+  final int? reportId;
   final String? reportContent;
 
   const CheckImageScreen(
@@ -36,12 +36,17 @@ class CheckImageScreen extends StatelessWidget {
       };
       final apiService = ApiService();
       try {
-        final res = await apiService.createReport(formData, imagePath);
-        if (res == 200) {
-          Get.to(() => const ReportScreen());
-        } else {
-          Get.snackbar('오류', '${res["message"]}',
+        final Map<String, dynamic> res =
+            await apiService.createReport(formData, imagePath);
+
+        if (res.containsKey("message")) {
+          Get.snackbar('오류', res["message"],
               snackPosition: SnackPosition.BOTTOM);
+        } else {
+          Get.to(() => ReportScreen(
+                res: res,
+                isSecond: true,
+              ));
         }
       } catch (e) {
         Get.snackbar('오류', '사진 전송 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
@@ -53,18 +58,24 @@ class CheckImageScreen extends StatelessWidget {
       Map<String, dynamic> formData = {
         'dto': {
           "memberId": controller.memberId.value,
+          "latitude": latitude,
+          "longitude": longitude,
           "reportId": reportId,
           "content": reportContent
         }
       };
       final apiService = ApiService();
       try {
-        final res = await apiService.sendSecondImage(formData, imagePath);
-        if (res == 200) {
-          Get.to(() => const ReportScreen());
-        } else {
-          Get.snackbar('오류', '${res["message"]}',
+        final Map<String, dynamic> res =
+            await apiService.sendSecondImage(formData, imagePath);
+
+        if (res.containsKey("message")) {
+          Get.snackbar('오류', res["message"],
               snackPosition: SnackPosition.BOTTOM);
+        } else {
+          Get.to(() => ReportScreen(
+                res: res,
+              ));
         }
       } catch (e) {
         Get.snackbar('오류', '사진 전송 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',

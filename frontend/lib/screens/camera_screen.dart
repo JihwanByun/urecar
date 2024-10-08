@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
 
 class CameraScreen extends StatefulWidget {
-  final String? reportId;
+  final int? reportId;
   final String? reportContent;
   const CameraScreen({super.key, this.reportId, this.reportContent});
 
@@ -123,6 +123,8 @@ class _CameraScreenState extends State<CameraScreen> {
                               imagePath: image.path,
                               longitude: longitude,
                               latitude: latitude,
+                              reportContent: widget.reportContent,
+                              reportId: widget.reportId,
                             ));
                       } catch (e) {
                         print(e);
