@@ -44,7 +44,6 @@ public class OutBoxReportService {
         }
 
         // publish msg to kafka
-
         for(OutboxReport report : list){
 
             String topic = report.getOutboxStatus() == OutboxStatus.FIRST_WAIT ? "first_wait" : "second_wait";
