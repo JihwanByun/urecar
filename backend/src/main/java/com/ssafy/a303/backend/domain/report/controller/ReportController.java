@@ -40,12 +40,11 @@ public class ReportController {
     }
 
     @PostMapping("/secondImage")
-    public ResponseEntity<Void> uploadSecondReportImage(
+    public ResponseEntity<SecondReportResponseDto> uploadSecondReportImage(
             @RequestPart(value = "dto") uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto,
             @RequestPart(value = "file") MultipartFile file
     ) {
-        reportService.uploadSecondReportImage(uploadSecondReportImageRequestDto, file);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(reportService.uploadSecondReportImage(uploadSecondReportImageRequestDto, file));
     }
 
     @GetMapping("/{reportId}")

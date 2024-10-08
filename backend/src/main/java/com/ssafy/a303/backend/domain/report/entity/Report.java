@@ -35,13 +35,13 @@ public class Report {
     @Column(length = 1_000)
     private String content;
     private String type;
+    private String officialName;
+
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private String firstImage;
     private String secondImage;
-
-
-    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private double latitude;
@@ -65,6 +65,11 @@ public class Report {
     public void updateSecondImage(String secondImage, String content) {
         this.secondImage = secondImage;
         this.content = content;
+    }
+
+    public void decideReportOutcome(String officialName, ProcessStatus processStatus) {
+        this.officialName = officialName;
+        this.processStatus = processStatus;
     }
 
 }
