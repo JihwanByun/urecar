@@ -16,14 +16,11 @@ import com.ssafy.a303.backend.exception.ErrorCode;
 import com.ssafy.a303.backend.domain.member.repository.MemberRepository;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import jakarta.transaction.Transactional;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +30,6 @@ public class ReportServiceImpl implements ReportService {
 
     private final MemberRepository memberRepository;
     private final ReportRepository reportRepository;
-    private final ImageHandler imageHandler;
     private final OutboxReportRepository outboxReportRepository;
     private final IllegalParkingZoneRepository illegalParkingZoneRepository;
     //    private final GeoCoderServiceImpl geoCoderService;
@@ -44,7 +40,6 @@ public class ReportServiceImpl implements ReportService {
         this.memberRepository = memberRepository;
         this.reportRepository = reportRepository;
         this.outboxReportRepository = outboxReportRepository;
-        this.imageHandler = new ImageHandler();
         this.illegalParkingZoneRepository = illegalParkingZoneRepository;
 //        this.geoCoderService =geoCoderService;
     }
@@ -94,6 +89,7 @@ public class ReportServiceImpl implements ReportService {
     private void saveOutboxReport(Report report) {
         Member member = memberRepository.findById(report.getMember().getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER_ID));
+
         OutboxReport outboxReport = OutboxReport.builder()
                 .report(report)
                 .member(member)
@@ -129,13 +125,12 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public GalleryResponseDto getGallery(long memberId) {
         List<Report> reports = reportRepository.findAllByMemberId(memberId);
-        List<String> imageUrls = new ArrayList<>();
+        List<byte[]> imageUrls = new ArrayList<>();
         for (Report report : reports) {
-            imageUrls.add(report.getFirstImage());
+            imageUrls.add(ImageHandler.urlToBytes(report.getFirstImage()));
         }
         return GalleryResponseDto.builder().imageUrls(imageUrls).build();
     }
-
 
     @Override
     public void isIllegalParkingZone(double longitude, double latitude) {
