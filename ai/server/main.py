@@ -19,7 +19,7 @@ consumer_config = {
 
 @app.on_event("startup")
 async def startup_event():
-    asyncio.create_task(validate_image)
+    asyncio.create_task(validate_image())
 
 @app.get("/")
 async def root():
