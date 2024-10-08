@@ -5,6 +5,7 @@ import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SecondReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
 import com.ssafy.a303.backend.domain.report.entity.*;
 import com.ssafy.a303.backend.domain.report.handler.ImageHandler;
@@ -104,10 +105,20 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public void uploadSecondReportImage(uploadSecondReportImageRequestDto requestDto, MultipartFile file) {
+    public SecondReportResponseDto uploadSecondReportImage(uploadSecondReportImageRequestDto requestDto, MultipartFile file) {
         ImageInfoDto imageInfoDto = ImageHandler.save(requestDto.getMemberId(), file);
         Report report = saveSecondImageInReport(requestDto, imageInfoDto);
         saveOutboxReport(report);
+
+        return SecondReportResponseDto.builder()
+                .reportId(report.getId())
+                .officialName(report.getOfficialName() == null ? "처리중" : report.getOfficialName())
+                .secondImage(ImageHandler.urlToBytes(report.getSecondImage()))
+                .date(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                .processStatus(report.getProcessStatus())
+                .content(report.getContent())
+                .type(report.getType())
+                .build();
     }
 
     private Report saveSecondImageInReport(uploadSecondReportImageRequestDto requestDto, ImageInfoDto imageInfoDto) {

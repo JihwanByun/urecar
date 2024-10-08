@@ -4,6 +4,7 @@ import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SecondReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +14,7 @@ public interface ReportService {
 
     ReportCreateResponseDto createReport(ReportCreateRequestDto requestDto, MultipartFile file);
 
-    void uploadSecondReportImage(uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto, MultipartFile file);
+    SecondReportResponseDto uploadSecondReportImage(uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto, MultipartFile file);
 
     GalleryResponseDto getGallery(long memberId);
 
