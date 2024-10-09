@@ -14,6 +14,7 @@ import 'package:frontend/components/common/spinner.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/screens/officer_screen.dart';
 
 late List<CameraDescription> cameras;
 
@@ -113,6 +114,7 @@ class App extends StatelessWidget {
         GetPage(name: '/setting', page: () => const SettingScreen()),
         GetPage(name: '/landing', page: () => LandingScreen()),
         GetPage(name: '/login', page: () => const LoginScreen()),
+        GetPage(name: '/officer', page: () => const OfficerScreen()),
       ],
     );
   }

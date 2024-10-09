@@ -12,16 +12,14 @@ import com.ssafy.a303.backend.domain.report.dto.SecondReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
 import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+
+import io.micrometer.core.annotation.Timed;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +34,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
+    @Timed(value = "first_image_upload_time", description = "Time taken to execute create report method")
     @PostMapping
     public ResponseEntity<ReportCreateResponseDto> createReport(
             @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
@@ -43,25 +42,11 @@ public class ReportController {
     ) {
         ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
 
-//        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @GetMapping
-    public ResponseEntity<List<SearchedReportResponseDto>> getReports(
-            @RequestParam ProcessStatus processStatus,
-            @RequestParam @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul") LocalDate startDate,
-            @RequestParam @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul") LocalDate endDate
-    ) {
-        return ResponseEntity.ok().body(reportService.searchReports(
-                SearchedReportsRequestDto.builder()
-                        .processStatus(processStatus)
-                        .startDate(startDate)
-                        .endDate(endDate)
-                        .build()
-        ));
-    }
-
+    @Timed(value = "second_image_upload_time", description = "Time taken to execute add second image method")
     @PostMapping("/secondImage")
     public ResponseEntity<SecondReportResponseDto> uploadSecondReportImage(
             @RequestPart(value = "dto") uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto,

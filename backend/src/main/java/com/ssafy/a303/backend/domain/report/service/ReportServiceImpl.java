@@ -164,12 +164,22 @@ public class ReportServiceImpl implements ReportService {
         double longitudeMin = longitude - longMargin;
         double longitudeMax = longitude + longMargin;
 
-        List<IllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20Meters(longitudeMin,
-                longitudeMax, latitudeMin, latitudeMax);
-
-        if (isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
+        //long startTime1 = System.currentTimeMillis();
+        List<DistinctIllegalParkingZone> isNearTheIllegalParkingLocation = illegalParkingZoneRepository.findWithin20MetersWithDistinctIndex(longitudeMin, longitudeMax, latitudeMin, latitudeMax);
+        if(isNearTheIllegalParkingLocation == null || isNearTheIllegalParkingLocation.isEmpty()) {
             throw new CustomException(ErrorCode.REPORT_POINT_CHECK_FAILED);
         }
+       //long endTime1 = System.currentTimeMillis();
+        //System.out.println("전처리 후 Execution Time: " + (endTime1 - startTime1) + " ms");
+
+//        long startTime = System.currentTimeMillis();
+//        List<IllegalParkingZone> isNearTheIllegalParkingLocation1 = illegalParkingZoneRepository.findWithin20Meters(longitudeMin, longitudeMax, latitudeMin, latitudeMax);
+//        if(isNearTheIllegalParkingLocation1 == null || isNearTheIllegalParkingLocation1.isEmpty()) {
+//            throw new CustomException(ErrorCode.REPORT_POINT_CHECK_FAILED);
+//        }
+//        long endTime = System.currentTimeMillis();
+//        System.out.println("전처리 전 Execution Time: " + (endTime - startTime) + " ms");
+
 
 //        String response = geoCoderService.getSeoulBorough(longitude,latitude);
 //        System.out.println(response);

@@ -33,7 +33,7 @@ public class ImageHandler {
 
         String fileName = sdf.format(new Date(Long.parseLong(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))));
         File folder = new File(imageUrl + memberId);
-        if (!folder.exists() && !folder.mkdir()) {
+        if (!folder.mkdir() && !folder.exists()  ) {
                 throw new CustomException(ErrorCode.CANT_FOUND_FOLDER);
         }
 
