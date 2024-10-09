@@ -34,7 +34,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @Timed(value = "first_image_upload.method.time", description = "Time taken to execute create report method")
+    @Timed(value = "first_image_upload_time", description = "Time taken to execute create report method")
     @PostMapping
     public ResponseEntity<ReportCreateResponseDto> createReport(
             @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
@@ -46,7 +46,7 @@ public class ReportController {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @Timed(value = "second_image_upload.method.time", description = "Time taken to execute add second image method")
+    @Timed(value = "second_image_upload_time", description = "Time taken to execute add second image method")
     @PostMapping("/secondImage")
     public ResponseEntity<SecondReportResponseDto> uploadSecondReportImage(
             @RequestPart(value = "dto") uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto,
