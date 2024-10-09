@@ -13,6 +13,6 @@ public class ReportResponseDto {
     private String content;
     private String date;
     private ProcessStatus processStatus;
-    private String firstImage;
+    private byte[] firstImage;
 
 }
