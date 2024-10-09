@@ -11,6 +11,7 @@ import lombok.ToString;
 @ToString
 public class SearchedReportsRequestDto {
 
+    private Long memberId;
     private ProcessStatus processStatus;
     private LocalDate startDate;
     private LocalDate endDate;
