@@ -164,7 +164,6 @@ class _SafetyNewsScreenState extends State<SafetyNewsScreen> {
               'assets/images/logo.png',
               width: 350,
               height: 150,
-              fit: BoxFit.cover,
             ),
             const SizedBox(height: 10),
             const Text(

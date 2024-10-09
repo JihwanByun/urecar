@@ -19,6 +19,8 @@ import com.ssafy.a303.backend.exception.ErrorCode;
 import com.ssafy.a303.backend.domain.member.repository.MemberRepository;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +55,9 @@ public class ReportServiceImpl implements ReportService {
         return ReportResponseDto.builder()
                 .reportId(report.getId())
                 .content(report.getContent())
-                .date(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
-                .type(report.getType()).
-                firstImage(report.getFirstImage())
+                .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                .type(report.getType())
+                .firstImage(ImageHandler.urlToBytes(report.getFirstImage()))
                 .processStatus(report.getProcessStatus())
                 .build();
     }
@@ -117,8 +119,8 @@ public class ReportServiceImpl implements ReportService {
         return SecondReportResponseDto.builder()
                 .reportId(report.getId())
                 .officialName(report.getOfficialName() == null ? "처리중" : report.getOfficialName())
-                .secondImage(ImageHandler.urlToBytes(report.getSecondImage()))
-                .date(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                .firstImage(ImageHandler.urlToBytes(report.getFirstImage()))
+                .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
                 .processStatus(report.getProcessStatus())
                 .content(report.getContent())
                 .type(report.getType())
@@ -149,9 +151,26 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<SearchedReportResponseDto> searchReports(SearchedReportsRequestDto searchedReportsRequestDto) {
-//        List<Report> reports;
-        System.out.println(searchedReportsRequestDto);
-        return List.of();
+        LocalDateTime startDateTime = searchedReportsRequestDto.getStartDate().atStartOfDay();
+        LocalDateTime endDateTime = searchedReportsRequestDto.getEndDate().atTime(LocalTime.MAX);
+        List<Report> reports = reportRepository.findReportsByProcessStatusAndCreatedAtBetween(
+                searchedReportsRequestDto.getProcessStatus(),
+                startDateTime,
+                endDateTime
+        );
+
+        List<SearchedReportResponseDto> dtos = new ArrayList<>();
+        for(Report report : reports) {
+            dtos.add(
+                    SearchedReportResponseDto.builder()
+                            .reportId(report.getId())
+                            .type(report.getType())
+                            .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                            .processStatus(report.getProcessStatus())
+                            .build()
+            );
+        }
+        return dtos;
     }
 
     @Override

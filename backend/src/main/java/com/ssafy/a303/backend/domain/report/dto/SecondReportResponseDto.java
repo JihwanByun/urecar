@@ -10,10 +10,10 @@ public class SecondReportResponseDto {
 
     private long reportId;
     private String officialName;
-    private String date;
+    private String datetime;
     private String type;
     private String content;
     private ProcessStatus processStatus;
-    private byte[] secondImage;
+    private byte[] firstImage;
 
 }

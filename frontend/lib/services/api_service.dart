@@ -1,10 +1,11 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio_pkg;
+import 'package:intl/intl.dart';
 
 class ApiService {
   final MainController controller = Get.put(MainController());
@@ -68,9 +69,12 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+        controller.memberEmail.value = formData['email'];
         controller.accessToken.value = responseData['accessToken'];
         controller.memberId.value = responseData['memberId'];
         controller.memberName.value = responseData['memberName'];
+        controller.memberRole.value = responseData['memberRole'];
+        await sendFCMToken();
 
         return response.statusCode;
       } else {
@@ -83,7 +87,7 @@ class ApiService {
   }
 
   Future<dynamic> sendFCMToken() async {
-    final url = Uri.parse('$baseUrl/token');
+    final url = Uri.parse('$baseUrl/members/token');
     if (controller.memberId.value == 0 || controller.fcmToken.value == "") {
       return 0;
     }
@@ -104,6 +108,8 @@ class ApiService {
         return responseData;
       }
     } catch (e) {
+      print(e);
+
       return e;
     }
   }
@@ -123,7 +129,6 @@ class ApiService {
         controller.accessToken.value = "";
         controller.memberId.value = 0;
         controller.memberName.value = "";
-        await sendFCMToken();
 
         return response.statusCode;
       } else {
@@ -139,7 +144,6 @@ class ApiService {
       Map<String, dynamic> formData, String imagePath) async {
     dio_pkg.Dio dio = dio_pkg.Dio();
     final url = '$baseUrl/reports';
-
     try {
       dio_pkg.FormData formDataWithFile = dio_pkg.FormData.fromMap({
         'dto': dio_pkg.MultipartFile.fromString(
@@ -158,12 +162,10 @@ class ApiService {
           },
         ),
       );
-      final responseData = jsonDecode(response.data);
-      if (response.statusCode == 200) {
-        return responseData;
-      } else {
-        return responseData;
-      }
+
+      final responseData = response.data;
+
+      return responseData;
     } catch (e) {
       return e;
     }
@@ -192,12 +194,12 @@ class ApiService {
           },
         ),
       );
-      final responseData = jsonDecode(response.data);
-      if (response.statusCode == 200) {
-        return responseData;
-      } else {
-        return responseData;
-      }
+
+      final responseData = response.data;
+      print(responseData);
+      print(responseData["datetime"]);
+      print(responseData["type"]);
+      return responseData;
     } catch (e) {
       return e;
     }
@@ -205,25 +207,140 @@ class ApiService {
 
   Future<dynamic> findReports(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/reports');
+
     try {
-      final response = await http.get(
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(formData));
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findGallery() async {
+    final url = Uri.parse('$baseUrl/reports/gallery');
+    final formData = {"memberId": controller.memberId.value};
+    try {
+      final response = await http.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(formData));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        final Map<String, dynamic> errorData = jsonDecode(response.body);
+        return errorData;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> updateMember(Map<String, dynamic> formData) async {
+    final url = Uri.parse('$baseUrl/members');
+    try {
+      final response = await http.put(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'startDate': formData["startDate"],
-          'endDate': formData["endDate"],
-          'state': formData["state"]
         },
+        body: jsonEncode(formData),
       );
       if (response.statusCode == 200) {
-        if (response.body == "true") {
-          return true;
-        } else {
-          return false;
-        }
+        return response.statusCode;
       } else {
         final responseData = jsonDecode(response.body);
         return responseData;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findSpecificReport(String id) async {
+    final url = Uri.parse('$baseUrl/reports/detail/$id');
+
+    try {
+      final response =
+          await http.get(url, headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        return {
+          'error': 'Failed to fetch report',
+          'status': response.statusCode
+        };
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findOfficialReport() async {
+    final url = Uri.parse('$baseUrl/officials');
+
+    try {
+      final response =
+          await http.get(url, headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+        return responseData;
+      } else {
+        return {
+          'error': 'Failed to fetch report',
+          'status': response.statusCode
+        };
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findSpecificOfficialReport(String id) async {
+    final url = Uri.parse('$baseUrl/officials/reports/$id');
+
+    try {
+      final response =
+          await http.get(url, headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+        return responseData;
+      } else {
+        return {
+          'error': 'Failed to fetch report',
+          'status': response.statusCode
+        };
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> acceptReport(Map<String, dynamic> formData) async {
+    final url = Uri.parse('$baseUrl/officials');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(formData),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        return {
+          'error': 'Failed to fetch report',
+          'status': response.statusCode
+        };
       }
     } catch (e) {
       return e;
