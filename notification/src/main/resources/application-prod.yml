@@ -9,8 +9,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://notification-db:3308/urecar_notification?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: root
+    username: ssafy
+    password: ssafy
 
 
 server:
