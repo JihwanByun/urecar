@@ -43,35 +43,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   textAlign: TextAlign.start,
                 )),
-            const Column(
-              children: [
-                ScreenCard(title: "나의 신고 현황", contents: [
-                  Text(
-                    "100",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                    ),
+            const Column(children: [
+              ScreenCard(title: "나의 신고 현황", contents: [
+                Text(
+                  "100",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
                   ),
-                  Text(
-                    " 건",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                    ),
+                ),
+                Text(
+                  " 건",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
                   ),
-                ]),
-                HomeScreenImageCard(
-                    imageLink: "assets/images/guide_link.png",
-                    screen: GuideScreen(),
-                    title: "신고 가이드 보러 가기"),
-                HomeScreenImageCard(
-                    imageLink: "assets/images/safety_news.png",
-                    screen: SafetyNewsScreen(),
-                    title: "안전 뉴스 보러 가기")
-              ],
-            ),
+                ),
+              ]),
+              HomeScreenImageCard(
+                  imageLink: "assets/images/guide_link.png",
+                  screen: GuideScreen(),
+                  title: "신고 가이드 보러 가기"),
+              HomeScreenImageCard(
+                  imageLink: "assets/images/safety_news.png",
+                  screen: SafetyNewsScreen(),
+                  title: "안전 뉴스 보러 가기"),
+            ]),
           ],
         ),
       ),

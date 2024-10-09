@@ -17,10 +17,11 @@ class TopBar extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: IconButton(
-            iconSize: 28,
-            icon: const Icon(Icons.notifications),
-            onPressed: () => Get.to(() => const NotificationScreen()),
-          ),
+              iconSize: 28,
+              icon: const Icon(Icons.notifications),
+              onPressed: () {
+                Get.to(() => const NotificationScreen());
+              }),
         ),
       ],
       automaticallyImplyLeading: false,
