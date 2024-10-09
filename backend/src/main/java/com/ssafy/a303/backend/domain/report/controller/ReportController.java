@@ -5,9 +5,12 @@ import com.ssafy.a303.backend.domain.report.dto.GalleryRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SearchedReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SearchedReportsRequestDto;
+import com.ssafy.a303.backend.domain.report.dto.SecondReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
-import java.util.Arrays;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +40,11 @@ public class ReportController {
 
         reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
         return ResponseEntity.ok().body(responseDto);
+    }
+
+    @PostMapping
+    public ResponseEntity<List<SearchedReportResponseDto>> getReports(@RequestBody SearchedReportsRequestDto searchedReportsRequestDto) {
+        return ResponseEntity.ok().body(reportService.searchReports(searchedReportsRequestDto));
     }
 
     @PostMapping("/secondImage")

@@ -4,7 +4,9 @@ import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SearchedReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SearchedReportsRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.SecondReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
 import com.ssafy.a303.backend.domain.report.entity.*;
@@ -141,6 +143,12 @@ public class ReportServiceImpl implements ReportService {
             imageUrls.add(ImageHandler.urlToBytes(report.getFirstImage()));
         }
         return GalleryResponseDto.builder().imageUrls(imageUrls).build();
+    }
+
+    @Override
+    public List<SearchedReportResponseDto> searchReports(SearchedReportsRequestDto searchedReportsRequestDto) {
+//        List<Report> reports;
+        return List.of();
     }
 
     @Override
