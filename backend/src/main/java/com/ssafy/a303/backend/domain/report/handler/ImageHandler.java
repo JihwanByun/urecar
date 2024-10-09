@@ -28,11 +28,11 @@ public class ImageHandler {
         String fileName = new SimpleDateFormat("yyyyMMddkkmmss")
                 .format(new Date(Long.parseLong(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))));
         File folder = new File(imageUrl + memberId);
-        if (!folder.exists() && !folder.mkdir()) {
+        if (!folder.mkdir() && !folder.exists()  ) {
                 throw new CustomException(ErrorCode.CANT_FOUND_FOLDER);
         }
 
-        String fullPathName =  folder.getPath() + "/" + fileName + ".jpg";
+        String fullPathName =  folder.getPath() + "\\" + fileName + ".jpg";
         try {
             image.transferTo(new File(fullPathName));
             return ImageInfoDto.builder()

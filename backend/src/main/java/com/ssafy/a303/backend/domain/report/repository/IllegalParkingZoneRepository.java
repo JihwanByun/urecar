@@ -1,5 +1,6 @@
 package com.ssafy.a303.backend.domain.report.repository;
 
+import com.ssafy.a303.backend.domain.report.entity.DistinctIllegalParkingZone;
 import com.ssafy.a303.backend.domain.report.entity.IllegalParkingZone;
 import com.ssafy.a303.backend.domain.report.entity.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,6 +26,16 @@ public interface IllegalParkingZoneRepository extends JpaRepository<IllegalParki
             "z.location.latitude BETWEEN :latitudeMin AND :latitudeMax AND " +
             "z.location.longitude BETWEEN :longitudeMin AND :longitudeMax")
     List<IllegalParkingZone> findWithin20Meters(
+            @Param("longitudeMin") double longitudeMin,
+            @Param("longitudeMax") double longitudeMax,
+            @Param("latitudeMin") double latitudeMin,
+            @Param("latitudeMax") double latitudeMax
+    );
+
+    @Query("SELECT z FROM DistinctIllegalParkingZone z WHERE " +
+            "z.location.latitude BETWEEN :latitudeMin AND :latitudeMax AND " +
+            "z.location.longitude BETWEEN :longitudeMin AND :longitudeMax")
+    List<DistinctIllegalParkingZone> findWithin20MetersWithDistinctIndex(
             @Param("longitudeMin") double longitudeMin,
             @Param("longitudeMax") double longitudeMax,
             @Param("latitudeMin") double latitudeMin,
