@@ -9,6 +9,7 @@ import lombok.Getter;
 public class ReportCreateResponseDto {
 
     private long reportId;
+    private String type;
     private String datetime;
     private ProcessStatus processStatus;
     private byte[] firstImage;

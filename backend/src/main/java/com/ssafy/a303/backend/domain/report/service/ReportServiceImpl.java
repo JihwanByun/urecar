@@ -69,6 +69,7 @@ public class ReportServiceImpl implements ReportService {
 
         return ReportCreateResponseDto.builder()
                 .reportId(report.getId())
+                .type(report.getType())
                 .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
                 .firstImage(ImageHandler.urlToBytes(report.getFirstImage()))
                 .processStatus(report.getProcessStatus())
@@ -148,6 +149,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<SearchedReportResponseDto> searchReports(SearchedReportsRequestDto searchedReportsRequestDto) {
 //        List<Report> reports;
+        System.out.println(searchedReportsRequestDto);
         return List.of();
     }
 
