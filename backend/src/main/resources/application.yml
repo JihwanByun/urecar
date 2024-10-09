@@ -8,11 +8,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/urecar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://j11a303.p.ssafy.io:3306/urecar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ssafy
     password: ssafy
-
-
 
   data:
     redis:
@@ -47,3 +45,7 @@ geocoder:
   url: https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&format=json&type=both&zipcode=true&simple=false
   credentials:
     secret-access-key: 5AD60FBD-952F-3953-9FCC-6E9694A17B63
+
+
+image:
+  url: C:\Users\SSAFY\Desktop\imageFolder\

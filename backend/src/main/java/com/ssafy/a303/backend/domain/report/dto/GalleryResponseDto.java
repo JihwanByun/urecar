@@ -8,6 +8,6 @@ import lombok.Getter;
 @Builder
 public class GalleryResponseDto {
 
-    List<String> imageUrls;
+    List<byte[]> imageUrls;
 
 }

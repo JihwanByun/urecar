@@ -4,10 +4,10 @@ import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/history_screen/date_button.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/screens/report_screen.dart';
-import 'package:frontend/services/api_service.dart';
+import 'package:frontend/screens/history_detail_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:frontend/services/api_service.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -20,40 +20,76 @@ class _HistoryScreenState extends State<HistoryScreen> {
   DateTime lastDate = DateTime.now();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 92));
   int selectedIndex = 0;
-  bool landed = true;
-  Map<String, dynamic> formData = {};
-  final apiService = ApiService();
-  List<Map> reportList = [];
+
+  List<Map<String, dynamic>> reportList = [];
+  bool isLoading = true;
+
   @override
-  void initState() async {
-    // TODO: implement initState
+  void initState() {
     super.initState();
-    formData["startDate"] = startDate;
-    formData["lastDate"] = lastDate;
-    formData["state"] = "all";
-    final response = apiService.findReports(formData);
-    print(response);
+    fetchReportData();
+  }
+
+  Future<void> fetchReportData() async {
+    final apiService = ApiService();
+    final formData = {
+      "startDate": DateFormat('yyyy-MM-dd').format(startDate),
+      "endDate": DateFormat('yyyy-MM-dd').format(lastDate),
+      "processStatus": getProcessStatus(selectedIndex),
+    };
+
+    final responseData = await apiService.findReports(formData);
+    print(responseData);
+
+    setState(() {
+      if (responseData is List) {
+        reportList = List<Map<String, dynamic>>.from(responseData);
+      }
+      isLoading = false;
+    });
+  }
+
+  String getProcessStatus(int index) {
+    switch (index) {
+      case 1:
+        return "ONGOING";
+      case 2:
+        return "ACCEPTED";
+      case 3:
+        return "UNACCEPTED";
+      default:
+        return "";
+    }
+  }
+
+  String mapProcessStatusToDisplay(String status) {
+    switch (status) {
+      case "ACCEPTED":
+        return "수용";
+      case "UNACCEPTED":
+        return "불수용";
+      default:
+        return "진행중";
+    }
+  }
+
+  Future<DateTime> selectDate(
+      BuildContext context, DateTime selectedDate, DateTime last) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: last,
+    );
+
+    return pickedDate ?? selectedDate;
   }
 
   @override
   Widget build(BuildContext context) {
-    formData["startDate"] = startDate;
-
     final MainController controller = Get.put(MainController());
     String lastDateFormat = DateFormat('yy.MM.dd').format(lastDate);
     String startDateFormat = DateFormat('yy.MM.dd').format(startDate);
-
-    Future<DateTime> selectDate(
-        BuildContext context, DateTime selectedDate, DateTime last) async {
-      final DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2020),
-        lastDate: last,
-      );
-
-      return pickedDate ?? selectedDate;
-    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -61,125 +97,113 @@ class _HistoryScreenState extends State<HistoryScreen> {
         preferredSize: Size.fromHeight(60),
         child: TopBar(),
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DateButton(
-                date: startDateFormat,
-                onPressed: () async {
-                  final DateTime temp = await selectDate(
-                    context,
-                    startDate,
-                    lastDate,
-                  );
-                  if (temp != startDate) {
-                    setState(() {
-                      startDate = temp;
-                    });
-                    formData["startDate"] = startDate;
-                  }
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Icon(
-                  Icons.swap_horiz_sharp,
-                  size: 35,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DateButton(
+                      date: startDateFormat,
+                      onPressed: () async {
+                        final DateTime temp =
+                            await selectDate(context, startDate, lastDate);
+                        if (temp != startDate) {
+                          setState(() {
+                            startDate = temp;
+                          });
+                          fetchReportData();
+                        }
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(Icons.swap_horiz_sharp, size: 35),
+                    ),
+                    DateButton(
+                      date: lastDateFormat,
+                      onPressed: () async {
+                        final DateTime temp =
+                            await selectDate(context, lastDate, DateTime.now());
+                        if (temp != lastDate) {
+                          setState(() {
+                            lastDate = temp;
+                          });
+                          fetchReportData();
+                        }
+                      },
+                    )
+                  ],
                 ),
-              ),
-              DateButton(
-                date: lastDateFormat,
-                onPressed: () async {
-                  final DateTime temp = await selectDate(
-                    context,
-                    lastDate,
-                    DateTime.now(),
-                  );
-                  if (temp != lastDate) {
-                    if (temp.isBefore(startDate)) {
-                      setState(() {
-                        lastDate = temp;
-                        startDate = lastDate.subtract(const Duration(days: 92));
-                      });
-                    } else {
-                      setState(() {
-                        lastDate = temp;
-                      });
-                    }
-                  }
-                },
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              buildStatusChoice(0, "전체"),
-              buildStatusChoice(1, "진행중"),
-              buildStatusChoice(2, "수용"),
-              buildStatusChoice(3, "불수용"),
-              buildStatusChoice(4, "취소"),
-              const SizedBox(
-                width: 40,
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 6,
-          ),
-          SizedBox(
-            child: Container(
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.black26, width: 0.7),
+                const SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    buildStatusChoice(0, "전체"),
+                    buildStatusChoice(1, "진행중"),
+                    buildStatusChoice(2, "수용"),
+                    buildStatusChoice(3, "불수용"),
+                    const SizedBox(width: 40),
+                  ],
                 ),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              landed
-                  ? const Padding(
-                      padding: EdgeInsets.only(top: 8, right: 20),
+                const SizedBox(height: 6),
+                SizedBox(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.black26, width: 0.7),
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, right: 20),
                       child: Text(
-                        "최근(10건)",
+                        "최근(${reportList.length}건)",
                         textAlign: TextAlign.end,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold),
                       ),
-                    )
-                  : const Text(""),
-            ],
-          ),
-          Column(
-            children: [
-              GestureDetector(
-                onTap: () => Get.to(() => {}),
-                child: const ScreenCard(
-                    title: "24.06.30 소방구역 불법 주정차 신고",
-                    contents: [
-                      Text(
-                        "진행중",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.indigo),
-                      )
-                    ]),
-              )
-            ],
-          )
-        ],
-      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: reportList.length,
+                    itemBuilder: (context, index) {
+                      final String dateString = reportList[index]['date'];
+                      final DateTime reportDate = DateFormat('yyyy-MM-dd')
+                          .parse(dateString.split(" ")[0]);
+
+                      return GestureDetector(
+                        onTap: () => Get.to(() => HistoryDetailScreen(
+                              reportData: reportList[index],
+                            )),
+                        child: ScreenCard(
+                          title:
+                              "${DateFormat('yy.MM.dd').format(reportDate)} ${reportList[index]['type']}",
+                          contents: [
+                            Text(
+                              mapProcessStatusToDisplay(
+                                  reportList[index]['processStatus']),
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
       bottomNavigationBar: BottomNavigation(
         onTap: (int index) async {
           controller.changePage(index);
@@ -193,9 +217,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          landed = false;
           selectedIndex = index;
         });
+        fetchReportData();
       },
       child: Text(
         title,

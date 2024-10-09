@@ -59,7 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         final res = await apiService.login(formData);
         if (res == 200) {
-          controller.changePage(0);
+          if (controller.memberRole.value == 'OFFICIAL') {
+            Get.offAllNamed('/officer');
+          } else {
+            controller.changePage(0);
+          }
         } else {
           Get.snackbar('오류', '${res["message"]}',
               snackPosition: SnackPosition.BOTTOM);

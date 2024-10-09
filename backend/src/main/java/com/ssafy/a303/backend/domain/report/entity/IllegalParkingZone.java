@@ -23,4 +23,5 @@ public class IllegalParkingZone {
 
     @Embedded
     private Location location;
+
 }
