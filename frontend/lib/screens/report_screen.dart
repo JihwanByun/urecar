@@ -26,7 +26,7 @@ class _ReportScreenState extends State<ReportScreen> {
   final MainController controller = Get.put(MainController());
   late bool isCompleted;
   final TextEditingController _textController = TextEditingController();
-
+  String textError = "";
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> result = widget.res;
@@ -35,11 +35,47 @@ class _ReportScreenState extends State<ReportScreen> {
         : base64Decode(result["secondImage"]);
     widget.isSecond == null ? isCompleted = true : isCompleted = false;
     void onButtonPressed() {
-      Get.to(() => CameraScreen(
-            reportId: result["reportId"],
-            reportContent: _textController.text,
-          ));
+      if (_textController.text == "") {
+        setState(() {
+          textError = "신고 내용을 작성해주세요,";
+        });
+      } else {
+        Get.to(() => CameraScreen(
+              reportId: result["reportId"],
+              reportContent: _textController.text,
+            ));
+      }
     }
+
+    DateTime dateTime =
+        DateFormat("yyyy-MM-dd HH:mm:ss").parse(result["datetime"]);
+    String date = DateFormat('yy.MM.dd').format(dateTime);
+    String datetime = DateFormat('yy.MM.dd HH:mm').format(dateTime);
+    List<String> statusList = [
+      'ONGOING',
+      'ANALYSIS_SUCCESS',
+      'ACCEPTED',
+      'UNDACCEPTED',
+      'CANCELLED_FIRST_FAILED',
+      'CANCELLED_SECOND_FAILED',
+    ];
+    List<String> stautsListKorean = [
+      '분석중',
+      '심사중',
+      '수용',
+      '불수용',
+      '요건 불충족',
+      '검증 실패',
+    ];
+    int idx = statusList.indexOf(result["processStatus"]);
+    List<Color> ColorList = [
+      Colors.blue.shade600,
+      Colors.blue.shade600,
+      Theme.of(context).primaryColor,
+      const Color(0x0fe32222),
+      const Color(0x0fe32222),
+      const Color(0x0fe32222)
+    ];
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -54,7 +90,7 @@ class _ReportScreenState extends State<ReportScreen> {
             children: [
               Row(children: [
                 Text(
-                  DateFormat('yy.MM.dd').format(result["date"]),
+                  date,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -64,7 +100,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   width: 15,
                 ),
                 Text(
-                  result["type"],
+                  result["type"] ?? '미지정',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -81,59 +117,75 @@ class _ReportScreenState extends State<ReportScreen> {
                   ),
                 ),
               ),
-              const ReportScreenListItem(title: "분류", content: "불법 주정차"),
-              const ReportScreenListItem(
-                  title: "신고 일시", content: "24.07.01 14:00"),
+              ReportScreenListItem(
+                  title: "분류", content: result["type"] ?? "미지정"),
+              ReportScreenListItem(title: "신고 일시", content: datetime),
               ReportScreenListItem(
                 title: "진행 상황",
-                content: "처리중",
-                fontColor: Theme.of(context).primaryColor,
+                content: stautsListKorean[idx],
+                fontColor: ColorList[idx],
               ),
               ReportScreenListItem(
                   title: isCompleted == false ? "2차 사진 촬영" : "신고 번호",
-                  content: isCompleted == false ? "가능" : "SPP-2042_1006454"),
-              isCompleted == false
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "신고 내용",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          ReportScreenContentInput(controller: _textController),
-                          ReportScreenTimerButton(
-                              onButtonPressed: onButtonPressed)
-                        ],
-                      ),
+                  content: isCompleted == false
+                      ? "가능"
+                      : "SPP-2042_${result["reportId"]}"),
+              isCompleted == true
+                  ? ReportScreenListItem(
+                      title: "담당자",
+                      content: result["officialName"] ?? "지정중",
                     )
-                  : Column(
+                  : Container(),
+              isCompleted == false
+                  ? Column(
                       children: [
                         const SizedBox(
-                          height: 25,
+                          height: 10,
                         ),
                         const Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(
-                              width: 13,
+                              width: 10,
                             ),
                             Text(
-                              "처리 결과",
+                              "신고 내용",
                               style: TextStyle(
-                                fontSize: 20,
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ReportScreenContentInput(controller: _textController),
+                        Row(
+                          children: [
+                            Text(
+                              textError,
+                              style: const TextStyle(color: Color(0xffe32222)),
+                            )
+                          ],
+                        ),
+                        ReportScreenTimerButton(
+                            onButtonPressed: onButtonPressed)
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "신고 내용",
+                              style: TextStyle(
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -142,15 +194,33 @@ class _ReportScreenState extends State<ReportScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        ReportScreenListItem(
-                          title: "처리 결과",
-                          content: "수용",
-                          fontColor: Theme.of(context).primaryColor,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              width: 350,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).cardColor,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  result["content"],
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                        const ReportScreenListItem(
-                          title: "담당자",
-                          content: "백승우",
-                        ),
+                        const SizedBox(
+                          height: 20,
+                        )
                       ],
                     ),
             ],

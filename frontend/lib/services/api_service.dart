@@ -162,7 +162,7 @@ class ApiService {
       );
 
       final responseData = response.data;
-      print(responseData);
+
       return responseData;
     } catch (e) {
       return e;
@@ -194,6 +194,9 @@ class ApiService {
       );
 
       final responseData = response.data;
+      print(responseData);
+      print(responseData["datetime"]);
+      print(responseData["type"]);
       return responseData;
     } catch (e) {
       return e;
