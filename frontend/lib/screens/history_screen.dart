@@ -5,7 +5,7 @@ import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/history_screen/date_button.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/screens/history_detail_screen.dart';
+import 'package:frontend/screens/report_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:frontend/services/api_service.dart';
@@ -91,6 +91,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
 
     return pickedDate ?? selectedDate;
+  }
+
+  Future<void> navigateToDetailScreen(String reportId) async {
+    final apiService = ApiService();
+    final response = await apiService.findSpecificReport(reportId);
+
+    if (response != null && response is Map<String, dynamic>) {
+      Get.to(() => ReportScreen(res: response));
+    } else {
+      Get.snackbar(
+        "오류",
+        "신고 세부 정보를 불러오는 중 문제가 발생했습니다.",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   @override
@@ -191,9 +206,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               .parse(dateTimeString);
 
                       return GestureDetector(
-                        onTap: () => Get.to(() => HistoryDetailScreen(
-                              reportData: reportList[index],
-                            )),
+                        onTap: () => navigateToDetailScreen(
+                            reportList[index]['reportId'].toString()),
                         child: ScreenCard(
                           title:
                               "${DateFormat('yy.MM.dd').format(reportDate)} ${reportList[index]['type'] ?? '타입 없음'}",

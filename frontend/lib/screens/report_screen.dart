@@ -209,7 +209,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
-                                  result["content"],
+                                  result["content"] ?? '내용없음',
                                   style: const TextStyle(
                                     fontSize: 16,
                                   ),
