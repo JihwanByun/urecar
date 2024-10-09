@@ -208,15 +208,11 @@ class ApiService {
   Future<dynamic> findReports(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/reports');
     try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'startDate': formData["startDate"],
-          'endDate': formData["endDate"],
-          'state': formData["state"]
-        },
-      );
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(formData));
       if (response.statusCode == 200) {
         if (response.body == "true") {
           return true;
@@ -273,7 +269,7 @@ class ApiService {
   }
 
   Future<dynamic> findSpecificReport(String id) async {
-    final url = Uri.parse('$baseUrl/reports/$id');
+    final url = Uri.parse('$baseUrl/reports/detail/$id');
 
     try {
       final response =
@@ -319,7 +315,7 @@ class ApiService {
       final response =
           await http.get(url, headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
         return responseData;
       } else {
         return {
@@ -333,7 +329,7 @@ class ApiService {
   }
 
   Future<dynamic> acceptReport(Map<String, dynamic> formData) async {
-    final url = Uri.parse('$baseUrl/reports');
+    final url = Uri.parse('$baseUrl/officials');
 
     try {
       final response = await http.post(

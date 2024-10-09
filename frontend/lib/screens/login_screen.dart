@@ -6,7 +6,6 @@ import 'package:frontend/components/common/validator_text.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/signup_screen.dart';
 import 'package:frontend/services/api_service.dart';
-import 'package:frontend/screens/officer_screen.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {

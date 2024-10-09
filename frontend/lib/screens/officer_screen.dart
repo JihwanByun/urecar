@@ -39,10 +39,10 @@ class _OfficerScreenState extends State<OfficerScreen> {
 
   Future<void> goToReportDetail(String reportId) async {
     final apiService = ApiService();
-    final specificReportData = await apiService.findSpecificReport(reportId);
+    final specificReportData =
+        await apiService.findSpecificOfficialReport(reportId);
 
     if (specificReportData != null) {
-      print(specificReportData);
       Get.to(() => OfficerDetailScreen(reportData: specificReportData));
     } else {
       Get.snackbar('오류', '상세 정보를 불러오는 중 문제가 발생했습니다.',
