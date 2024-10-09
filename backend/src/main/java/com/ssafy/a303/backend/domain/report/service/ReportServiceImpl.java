@@ -118,7 +118,7 @@ public class ReportServiceImpl implements ReportService {
                 .reportId(report.getId())
                 .officialName(report.getOfficialName() == null ? "처리중" : report.getOfficialName())
                 .secondImage(ImageHandler.urlToBytes(report.getSecondImage()))
-                .date(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
                 .processStatus(report.getProcessStatus())
                 .content(report.getContent())
                 .type(report.getType())
