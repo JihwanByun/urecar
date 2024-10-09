@@ -205,22 +205,36 @@ class ApiService {
     }
   }
 
-  Future<dynamic> findReports(Map<String, dynamic> formData) async {
-    final url = Uri.parse('$baseUrl/reports');
+  Future<dynamic> findReports(String memberId, String startDate, String endDate,
+      String? processStatus) async {
+    final queryParameters = {
+      'memberId': memberId,
+      'startDate': startDate,
+      'endDate': endDate,
+    };
+
+    if (processStatus != null) {
+      queryParameters['processStatus'] = processStatus;
+    }
+
+    final uri =
+        Uri.parse('$baseUrl/reports').replace(queryParameters: queryParameters);
 
     try {
-      final response = await http.post(url,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(formData));
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
       if (response.statusCode == 200) {
-        return response;
+        final List<dynamic> responseData = jsonDecode(response.body);
+        return responseData;
       } else {
-        return response;
+        return [];
       }
     } catch (e) {
-      return e;
+      return [];
     }
   }
 
