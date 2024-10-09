@@ -25,10 +25,17 @@ consumer_config = {
     'auto.commit.interval.ms': 5000,   # 5초마다 오프셋 자동 커밋
 }
 
+consumer = Consumer(consumer_config)
+consumer.subscribe([KAFKA_TOPIC])
+
 @app.on_event("startup")
 async def startup_event():
     logger.info("App startup initiated") 
     asyncio.create_task(consume_kafka())
+
+@app.on_event('shutdown')
+async def app_shutdown():
+    consumer.close()
 
 @app.get("/")
 async def root():
@@ -36,13 +43,11 @@ async def root():
 
 # Kafka 메시지 소비를 처리하는 비동기 함수
 async def consume_kafka():
-    consumer = Consumer(consumer_config)
-    consumer.subscribe([KAFKA_TOPIC])
-
+    current_loop = asyncio.get_running_loop()
     while True:
         print("polling")
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-        msg = consumer.poll(timeout=1.0)
+        msg = await current_loop.run_in_executor(None, consumer.poll, 1.0)
         if msg is None:
             continue
         if msg.error():
