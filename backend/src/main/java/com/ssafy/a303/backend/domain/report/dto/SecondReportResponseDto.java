@@ -14,6 +14,6 @@ public class SecondReportResponseDto {
     private String type;
     private String content;
     private ProcessStatus processStatus;
-    private byte[] secondImage;
+    private byte[] firstImage;
 
 }
