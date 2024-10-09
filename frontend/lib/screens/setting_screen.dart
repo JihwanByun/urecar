@@ -8,6 +8,8 @@ import 'package:frontend/screens/preparation_screen.dart';
 import 'package:frontend/screens/notification_setting_screen.dart';
 import 'package:frontend/screens/my_report_screen.dart';
 import 'package:frontend/screens/member_withdraw_screen.dart';
+import 'package:frontend/screens/gallery_screen.dart';
+import 'package:frontend/screens/update_member_screen.dart';
 import 'package:get/get.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -39,7 +41,7 @@ class _SettingScreenState extends State<SettingScreen> {
               child: GestureDetector(
                 onTap: () {
                   Get.to(() => controller.memberName.value != ""
-                      ? const PreparationScreen()
+                      ? const UpdateMemberScreen()
                       : const LoginScreen());
                 },
                 child: Row(
@@ -115,7 +117,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 SettingScreenItem(
                   title: "내 저장소",
-                  screen: PreparationScreen(),
+                  screen: GalleryScreen(),
                 ),
                 SettingScreenItem(
                   title: "회원 탈퇴",
