@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/officer_detail_screen.dart';
 import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/controller.dart';
@@ -36,6 +37,19 @@ class _OfficerScreenState extends State<OfficerScreen> {
     });
   }
 
+  Future<void> goToReportDetail(String reportId) async {
+    final apiService = ApiService();
+    final specificReportData = await apiService.findSpecificReport(reportId);
+
+    if (specificReportData != null) {
+      print(specificReportData);
+      Get.to(() => OfficerDetailScreen(reportData: specificReportData));
+    } else {
+      Get.snackbar('오류', '상세 정보를 불러오는 중 문제가 발생했습니다.',
+          snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,14 +84,15 @@ class _OfficerScreenState extends State<OfficerScreen> {
                     itemCount: reportList.length,
                     itemBuilder: (context, index) {
                       final String dateString = reportList[index]['date'];
+
                       final DateTime reportDate =
                           DateFormat('yyyy-MM-dd HH:mm:ss:SSS')
                               .parse(dateString);
 
                       return GestureDetector(
-                        onTap: () => Get.to(() => HistoryDetailScreen(
-                              reportData: reportList[index],
-                            )),
+                        onTap: () => goToReportDetail(
+                          reportList[index]['reportId'].toString(),
+                        ),
                         child: ScreenCard(
                           title:
                               "${DateFormat('yy.MM.dd').format(reportDate)} ${reportList[index]['type']}",
