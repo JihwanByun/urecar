@@ -207,10 +207,7 @@ class ApiService {
 
   Future<dynamic> findReports(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/reports');
-    String formattedStartDate =
-        DateFormat('yyyy-MM-dd').format(formData["startDate"]);
-    String formattedLastDate =
-        DateFormat('yyyy-MM-dd').format(formData["lastDate"]);
+
     try {
       final response = await http.post(url,
           headers: {
