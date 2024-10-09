@@ -1,5 +1,6 @@
 package com.ssafy.a303.notification.dto;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,6 +10,7 @@ public class NotificationSendToFcmServerDto {
 
     private Long memberId;
     private Long contentId;
+    private LocalDateTime createAt;
     private String title;
     private String content;
     private String clientToken;

@@ -4,11 +4,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/urecar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://mysql:3308/urecar-notification?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ssafy
     password: ssafy
 
@@ -16,5 +16,6 @@ spring:
 server:
   port: 8082
 
-firebase:
-  key-path: service-account.json
+
+notification:
+  key-path: /home/ubuntu/docker/notification/service-account.json

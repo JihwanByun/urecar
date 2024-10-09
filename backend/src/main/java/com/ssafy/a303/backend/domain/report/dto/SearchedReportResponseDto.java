@@ -10,7 +10,7 @@ public class SearchedReportResponseDto {
 
     private long reportId;
     private String type;
-    private String date;
+    private String datetime;
     private ProcessStatus processStatus;
 
 }

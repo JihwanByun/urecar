@@ -1,10 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/history_screen/date_button.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/screens/history_detail_screen.dart';
+import 'package:frontend/screens/report_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:frontend/services/api_service.dart';
@@ -32,24 +33,31 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Future<void> fetchReportData() async {
     final apiService = ApiService();
-    final formData = {
-      "startDate": DateFormat('yyyy-MM-dd').format(startDate),
-      "endDate": DateFormat('yyyy-MM-dd').format(lastDate),
-      "processStatus": getProcessStatus(selectedIndex),
-    };
+    final MainController controller = Get.put(MainController());
+    final String memberId = controller.memberId.value.toString();
+    final String startDateFormatted =
+        DateFormat('yyyy-MM-dd').format(startDate);
+    final String endDateFormatted = DateFormat('yyyy-MM-dd').format(lastDate);
+    final String? processStatus = getProcessStatus(selectedIndex);
 
-    final responseData = await apiService.findReports(formData);
-    print(responseData);
+    final response = await apiService.findReports(
+      memberId,
+      startDateFormatted,
+      endDateFormatted,
+      processStatus,
+    );
 
     setState(() {
-      if (responseData is List) {
-        reportList = List<Map<String, dynamic>>.from(responseData);
+      if (response is List && response.isNotEmpty) {
+        reportList = List<Map<String, dynamic>>.from(response);
+      } else {
+        reportList = [];
       }
       isLoading = false;
     });
   }
 
-  String getProcessStatus(int index) {
+  String? getProcessStatus(int index) {
     switch (index) {
       case 1:
         return "ONGOING";
@@ -58,7 +66,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       case 3:
         return "UNACCEPTED";
       default:
-        return "";
+        return null;
     }
   }
 
@@ -83,6 +91,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
 
     return pickedDate ?? selectedDate;
+  }
+
+  Future<void> navigateToDetailScreen(String reportId) async {
+    final apiService = ApiService();
+    final response = await apiService.findSpecificReport(reportId);
+
+    if (response != null && response is Map<String, dynamic>) {
+      Get.to(() => ReportScreen(res: response));
+    } else {
+      Get.snackbar(
+        "오류",
+        "신고 세부 정보를 불러오는 중 문제가 발생했습니다.",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   @override
@@ -176,17 +199,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   child: ListView.builder(
                     itemCount: reportList.length,
                     itemBuilder: (context, index) {
-                      final String dateString = reportList[index]['date'];
-                      final DateTime reportDate = DateFormat('yyyy-MM-dd')
-                          .parse(dateString.split(" ")[0]);
+                      final String dateTimeString =
+                          reportList[index]['datetime'];
+                      final DateTime reportDate =
+                          DateFormat('yyyy-MM-dd HH:mm:ss:SSS')
+                              .parse(dateTimeString);
 
                       return GestureDetector(
-                        onTap: () => Get.to(() => HistoryDetailScreen(
-                              reportData: reportList[index],
-                            )),
+                        onTap: () => navigateToDetailScreen(
+                            reportList[index]['reportId'].toString()),
                         child: ScreenCard(
                           title:
-                              "${DateFormat('yy.MM.dd').format(reportDate)} ${reportList[index]['type']}",
+                              "${DateFormat('yy.MM.dd').format(reportDate)} ${reportList[index]['type'] ?? '타입 없음'}",
                           contents: [
                             Text(
                               mapProcessStatusToDisplay(
@@ -201,7 +225,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       );
                     },
                   ),
-                )
+                ),
               ],
             ),
       bottomNavigationBar: BottomNavigation(

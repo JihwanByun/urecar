@@ -1,12 +1,16 @@
-from fastapi import FastAPI, File, UploadFile, BackgroundTasks
-from fastapi.responses import JSONResponse
-from PIL import Image
-import io
 from confluent_kafka import Consumer, KafkaError
 import asyncio
 import logging
+from fastapi import FastAPI
+import torch
+import ultralytics
+
+from database import SessionLocal
+from model import Report, ProcessStatus
+
 
 app = FastAPI()
+
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -28,14 +32,14 @@ consumer_config = {
 consumer = Consumer(consumer_config)
 consumer.subscribe([KAFKA_TOPIC])
 
-@app.on_event("startup")
-async def startup_event():
-    logger.info("App startup initiated") 
-    asyncio.create_task(consume_kafka())
-
-@app.on_event('shutdown')
-async def app_shutdown():
-    consumer.close()
+# @app.on_event("startup")
+# async def startup_event():
+#     logger.info("App startup initiated")
+#     asyncio.create_task(consume_kafka())
+#
+# @app.on_event('shutdown')
+# async def app_shutdown():
+#     consumer.close()
 
 @app.get("/")
 async def root():
@@ -55,33 +59,50 @@ async def consume_kafka():
                 print(f"Kafka error: {msg.error()}")
             continue
 
+            # 메시지의 각 파티션에 대해 처리
+        for partition, messages in msg.items():
+            for message in messages:
+
+                content = message.value
+                report_id = content["reportId"]
+                first_image_path = content["firstImage"]
+
+                image_data = read_image(first_image_path)
+
+                with torch.no_grad():
+                    evaluation_result = model(image_data).numpy()
+                    update_process_status(report_id, evaluation_result)
         # Kafka 메시지 처리
         print(f"Received message: {msg.value()}")
         await asyncio.sleep(1)  # 비동기 작업이므로 조금 대기
 
-async def validate_image(file: UploadFile = File(...)):
-    try:
-        # 이미지 파일 읽기
-        contents = await file.read()
-        image = Image.open(io.BytesIO(contents))
+model = torch.load('/home/ubuntu/docker/aitrain43_best.pt')
 
-        # AI 모델을 통해 이미지 검증 (예시, 실제 검증 코드 작성)
-        result = image
+def update_process_status(report_id, evaluation_result):
+    db = SessionLocal()
+    report = db.query(Report).filter(Report.report_id == report_id).first()
 
-        return JSONResponse(content={"result": result})
+    if report is None:
+        print(f"Report with ID {report_id} not found.")
+        return
 
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=400)
+    # 평가 결과에 따라 process_status 업데이트
+    if evaluation_result == "ACCEPTED":
+        report.process_status = ProcessStatus.ACCEPTED
+    else:
+        report.process_status = ProcessStatus.UNACCEPTED  # 예시로 다른 상태로 변경
 
-    # try:
-    #     # 이미지 파일 읽기
-    #     contents = await file.read()
-    #     image = Image.open(io.BytesIO(contents))
+    db.commit()
+    db.refresh(report)
+    db.close()
 
-    #     # AI 모델을 통해 이미지 검증 (예시, 실제 검증 코드 작성)
-    #     result = image
+async def process_message(image_data):
+    return model(image_data).numpy()
 
-    #     return JSONResponse(content={"result": result})
 
-    # except Exception as e:
-    #     return JSONResponse(content={"error": str(e)}, status_code=400)
+def read_image(image_path):
+    from PIL import Image
+    import numpy as np
+
+    image = Image.open(image_path)
+    return np.array(image)

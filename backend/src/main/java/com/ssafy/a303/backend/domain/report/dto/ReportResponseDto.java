@@ -11,8 +11,8 @@ public class ReportResponseDto {
     private long reportId;
     private String type;
     private String content;
-    private String date;
+    private String datetime;
     private ProcessStatus processStatus;
-    private String firstImage;
+    private byte[] firstImage;
 
 }
