@@ -60,7 +60,7 @@ public class ReportController {
     @GetMapping
     public ResponseEntity<List<SearchedReportResponseDto>> searchReport(
             @RequestParam Long memberId,
-            @RequestParam ProcessStatus processStatus,
+            @RequestParam(required = false) ProcessStatus processStatus,
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate
             ) {
