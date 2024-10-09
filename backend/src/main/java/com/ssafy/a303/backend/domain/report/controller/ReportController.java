@@ -1,19 +1,27 @@
 package com.ssafy.a303.backend.domain.report.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryRequestDto;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportCreateResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SearchedReportResponseDto;
+import com.ssafy.a303.backend.domain.report.dto.SearchedReportsRequestDto;
+import com.ssafy.a303.backend.domain.report.dto.SecondReportResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDto;
+import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
-import java.util.Arrays;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +43,23 @@ public class ReportController {
     ) {
         ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
 
-        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+//        reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
         return ResponseEntity.ok().body(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<SearchedReportResponseDto>> getReports(
+            @RequestParam ProcessStatus processStatus,
+            @RequestParam @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul") LocalDate startDate,
+            @RequestParam @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul") LocalDate endDate
+    ) {
+        return ResponseEntity.ok().body(reportService.searchReports(
+                SearchedReportsRequestDto.builder()
+                        .processStatus(processStatus)
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .build()
+        ));
     }
 
     @PostMapping("/secondImage")
@@ -47,7 +70,7 @@ public class ReportController {
         return ResponseEntity.ok().body(reportService.uploadSecondReportImage(uploadSecondReportImageRequestDto, file));
     }
 
-    @GetMapping("/{reportId}")
+    @GetMapping("/detail/{reportId}")
     public ResponseEntity<ReportResponseDto> getReport(@PathVariable Long reportId) {
         return ResponseEntity.ok().body(reportService.getReport(reportId));
     }
