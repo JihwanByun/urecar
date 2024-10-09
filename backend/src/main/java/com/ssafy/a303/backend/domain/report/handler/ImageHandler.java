@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimeZone;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,14 +28,16 @@ public class ImageHandler {
     }
 
     public static ImageInfoDto save(Long memberId, MultipartFile image) {
-        String fileName = new SimpleDateFormat("yyyyMMddkkmmss")
-                .format(new Date(Long.parseLong(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddkkmmss");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+
+        String fileName = sdf.format(new Date(Long.parseLong(String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()))));
         File folder = new File(imageUrl + memberId);
         if (!folder.exists() && !folder.mkdir()) {
                 throw new CustomException(ErrorCode.CANT_FOUND_FOLDER);
         }
 
-        String fullPathName =  folder.getPath() + "/" + fileName + ".jpg";
+        String fullPathName =  folder.getPath() + "\\" + fileName + ".jpg";
         try {
             image.transferTo(new File(fullPathName));
             return ImageInfoDto.builder()
