@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/notification_screen.dart';
+import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
 
 class TopBar extends StatelessWidget {

@@ -108,8 +108,6 @@ class ApiService {
         return responseData;
       }
     } catch (e) {
-      print(e);
-
       return e;
     }
   }
@@ -196,9 +194,7 @@ class ApiService {
       );
 
       final responseData = response.data;
-      print(responseData);
-      print(responseData["datetime"]);
-      print(responseData["type"]);
+
       return responseData;
     } catch (e) {
       return e;
@@ -356,6 +352,20 @@ class ApiService {
           'status': response.statusCode
         };
       }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> findNotifications() async {
+    final int memberId = controller.memberId.value;
+    final url = Uri.parse('$baseUrl//notifications/$memberId');
+
+    try {
+      final response =
+          await http.get(url, headers: {'Content-Type': 'application/json'});
+      final responseData = response.body;
+      return responseData;
     } catch (e) {
       return e;
     }

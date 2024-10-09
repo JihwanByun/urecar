@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/notification_screen/notification_screen_cart.dart';
-import 'package:frontend/controller.dart';
+import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -11,23 +11,23 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  final NotificationController notificationController =
-      Get.put(NotificationController());
+  final apiService = ApiService();
+  dynamic notifications = [];
+  Future<void> _loadNotifications() async {
+    final response = await apiService.findNotifications();
+    print(response);
+
+    notifications = response;
+  }
 
   @override
   void initState() {
     super.initState();
-    loadNotificationsData();
-  }
-
-  Future<void> loadNotificationsData() async {
-    await notificationController.loadNotifications();
-    setState(() {});
+    _loadNotifications();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> notifications = notificationController.notificationList;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: notifications.isEmpty
@@ -35,9 +35,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
           : ListView.builder(
               itemCount: notifications.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: NotificationScreenCart(content: notifications[index]),
+                return const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: NotificationScreenCart(content: "1"),
                 );
               },
             ),

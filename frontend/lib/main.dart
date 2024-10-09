@@ -64,11 +64,7 @@ Future<void> main() async {
     controller.fcmToken.value = storedToken;
   }
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    final NotificationController notificationController =
-        Get.put(NotificationController());
     print('포어그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
-    notificationController.addNotification(
-        message.notification?.title, message.notification?.body);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -76,10 +72,6 @@ Future<void> main() async {
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  final NotificationController notificationController =
-      Get.put(NotificationController());
-  notificationController.addNotification(
-      message.notification?.title, message.notification?.body);
   print('백그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
 }
 
