@@ -7,10 +7,11 @@ import 'package:frontend/screens/check_image_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:frontend/controller.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  final int? reportId;
+  final String? reportContent;
+  const CameraScreen({super.key, this.reportId, this.reportContent});
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -80,7 +81,15 @@ class _CameraScreenState extends State<CameraScreen> {
               future: _initializeControllerFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return CameraPreview(_controller!);
+                  final double aspectRatio =
+                      _controller!.value.previewSize!.height /
+                          _controller!.value.previewSize!.width;
+                  return Center(
+                    child: AspectRatio(
+                      aspectRatio: aspectRatio,
+                      child: CameraPreview(_controller!),
+                    ),
+                  );
                 } else {
                   return const Spinner();
                 }
@@ -114,6 +123,8 @@ class _CameraScreenState extends State<CameraScreen> {
                               imagePath: image.path,
                               longitude: longitude,
                               latitude: latitude,
+                              reportContent: widget.reportContent,
+                              reportId: widget.reportId,
                             ));
                       } catch (e) {
                         print(e);

@@ -14,6 +14,7 @@ import 'package:frontend/components/common/spinner.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/screens/officer_screen.dart';
 
 late List<CameraDescription> cameras;
 
@@ -49,17 +50,12 @@ Future<void> main() async {
 
   await dotenv.load(fileName: 'assets/config/.env');
 
-  final fcmToken = await FirebaseMessaging.instance.getToken(
-      vapidKey:
-          "BDhKNwXXy_46EWu4VB9JscpR2qoRj_mSqpmp_cKVSJ1g7dmU4g48YRk0i5jhjpTixK9IlA5kaTNCUwe__vP2dY4");
-  if (fcmToken != null) {
-    controller.fcmToken.value = fcmToken;
-  }
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? storedToken = prefs.getString('fcm_token');
-  print(storedToken);
   if (storedToken == null || storedToken.isEmpty) {
-    String? newToken = await FirebaseMessaging.instance.getToken();
+    String? newToken = await FirebaseMessaging.instance.getToken(
+        vapidKey:
+            "BDhKNwXXy_46EWu4VB9JscpR2qoRj_mSqpmp_cKVSJ1g7dmU4g48YRk0i5jhjpTixK9IlA5kaTNCUwe__vP2dY4");
     if (newToken != null) {
       prefs.setString('fcm_token', newToken);
       controller.fcmToken.value = newToken;
@@ -68,7 +64,11 @@ Future<void> main() async {
     controller.fcmToken.value = storedToken;
   }
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    final NotificationController notificationController =
+        Get.put(NotificationController());
     print('포어그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
+    notificationController.addNotification(
+        message.notification?.title, message.notification?.body);
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -76,6 +76,10 @@ Future<void> main() async {
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  final NotificationController notificationController =
+      Get.put(NotificationController());
+  notificationController.addNotification(
+      message.notification?.title, message.notification?.body);
   print('백그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
 }
 
@@ -113,6 +117,7 @@ class App extends StatelessWidget {
         GetPage(name: '/setting', page: () => const SettingScreen()),
         GetPage(name: '/landing', page: () => LandingScreen()),
         GetPage(name: '/login', page: () => const LoginScreen()),
+        GetPage(name: '/officer', page: () => const OfficerScreen()),
       ],
     );
   }
