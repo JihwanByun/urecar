@@ -5,13 +5,19 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.ssafy.a303.notification.dto.NotificationRequestDto;
+import com.ssafy.a303.notification.dto.NotificationResponseDto;
 import com.ssafy.a303.notification.dto.NotificationSendToFcmServerDto;
+import com.ssafy.a303.notification.entity.ResultNotification;
+import com.ssafy.a303.notification.repository.ResultNotificationRepository;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class NotificationServiceImpl implements NotificationService {
+public class ResultNotificationServiceImpl implements ResultNotificationService {
 
     private final static String TITLE = "UreCar";
     private final static String FIRST_SUCCESS = "첫 번째 사진이 수용되었습니다.";
@@ -19,6 +25,11 @@ public class NotificationServiceImpl implements NotificationService {
     private final static String SECOND_SUCCESS = "두 번째 사진이 수용되었습니다.";
     private final static String SECOND_FAILURE = "두 번째 사진이 불수용되었습니다.";
 
+    private final ResultNotificationRepository resultNotificationRepository;
+
+    public ResultNotificationServiceImpl(ResultNotificationRepository notificationRepository) {
+        this.resultNotificationRepository = notificationRepository;
+    }
 
     @Override
     public void sendFirstNotification(NotificationRequestDto dto) {
@@ -58,6 +69,39 @@ public class NotificationServiceImpl implements NotificationService {
                 .content(SECOND_FAILURE)
                 .clientToken(dto.getToken())
                 .build());
+    }
+
+    @Override
+    public List<NotificationResponseDto> getNotifications(long memberId) {
+        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalse(memberId);
+        List<NotificationResponseDto> dtos = new ArrayList<>();
+        for(ResultNotification resultNotification : notifications) {
+            dtos.add(
+                    NotificationResponseDto.builder()
+                            .notificationId(resultNotification.getId())
+                            .content(resultNotification.getContent())
+                            .datetime(resultNotification.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                            .build()
+            );
+        }
+
+        return dtos;
+    }
+
+    @Override
+    public void deleteByNotificationId(long notificationId) {
+        ResultNotification resultNotification = resultNotificationRepository.findById(notificationId);
+        resultNotification.removeNotification();
+        resultNotificationRepository.save(resultNotification);
+    }
+
+    @Override
+    public void deleteByMemberId(long memberId) {
+        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalse(memberId);
+        for(ResultNotification resultNotifications : notifications) {
+            resultNotifications.removeNotification();
+            resultNotificationRepository.save(resultNotifications);
+        }
     }
 
     public void sendByToken(NotificationSendToFcmServerDto dto) {
