@@ -34,8 +34,8 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @Timed(value = "first_image_upload_time", description = "Time taken to execute create report method")
     @PostMapping
+    @Timed(value = "first.image.upload.time", description = "Time taken to execute create report method")
     public ResponseEntity<ReportCreateResponseDto> createReport(
             @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
             @RequestPart(value = "file") MultipartFile file
@@ -46,8 +46,8 @@ public class ReportController {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @Timed(value = "second_image_upload_time", description = "Time taken to execute add second image method")
     @PostMapping("/secondImage")
+    @Timed(value = "second.image.upload.time", description = "Time taken to execute add second image method")
     public ResponseEntity<SecondReportResponseDto> uploadSecondReportImage(
             @RequestPart(value = "dto") uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto,
             @RequestPart(value = "file") MultipartFile file
@@ -56,11 +56,13 @@ public class ReportController {
     }
 
     @GetMapping("/detail/{reportId}")
+    @Timed(value = "get.report")
     public ResponseEntity<ReportResponseDto> getReport(@PathVariable Long reportId) {
         return ResponseEntity.ok().body(reportService.getReport(reportId));
     }
 
     @PostMapping("/gallery")
+    @Timed(value = "get.gallery")
     public ResponseEntity<GalleryResponseDto> getGallery(@RequestBody GalleryRequestDto galleryRequestDto) {
         return ResponseEntity.ok().body(reportService.getGallery(galleryRequestDto.getMemberId()));
     }
