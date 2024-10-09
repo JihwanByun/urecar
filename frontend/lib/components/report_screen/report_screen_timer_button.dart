@@ -4,7 +4,9 @@ import 'package:frontend/components/common/button.dart';
 
 class ReportScreenTimerButton extends StatefulWidget {
   final VoidCallback onButtonPressed;
-  const ReportScreenTimerButton({super.key, required this.onButtonPressed});
+  final int seconds;
+  const ReportScreenTimerButton(
+      {super.key, required this.onButtonPressed, required this.seconds});
 
   @override
   State<ReportScreenTimerButton> createState() =>
@@ -19,32 +21,42 @@ class _ReportScreenTimerButtonState extends State<ReportScreenTimerButton> {
   @override
   void initState() {
     super.initState();
-    _startLoading();
+    if (widget.seconds > 65) {
+      setState(() {
+        _progressValue = 2.0;
+        _isButtonEnabled = true;
+      });
+    } else {
+      _startLoading();
+    }
   }
 
   void _startLoading() {
     const oneSec = Duration(seconds: 1);
     int counter = 0;
-
-    _timer = Timer.periodic(oneSec, (Timer timer) {
-      if (counter < 60) {
-        setState(() {
-          _progressValue = counter / 60;
-        });
-        counter++;
-      } else {
-        setState(() {
-          _progressValue = 1.0;
-          _isButtonEnabled = true;
-        });
-        _timer.cancel();
-      }
-    });
+    if (widget.seconds < 65) {
+      _timer = Timer.periodic(oneSec, (Timer timer) {
+        if (counter < (65 - widget.seconds)) {
+          setState(() {
+            _progressValue = counter / (65 - widget.seconds);
+          });
+          counter++;
+        } else {
+          setState(() {
+            _progressValue = 1.0;
+            _isButtonEnabled = true;
+          });
+          _timer.cancel();
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    if (_timer.isActive) {
+      _timer.cancel();
+    }
     super.dispose();
   }
 
@@ -55,12 +67,14 @@ class _ReportScreenTimerButtonState extends State<ReportScreenTimerButton> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LinearProgressIndicator(
-            value: _progressValue,
-            backgroundColor: Colors.grey[200],
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-            minHeight: 8,
-          ),
+          _progressValue != 2.0
+              ? LinearProgressIndicator(
+                  value: _progressValue,
+                  backgroundColor: Colors.grey[200],
+                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                  minHeight: 8,
+                )
+              : const SizedBox(),
           const SizedBox(height: 16),
           Button(
               text: "2차 사진 촬영하기",

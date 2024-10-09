@@ -34,6 +34,11 @@ class _ReportScreenState extends State<ReportScreen> {
         ? base64Decode(result["firstImage"])
         : base64Decode(result["secondImage"]);
     widget.isSecond == null ? isCompleted = true : isCompleted = false;
+
+    DateTime dateTime =
+        DateFormat("yyyy-MM-dd HH:mm:ss").parse(result["datetime"]);
+    String date = DateFormat('yy.MM.dd').format(dateTime);
+    String datetime = DateFormat('yy.MM.dd HH:mm').format(dateTime);
     void onButtonPressed() {
       if (_textController.text == "") {
         setState(() {
@@ -47,10 +52,6 @@ class _ReportScreenState extends State<ReportScreen> {
       }
     }
 
-    DateTime dateTime =
-        DateFormat("yyyy-MM-dd HH:mm:ss").parse(result["datetime"]);
-    String date = DateFormat('yy.MM.dd').format(dateTime);
-    String datetime = DateFormat('yy.MM.dd HH:mm').format(dateTime);
     List<String> statusList = [
       'ONGOING',
       'ANALYSIS_SUCCESS',
@@ -168,7 +169,11 @@ class _ReportScreenState extends State<ReportScreen> {
                           ],
                         ),
                         ReportScreenTimerButton(
-                            onButtonPressed: onButtonPressed)
+                          onButtonPressed: onButtonPressed,
+                          seconds:
+                              dateTime.difference(DateTime.now()).inSeconds -
+                                  32400,
+                        )
                       ],
                     )
                   : Column(
