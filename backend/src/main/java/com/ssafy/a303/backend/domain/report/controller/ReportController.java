@@ -13,6 +13,7 @@ import com.ssafy.a303.backend.domain.report.dto.uploadSecondReportImageRequestDt
 import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
 import com.ssafy.a303.backend.domain.report.service.ReportService;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
+    @Timed(value = "first_image_upload.method.time", description = "Time taken to execute create report method")
     @PostMapping
     public ResponseEntity<ReportCreateResponseDto> createReport(
             @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
@@ -44,6 +46,7 @@ public class ReportController {
         return ResponseEntity.ok().body(responseDto);
     }
 
+    @Timed(value = "second_image_upload.method.time", description = "Time taken to execute add second image method")
     @PostMapping("/secondImage")
     public ResponseEntity<SecondReportResponseDto> uploadSecondReportImage(
             @RequestPart(value = "dto") uploadSecondReportImageRequestDto uploadSecondReportImageRequestDto,
