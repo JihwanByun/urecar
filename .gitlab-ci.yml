@@ -42,6 +42,7 @@ backend-build-job:       # This job runs in the build stage, which runs first.
     - chmod +x ./gradlew 
     - ./gradlew wrapper
     - ./gradlew clean build
+    - docker image prune -af
     - echo "backend build end"
   artifacts:
     paths:
@@ -52,7 +53,7 @@ backend-build-job:       # This job runs in the build stage, which runs first.
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-        - backend/**
+        - backend/**/*
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -80,7 +81,7 @@ backend-docker-build-job:
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-        - backend/**
+        - backend/**/*
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -100,7 +101,7 @@ backend-deploy-job:      # This job runs in the deploy stage.
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-        - backend/**
+        - backend/**/*
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -128,7 +129,7 @@ ai-docker-build-job:
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-        - ai/**
+        - ai/**/*
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -145,7 +146,7 @@ ai-deploy-job:
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-        - ai/**
+        - ai/**/*
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -172,9 +173,9 @@ outbox-build-job:       # This job runs in the build stage, which runs first.
   before_script:
     - echo "Starting CI/CD pipeline"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-        - outbox-kafka-producer/**
+        - outbox-kafka-producer/**/*
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -200,9 +201,9 @@ outbox-docker-build-job:
   after_script:
     - docker logout
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-        - outbox-kafka-producer/**
+        - outbox-kafka-producer/**/*
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
@@ -222,9 +223,91 @@ outbox-deploy-job:      # This job runs in the deploy stage.
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       changes:
-        - outbox-kafka-producer/**
+        - outbox-kafka-producer/**/*
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
+
+
+
+# --------------------------------
+
+
+
+
+notification-build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  image: openjdk:21-jdk-slim
+  script:
+    - echo "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "notification build start"
+    - ls -la    
+    - cd notification
+    - ls -la   
+    - chmod +x ./gradlew 
+    - ./gradlew wrapper
+    - ./gradlew clean build
+    - echo "notification build end"
+  artifacts:
+    paths:
+      - notification/build/libs/*.jar  # JAR 파일을 빌드 아티팩트로 저장
+    expire_in: 1 week
+  before_script:
+    - echo "Starting CI/CD pipeline"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - notification/**/*
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+
+notification-docker-build-job:
+  image: docker:latest
+  stage: docker-build
+  script:
+    - echo "notification docker build start"
+    - cd notification
+    - echo "whoami"
+    - whoami
+    - echo "ls -la"
+    - ls -la    
+    - echo "pwd"
+    - pwd
+    - export TAG=$(date +%Y%m%d%H%M%S)
+    - docker build -t imjunhyuk/urecar_notification:$TAG .
+    - docker tag imjunhyuk/urecar_notification:$TAG imjunhyuk/urecar_notification:latest
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Docker Hub에 로그인
+    - docker push imjunhyuk/urecar_notification:latest  # Docker Hub로 이미지 푸시
+    - docker push imjunhyuk/urecar_notification:$TAG
+    - echo "notification docker build end"
+  after_script:
+    - docker logout
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - notification/**/*
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+
+notification-deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script:
+    - echo "notification deploy start"
+    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io  "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD &&
+      docker pull imjunhyuk/urecar_notification:latest &&  
+      docker-compose -f /home/ubuntu/docker/notification/docker-compose.yml up -d " # image pull from hub and docker-compose로 컨테이너 실행
+
+#    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose down"
+#    - ssh -o StrictHostKeyChecking=no ubuntu@j11a303.p.ssafy.io "cd /home/ubuntu/docker/backend && docker-compose up -d"
+    - echo "notification deploy end"
+  after_script:
+    - docker logout
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - notification/**/*
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+
 #sonarqube-check:
 #  image: gradle:jdk21
 #  stage: sonar
