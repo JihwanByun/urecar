@@ -84,6 +84,7 @@ public class ReportServiceImpl implements ReportService {
                 .createdAt(imageInfoDto.getCreateDateTime())
                 .longitude(requestDto.getLongitude())
                 .latitude(requestDto.getLatitude())
+                .type(requestDto.getType())
                 .processStatus(ProcessStatus.ONGOING)
                 .build();
 
