@@ -9,6 +9,7 @@ import com.ssafy.a303.notification.dto.NotificationResponseDto;
 import com.ssafy.a303.notification.dto.NotificationSendToFcmServerDto;
 import com.ssafy.a303.notification.entity.ResultNotification;
 import com.ssafy.a303.notification.repository.ResultNotificationRepository;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                     .title(TITLE)
                     .content(FIRST_SUCCESS)
                     .clientToken(dto.getToken())
+                    .createAt(LocalDateTime.now())
                     .build());
             return;
         }
@@ -48,6 +50,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .title(TITLE)
                 .content(FIRST_FAILURE)
                 .clientToken(dto.getToken())
+                .createAt(LocalDateTime.now())
                 .build());
     }
 
@@ -59,6 +62,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                     .title(TITLE)
                     .content(SECOND_SUCCESS)
                     .clientToken(dto.getToken())
+                    .createAt(LocalDateTime.now())
                     .build());
             return;
         }
@@ -68,6 +72,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .title(TITLE)
                 .content(SECOND_FAILURE)
                 .clientToken(dto.getToken())
+                .createAt(LocalDateTime.now())
                 .build());
     }
 
@@ -119,6 +124,12 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
             log.info("FCMexcept-" + e.getMessage());
         }
 
+        resultNotificationRepository.save(ResultNotification.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .createdAt(dto.getCreateAt())
+                .memberId(dto.getMemberId())
+                .build());
     }
 
 }
