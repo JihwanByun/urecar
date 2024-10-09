@@ -52,10 +52,11 @@ public class Report {
     private ProcessStatus processStatus;
 
     @Builder
-    public Report(Member member, String firstImage,
+    public Report(Member member, String firstImage, String type,
             LocalDateTime createdAt, double latitude, double longitude, ProcessStatus processStatus) {
         this.member = member;
         this.firstImage = firstImage;
+        this.type = type;
         this.createdAt = createdAt;
         this.latitude = latitude;
         this.longitude = longitude;
