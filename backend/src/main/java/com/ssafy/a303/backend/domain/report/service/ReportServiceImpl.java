@@ -55,7 +55,7 @@ public class ReportServiceImpl implements ReportService {
         return ReportResponseDto.builder()
                 .reportId(report.getId())
                 .content(report.getContent())
-                .date(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
                 .type(report.getType())
                 .firstImage(ImageHandler.urlToBytes(report.getFirstImage()))
                 .processStatus(report.getProcessStatus())
