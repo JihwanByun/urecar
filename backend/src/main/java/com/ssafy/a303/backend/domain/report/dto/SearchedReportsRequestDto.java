@@ -2,16 +2,19 @@ package com.ssafy.a303.backend.domain.report.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ssafy.a303.backend.domain.report.entity.ProcessStatus;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@Builder
+@ToString
 public class SearchedReportsRequestDto {
 
     private ProcessStatus processStatus;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss:SSS", timezone = "Asia/Seoul")
-    private String startDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss:SSS", timezone = "Asia/Seoul")
-    private String endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
 }
