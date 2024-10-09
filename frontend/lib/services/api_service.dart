@@ -5,6 +5,7 @@ import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio_pkg;
+import 'package:intl/intl.dart';
 
 class ApiService {
   final MainController controller = Get.put(MainController());
@@ -73,6 +74,7 @@ class ApiService {
         controller.memberId.value = responseData['memberId'];
         controller.memberName.value = responseData['memberName'];
         controller.memberRole.value = responseData['memberRole'];
+        await sendFCMToken();
 
         return response.statusCode;
       } else {
@@ -85,7 +87,7 @@ class ApiService {
   }
 
   Future<dynamic> sendFCMToken() async {
-    final url = Uri.parse('$baseUrl/token');
+    final url = Uri.parse('$baseUrl/members/token');
     if (controller.memberId.value == 0 || controller.fcmToken.value == "") {
       return 0;
     }
@@ -106,6 +108,8 @@ class ApiService {
         return responseData;
       }
     } catch (e) {
+      print(e);
+
       return e;
     }
   }
@@ -125,7 +129,6 @@ class ApiService {
         controller.accessToken.value = "";
         controller.memberId.value = 0;
         controller.memberName.value = "";
-        await sendFCMToken();
 
         return response.statusCode;
       } else {
@@ -141,7 +144,6 @@ class ApiService {
       Map<String, dynamic> formData, String imagePath) async {
     dio_pkg.Dio dio = dio_pkg.Dio();
     final url = '$baseUrl/reports';
-
     try {
       dio_pkg.FormData formDataWithFile = dio_pkg.FormData.fromMap({
         'dto': dio_pkg.MultipartFile.fromString(
@@ -160,12 +162,10 @@ class ApiService {
           },
         ),
       );
-      final responseData = jsonDecode(response.data);
-      if (response.statusCode == 200) {
-        return responseData;
-      } else {
-        return responseData;
-      }
+
+      final responseData = response.data;
+
+      return responseData;
     } catch (e) {
       return e;
     }
@@ -194,12 +194,12 @@ class ApiService {
           },
         ),
       );
-      final responseData = jsonDecode(response.data);
-      if (response.statusCode == 200) {
-        return responseData;
-      } else {
-        return responseData;
-      }
+
+      final responseData = response.data;
+      print(responseData);
+      print(responseData["datetime"]);
+      print(responseData["type"]);
+      return responseData;
     } catch (e) {
       return e;
     }
@@ -207,6 +207,7 @@ class ApiService {
 
   Future<dynamic> findReports(Map<String, dynamic> formData) async {
     final url = Uri.parse('$baseUrl/reports');
+
     try {
       final response = await http.post(url,
           headers: {
@@ -214,14 +215,9 @@ class ApiService {
           },
           body: jsonEncode(formData));
       if (response.statusCode == 200) {
-        if (response.body == "true") {
-          return true;
-        } else {
-          return false;
-        }
+        return response;
       } else {
-        final responseData = jsonDecode(response.body);
-        return responseData;
+        return response;
       }
     } catch (e) {
       return e;
