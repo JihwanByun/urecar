@@ -119,7 +119,7 @@ public class ReportServiceImpl implements ReportService {
         return SecondReportResponseDto.builder()
                 .reportId(report.getId())
                 .officialName(report.getOfficialName() == null ? "처리중" : report.getOfficialName())
-                .secondImage(ImageHandler.urlToBytes(report.getSecondImage()))
+                .firstImage(ImageHandler.urlToBytes(report.getFirstImage()))
                 .datetime(report.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
                 .processStatus(report.getProcessStatus())
                 .content(report.getContent())
