@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/top_bar.dart';
@@ -40,12 +41,29 @@ class _GalleryScreenState extends State<GalleryScreen> {
     });
 
     try {
-      List<String> galleryImages = await apiService.findGallery();
-      setState(() {
-        images.addAll(galleryImages);
-        loadedItems += galleryImages.length;
-        isLoading = false;
-      });
+      final response = await apiService.findGallery();
+
+      if (response != null && response.containsKey('imageUrls')) {
+        List<dynamic> galleryImages = response['imageUrls'];
+
+        setState(() {
+          images.addAll(galleryImages
+              .map<String>((image) {
+                if (image is String) {
+                  return image;
+                }
+                return '';
+              })
+              .where((element) => element.isNotEmpty)
+              .toList());
+          loadedItems += galleryImages.length;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -99,8 +117,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          images[index],
+                        child: Image.memory(
+                          base64Decode(images[index]),
                           fit: BoxFit.cover,
                         ),
                       );
