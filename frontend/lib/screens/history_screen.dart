@@ -70,14 +70,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
   }
 
-  String mapProcessStatusToDisplay(String status) {
+  Map<String, dynamic> mapProcessStatusToDisplay(String status) {
     switch (status) {
       case "ACCEPTED":
-        return "수용";
+        return {
+          "text": "수용",
+          "color": Theme.of(context).primaryColor,
+        };
       case "UNACCEPTED":
-        return "불수용";
+        return {
+          "text": "불수용",
+          "color": const Color(0xffe32222),
+        };
       default:
-        return "진행중";
+        return {
+          "text": "진행중",
+          "color": Colors.black,
+        };
     }
   }
 
@@ -212,6 +221,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       final DateTime reportDate =
                           DateFormat('yyyy-MM-dd HH:mm:ss:SSS')
                               .parse(dateTimeString);
+                      final statusInfo = mapProcessStatusToDisplay(
+                          reportList[index]['processStatus']);
 
                       return GestureDetector(
                         onTap: () => navigateToDetailScreen(
@@ -221,13 +232,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               "${DateFormat('yy.MM.dd').format(reportDate)} ${reportList[index]['type'] ?? '타입 없음'}",
                           contents: [
                             Text(
-                              mapProcessStatusToDisplay(
-                                  reportList[index]['processStatus']),
-                              style: const TextStyle(
+                              statusInfo['text'],
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
+                                color: statusInfo['color'],
                               ),
-                            )
+                            ),
                           ],
                         ),
                       );
