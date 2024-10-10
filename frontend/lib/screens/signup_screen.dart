@@ -155,13 +155,11 @@ class _SignupScreenState extends State<SignupScreen> {
     if (isValid) {
       formKey.currentState!.save();
       final apiService = ApiService();
-      print(formData);
       formData['address'] = {
         'address': formData.remove('address_base') ?? '',
         'addressDetail': formData.remove('address_detail') ?? '',
         'zipCode': formData.remove('zip_code') ?? ''
       };
-      print(formData);
       try {
         final res = await apiService.signUp(formData);
         if (res == 200) {

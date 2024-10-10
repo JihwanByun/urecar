@@ -55,10 +55,10 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
         ? base64Decode(widget.reportData["firstImage"])
         : Uint8List(0);
 
-    final String dateTimeString = widget.reportData['date'] as String;
+    final String dateTimeString = widget.reportData['datetime'] as String;
     final DateTime reportDateTime =
         DateFormat('yyyy-MM-dd HH:mm:ss:SSS').parse(dateTimeString);
-    bool isCompleted = widget.reportData['status'] == '수용';
+    bool isCompleted = widget.reportData['processStatus'] == '수용';
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -82,7 +82,7 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
                   ),
                   const SizedBox(width: 15),
                   Text(
-                    widget.reportData['title'] ?? "제목 없음",
+                    widget.reportData['type'] ?? "제목 없음",
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -107,13 +107,24 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
                         ),
                 ),
               ),
-              const ReportScreenListItem(title: "분류", content: "불법 주정차"),
+              // Display Member Name
               ReportScreenListItem(
-                  title: "신고 일시",
-                  content: DateFormat('yy.MM.dd HH:mm').format(reportDateTime)),
+                title: "신고자",
+                content: widget.reportData['memberName'] ?? "이름 없음",
+              ),
+              // Display Report Content
+              ReportScreenListItem(
+                title: "신고 내용",
+                content: widget.reportData['content'] ?? "내용 없음",
+              ),
+              // Display Report Date
+              ReportScreenListItem(
+                title: "신고 일시",
+                content: DateFormat('yy.MM.dd HH:mm').format(reportDateTime),
+              ),
               ReportScreenListItem(
                 title: "진행 상황",
-                content: widget.reportData['status'] ?? "처리중",
+                content: widget.reportData['processStatus'] ?? "처리중",
                 fontColor: isCompleted ? Colors.green : Colors.red,
               ),
               ReportScreenListItem(

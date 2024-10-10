@@ -31,12 +31,6 @@ class _OfficerScreenState extends State<OfficerScreen> {
     setState(() {
       if (responseData is List) {
         reportList = List<Map<String, dynamic>>.from(responseData);
-
-        reportList.sort((a, b) {
-          final dateA = DateFormat('yyyy-MM-dd HH:mm:ss:SSS').parse(a['date']);
-          final dateB = DateFormat('yyyy-MM-dd HH:mm:ss:SSS').parse(b['date']);
-          return dateB.compareTo(dateA);
-        });
       }
       isLoading = false;
     });

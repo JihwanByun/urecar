@@ -50,14 +50,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     setState(() {
       if (response is List && response.isNotEmpty) {
         reportList = List<Map<String, dynamic>>.from(response);
-
-        reportList.sort((a, b) {
-          final dateA =
-              DateFormat('yyyy-MM-dd HH:mm:ss:SSS').parse(a['datetime']);
-          final dateB =
-              DateFormat('yyyy-MM-dd HH:mm:ss:SSS').parse(b['datetime']);
-          return dateB.compareTo(dateA);
-        });
       } else {
         reportList = [];
       }
