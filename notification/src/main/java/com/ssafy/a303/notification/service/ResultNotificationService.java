@@ -15,4 +15,6 @@ public interface ResultNotificationService {
     void deleteByNotificationId(long id);
 
     void deleteByMemberId(long id);
+
+    void sendResultNotification(NotificationRequestDto dto);
 }
