@@ -146,19 +146,19 @@ def check_illegal_parking(result):
     vehicle_boxes = []
     lane_boxes = []
     
-    if len(result['boxes'])==0:
+    if len(result[0].boxes)==0:
         return False
 
     # 각 객체의 바운딩 박스와 클래스 추출
-    for i, box in enumerate(result['boxes']):
-        class_id = box['class_id']
-        class_name = result['names'][class_id]
-
-        # 차량과 차선 구분
+    for box in result[0].boxes:
+        box_cls = int(box.cls)
+        class_name = result[0].names[box_cls]
+        
+        # 클래스 이름에 따라 차량과 차선을 구분
         if class_name in ['vehicle_car', 'vehicle_bus', 'vehicle_truck', 'vehicle_bike']:
-            vehicle_boxes.append(box['bbox'])  # 차량의 바운딩 박스
+            vehicle_boxes.append(box)
         elif class_name in ['lane_white', 'lane_blue', 'lane_yellow', 'lane_shoulder']:
-            lane_boxes.append(box['bbox'])  # 차선의 바운딩 박스
+            lane_boxes.append(box)
 
     # 바운딩 박스 간 겹침 여부 확인
     for vehicle in vehicle_boxes:
@@ -170,8 +170,8 @@ def check_illegal_parking(result):
 
 # 바운딩 박스 겹침 여부 확인 함수
 def is_overlapping(box1, box2):
-    x1_min, y1_min, x1_max, y1_max = box1
-    x2_min, y2_min, x2_max, y2_max = box2
+    x1_min, y1_min, x1_max, y1_max = box1.xyxy[0].tolist()
+    x2_min, y2_min, x2_max, y2_max = box2.xyxy[0].tolist()
 
     # 두 박스가 겹치는지 확인
     if x1_min < x2_max and x1_max > x2_min and y1_min < y2_max and y1_max > y2_min:
