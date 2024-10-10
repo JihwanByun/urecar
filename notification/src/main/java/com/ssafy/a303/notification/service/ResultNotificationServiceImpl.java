@@ -11,10 +11,11 @@ import com.ssafy.a303.notification.entity.ResultNotification;
 import com.ssafy.a303.notification.repository.ResultNotificationRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -34,22 +35,10 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public void sendFirstNotification(NotificationRequestDto dto) {
-        if (dto.getResult()) {
-            sendByToken(NotificationSendToFcmServerDto.builder()
-                    .memberId(dto.getMemberId())
-                    .title(TITLE)
-                    .content(FIRST_SUCCESS)
-                    .reportId(dto.getReportId())
-                    .clientToken(dto.getToken())
-                    .createAt(LocalDateTime.now())
-                    .build());
-            return;
-        }
-
         sendByToken(NotificationSendToFcmServerDto.builder()
                 .memberId(dto.getMemberId())
                 .title(TITLE)
-                .content(FIRST_FAILURE)
+                .content(dto.getResult() ? FIRST_SUCCESS : FIRST_FAILURE)
                 .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
@@ -58,60 +47,14 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public void sendSecondNotification(NotificationRequestDto dto) {
-        if (dto.getResult()) {
-            sendByToken(NotificationSendToFcmServerDto.builder()
-                    .memberId(dto.getMemberId())
-                    .title(TITLE)
-                    .content(SECOND_SUCCESS)
-                    .reportId(dto.getReportId())
-                    .clientToken(dto.getToken())
-                    .createAt(LocalDateTime.now())
-                    .build());
-            return;
-        }
-
         sendByToken(NotificationSendToFcmServerDto.builder()
                 .memberId(dto.getMemberId())
                 .title(TITLE)
-                .content(SECOND_FAILURE)
+                .content(dto.getResult() ? SECOND_SUCCESS : SECOND_FAILURE)
                 .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
                 .build());
-    }
-
-    @Override
-    public List<NotificationResponseDto> getNotifications(long memberId) {
-        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
-        List<NotificationResponseDto> dtos = new ArrayList<>();
-        for(ResultNotification resultNotification : notifications) {
-            dtos.add(
-                    NotificationResponseDto.builder()
-                            .notificationId(resultNotification.getId())
-                            .content(resultNotification.getContent())
-                            .datetime(resultNotification.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
-                            .reportId(resultNotification.getReportId())
-                            .build()
-            );
-        }
-
-        return dtos;
-    }
-
-    @Override
-    public void deleteByNotificationId(long notificationId) {
-        ResultNotification resultNotification = resultNotificationRepository.findById(notificationId);
-        resultNotification.removeNotification();
-        resultNotificationRepository.save(resultNotification);
-    }
-
-    @Override
-    public void deleteByMemberId(long memberId) {
-        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
-        for(ResultNotification resultNotifications : notifications) {
-            resultNotifications.removeNotification();
-            resultNotificationRepository.save(resultNotifications);
-        }
     }
 
     public void sendByToken(NotificationSendToFcmServerDto dto) {
@@ -133,6 +76,33 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .memberId(dto.getMemberId())
                 .reportId(dto.getReportId())
                 .build());
+    }
+
+    @Override
+    public List<NotificationResponseDto> getNotifications(long memberId) {
+        return resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId)
+                .stream()
+                .map(resultNotification -> NotificationResponseDto.builder()
+                        .notificationId(resultNotification.getId())
+                        .content(resultNotification.getContent())
+                        .datetime(resultNotification.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                        .reportId(resultNotification.getReportId())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteByNotificationId(long notificationId) {
+        ResultNotification resultNotification = resultNotificationRepository.findById(notificationId);
+        resultNotification.removeNotification();
+        resultNotificationRepository.save(resultNotification);
+    }
+
+    @Transactional
+    public void deleteByMemberId(long memberId) {
+        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
+        notifications.forEach(ResultNotification::removeNotification); // 상태만 변경
+        resultNotificationRepository.saveAll(notifications); // 일괄 저장
     }
 
 }

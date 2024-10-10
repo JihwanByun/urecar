@@ -43,7 +43,6 @@ public class ReportController {
             @RequestPart(value = "file") MultipartFile file
     ) {
         ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
-
         reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
         return ResponseEntity.ok().body(responseDto);
     }
