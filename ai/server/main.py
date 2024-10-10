@@ -112,8 +112,46 @@ def process_msg(msg):
     image_data = read_image(first_image_path)
 
     with torch.no_grad():
-        evaluation_result = model(image_data).numpy()
+        result = model(image_data)
+        # evaluation_result = model(image_data).numpy()
+        evaluation_result = check_illegal_parking(result)
         update_process_status(report_id, evaluation_result)
+
+def check_illegal_parking(result):
+    vehicle_boxes = []
+    lane_boxes = []
+    
+    if len(result['boxes'])==0:
+        return "차가 없음"
+
+    # 각 객체의 바운딩 박스와 클래스 추출
+    for i, box in enumerate(result['boxes']):
+        class_id = box['class_id']
+        class_name = result['names'][class_id]
+
+        # 차량과 차선 구분
+        if class_name in ['vehicle_car', 'vehicle_bus', 'vehicle_truck', 'vehicle_bike']:
+            vehicle_boxes.append(box['bbox'])  # 차량의 바운딩 박스
+        elif class_name in ['lane_white', 'lane_blue', 'lane_yellow', 'lane_shoulder']:
+            lane_boxes.append(box['bbox'])  # 차선의 바운딩 박스
+
+    # 바운딩 박스 간 겹침 여부 확인
+    for vehicle in vehicle_boxes:
+        for lane in lane_boxes:
+            if is_overlapping(vehicle, lane):
+                return "불법 주차"
+    
+    return "정상 주차"
+
+# 바운딩 박스 겹침 여부 확인 함수
+def is_overlapping(box1, box2):
+    x1_min, y1_min, x1_max, y1_max = box1
+    x2_min, y2_min, x2_max, y2_max = box2
+
+    # 두 박스가 겹치는지 확인
+    if x1_min < x2_max and x1_max > x2_min and y1_min < y2_max and y1_max > y2_min:
+        return True
+    return False
 
 # class ModelLoadError(Exception):
 #     pass
