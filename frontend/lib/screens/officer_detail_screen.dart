@@ -189,8 +189,9 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
                     text: "확인",
                     onPressed: decision == null
                         ? null
-                        : () {
-                            handleAcceptReport();
+                        : () async {
+                            await handleAcceptReport();
+                            await Future.delayed(const Duration(seconds: 3));
                             Get.offAllNamed('/officer');
                           },
                     horizontal: 5,
