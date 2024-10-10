@@ -25,4 +25,5 @@ public interface ReportService {
 
     void isIllegalParkingZone(double longitude, double latitude) ;
 
+    void sendOneMinuteNotification(ReportCreateRequestDto notificationRequestDto);
 }

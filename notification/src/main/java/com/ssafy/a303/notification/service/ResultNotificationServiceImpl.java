@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
     private final static String SECOND_FAILURE = "%d번 2차 분석이 완료되었습니다.\n(검증 실패)";
     private final static String ANALYSIS_SUCCESS = "%d번 신고가 수용되었습니다.";
     private final static String ANALYSIS_FAILURE = "%d번 신고가 불수용되었습니다.";
+    private final static String ONE_MINUTE_TIMER = "1분이 경과했습니다.";
 
     private final ResultNotificationRepository resultNotificationRepository;
 
@@ -68,6 +70,23 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .memberId(dto.getMemberId())
                 .title(TITLE)
                 .content(String.format(dto.getResult() ? ANALYSIS_SUCCESS : ANALYSIS_FAILURE, dto.getReportId()))
+                .reportId(dto.getReportId())
+                .clientToken(dto.getToken())
+                .createAt(LocalDateTime.now())
+                .build());
+    }
+
+    @Async
+    @Override
+    @Transactional
+    public void sendOneMinuteNotification(NotificationRequestDto dto) {
+        try {
+            Thread.sleep(60 * 1000);
+        } catch (InterruptedException ignore) {}
+        sendByToken(NotificationSendToFcmServerDto.builder()
+                .memberId(dto.getMemberId())
+                .title(TITLE)
+                .content(ONE_MINUTE_TIMER)
                 .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
