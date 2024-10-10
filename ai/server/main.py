@@ -149,7 +149,8 @@ async def send_notification(report_id, evaluation_result, token, member_id):
 def check_illegal_parking(result):
     vehicle_boxes = []
     lane_boxes = []
-    
+    return True
+
     if len(result[0].boxes)==0:
         return False
 
@@ -164,8 +165,8 @@ def check_illegal_parking(result):
         elif class_name in ['lane_white', 'lane_blue', 'lane_yellow', 'lane_shoulder']:
             lane_boxes.append(box)
             
-    if vehicle_boxes or lane_boxes:
-        return True
+    # if vehicle_boxes or lane_boxes:
+    #     return True
     
     # # 바운딩 박스 간 겹침 여부 확인
     # for vehicle in vehicle_boxes:
