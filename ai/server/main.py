@@ -4,6 +4,7 @@ import logging
 from fastapi import FastAPI
 import torch
 import ultralytics
+from ultralytics import YOLO
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_client import Summary
 import os
@@ -90,7 +91,8 @@ async def consume_kafka():
         # Kafka 메시지 처리
         print(f"Received message: {msg.value()}")
 
-model = torch.load('/home/ubuntu/docker/ai/train43_best.pt')
+model = YOLO('/home/ubuntu/docker/ai/train43_best.pt')
+# model = torch.load('/home/ubuntu/docker/ai/train43_best.pt')
 # model = torch.load(r'C:\workspace\S11P21A303\ai\server\train43_best.pt')
 
 @REQUEST_TIME.time()
@@ -112,7 +114,7 @@ def process_msg(msg):
     image_data = read_image(first_image_path)
 
     with torch.no_grad():
-        result = model(image_data)
+        result = model.predict(image_data)
         # evaluation_result = model(image_data).numpy()
         evaluation_result = check_illegal_parking(result)
         update_process_status(report_id, evaluation_result)
@@ -122,7 +124,7 @@ def check_illegal_parking(result):
     lane_boxes = []
     
     if len(result['boxes'])==0:
-        return "차가 없음"
+        return False
 
     # 각 객체의 바운딩 박스와 클래스 추출
     for i, box in enumerate(result['boxes']):
@@ -139,9 +141,9 @@ def check_illegal_parking(result):
     for vehicle in vehicle_boxes:
         for lane in lane_boxes:
             if is_overlapping(vehicle, lane):
-                return "불법 주차"
+                return True
     
-    return "정상 주차"
+    return False
 
 # 바운딩 박스 겹침 여부 확인 함수
 def is_overlapping(box1, box2):
