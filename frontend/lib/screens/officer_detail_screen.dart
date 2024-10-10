@@ -7,7 +7,6 @@ import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/services/api_service.dart';
 import 'package:frontend/components/report_screen/report_screen_list_item.dart';
 import 'package:frontend/components/common/button.dart';
-import 'package:frontend/controller.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -155,7 +154,7 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
                       groupValue: decision,
                       onChanged: (value) {
                         setState(() {
-                          decision = value as bool?;
+                          decision = value;
                         });
                       },
                     ),
@@ -166,7 +165,7 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
                       groupValue: decision,
                       onChanged: (value) {
                         setState(() {
-                          decision = value as bool?;
+                          decision = value;
                         });
                       },
                     ),

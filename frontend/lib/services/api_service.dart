@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio_pkg;
-import 'package:intl/intl.dart';
 
 class ApiService {
   final MainController controller = Get.put(MainController());
@@ -58,6 +57,7 @@ class ApiService {
   }
 
   Future<dynamic> login(Map<String, dynamic> formData) async {
+    const storage = FlutterSecureStorage();
     final url = Uri.parse('$baseUrl/login');
     try {
       final response = await http.post(
@@ -74,6 +74,10 @@ class ApiService {
         controller.memberId.value = responseData['memberId'];
         controller.memberName.value = responseData['memberName'];
         controller.memberRole.value = responseData['memberRole'];
+        await storage.write(
+            key: "login",
+            value:
+                "${controller.memberEmail.value} ${controller.accessToken.value} ${controller.memberId.value} ${controller.memberName.value} ${controller.memberRole.value}");
         await sendFCMToken();
 
         return response.statusCode;
@@ -123,7 +127,6 @@ class ApiService {
         body: jsonEncode(formData),
       );
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
         controller.accessToken.value = "";
         controller.memberId.value = 0;
         controller.memberName.value = "";
@@ -224,7 +227,8 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> responseData = jsonDecode(response.body);
+        final List<dynamic> responseData =
+            jsonDecode(utf8.decode(response.bodyBytes));
         return responseData;
       } else {
         return [];
@@ -281,7 +285,7 @@ class ApiService {
       final response =
           await http.get(url, headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
         return responseData;
       } else {
         return {

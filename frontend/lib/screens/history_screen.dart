@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/screen_card.dart';

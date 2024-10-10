@@ -42,7 +42,7 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   void startStatusTimer() {
-    const duration = Duration(seconds: 10);
+    const duration = Duration(seconds: 5);
     _statusTimer = Timer.periodic(duration, (Timer timer) async {
       await fetchStatus();
     });
@@ -114,7 +114,7 @@ class _ReportScreenState extends State<ReportScreen> {
       '불수용',
     ];
     int idx = statusList.indexOf(result["processStatus"]);
-    List<Color> ColorList = [
+    List<Color> colorList = [
       Colors.blue.shade600,
       Colors.blue.shade600,
       const Color(0xffe32222),
@@ -187,7 +187,7 @@ class _ReportScreenState extends State<ReportScreen> {
               ReportScreenListItem(
                 title: "진행 상황",
                 content: statusListKorean[idx],
-                fontColor: ColorList[idx],
+                fontColor: colorList[idx],
               ),
               ReportScreenListItem(
                   title: isCompleted == false ? "2차 사진 촬영" : "신고 번호",
@@ -240,9 +240,8 @@ class _ReportScreenState extends State<ReportScreen> {
                             ? ReportScreenTimerButton(
                                 onButtonPressed: onButtonPressed,
                                 seconds: DateTime.now()
-                                        .difference(dateTime)
-                                        .inSeconds +
-                                    32400,
+                                    .difference(dateTime)
+                                    .inSeconds,
                                 onEnabledChanged: updateSecondPossible,
                               )
                             : const SizedBox()

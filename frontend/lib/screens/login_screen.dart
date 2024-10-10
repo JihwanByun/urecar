@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:frontend/components/common/button.dart';
 import 'package:frontend/components/common/input.dart';
 import 'package:frontend/components/common/input_label.dart';
 import 'package:frontend/components/common/validator_text.dart';
 import 'package:frontend/controller.dart';
+import 'package:frontend/screens/check_image_screen.dart';
 import 'package:frontend/screens/signup_screen.dart';
 import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final String? imagePath;
+  final double? longitude;
+  final double? latitude;
+  const LoginScreen({super.key, this.imagePath, this.latitude, this.longitude});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -59,11 +64,18 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         final res = await apiService.login(formData);
         if (res == 200) {
-          if (controller.memberRole.value == 'OFFICIAL') {
-            Get.offAllNamed('/officer');
-          } else {
-            controller.changePage(0);
-          }
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            if (controller.memberRole.value == 'OFFICIAL') {
+              Get.offAllNamed('/officer');
+            } else if (widget.imagePath != null) {
+              Get.off(CheckImageScreen(
+                  imagePath: widget.imagePath!,
+                  longitude: widget.longitude!,
+                  latitude: widget.latitude!));
+            } else {
+              controller.changePage(0);
+            }
+          });
         } else {
           Get.snackbar('오류', '${res["message"]}',
               snackPosition: SnackPosition.BOTTOM);
@@ -117,7 +129,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Get.to(() => const SignupScreen());
+                      Get.to(() => SignupScreen(
+                          imagePath: widget.imagePath,
+                          longitude: widget.longitude,
+                          latitude: widget.latitude));
                     },
                     child: const Text(
                       "회원가입",
@@ -129,7 +144,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("ㅣ"),
                   TextButton(
                     onPressed: () {
-                      Get.to(const SignupScreen());
+                      Get.to(SignupScreen(
+                          imagePath: widget.imagePath,
+                          longitude: widget.longitude,
+                          latitude: widget.latitude));
                     },
                     child: const Text(
                       "ID/PW 찾기",
