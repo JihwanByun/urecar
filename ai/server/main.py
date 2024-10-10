@@ -13,10 +13,13 @@ from database import SessionLocal
 from model import Report, ProcessStatus
 
 import json
+import httpx
 
 
 app = FastAPI()
 
+# spring notification api url
+SPRING_NOTIFICATION_URL = "http://j11a303.p.ssafy.io:8082/notifications/first"
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -96,7 +99,7 @@ model = YOLO('/home/ubuntu/docker/ai/train43_best.pt')
 # model = torch.load(r'C:\workspace\S11P21A303\ai\server\train43_best.pt')
 
 @REQUEST_TIME.time()
-def process_msg(msg):
+async def process_msg(msg):
                 # 메시지의 각 파티션에 대해 처리
     # for partition, messages in msg.value():
     #     for message in messages:
@@ -107,17 +110,37 @@ def process_msg(msg):
     first_image_path = content["firstImage"]
 
         # 파일 경로 검증 로직
-    if not os.path.exists(first_image_path):
-        logger.error(f"File not found: {first_image_path}")
-        raise FileNotFoundError(f"File not found: {first_image_path}")
-    
-    image_data = read_image(first_image_path)
+ 
+    try:
+        image_data = read_image(first_image_path)
+    except Exception:
+        return
 
     with torch.no_grad():
         result = model.predict(image_data)
         # evaluation_result = model(image_data).numpy()
         evaluation_result = check_illegal_parking(result)
         update_process_status(report_id, evaluation_result)
+
+    # for evaluation result, call api of spring notification server
+    member_id = content["memberId"]
+    token = content["token"]
+    await send_notification(report_id, evaluation_result, token, member_id)
+
+async def send_notification(report_id, evaluation_result, token, member_id):
+    data = {
+        "memberId": member_id,
+        "reportId": report_id,
+        "result": evaluation_result,
+        "token": token
+    }
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(SPRING_NOTIFICATION_URL, json=data)
+        except Exception as e:
+            print(f"Error sending notification: {e}")            
+
 
 def check_illegal_parking(result):
     vehicle_boxes = []
