@@ -30,7 +30,7 @@ class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController _textController = TextEditingController();
   String textError = "";
   final apiService = ApiService();
-  late Timer _statusTimer;
+  late Timer _statusTimer = Timer(const Duration(seconds: 0), () {});
   String secondPossible = "불가능";
 
   @override
@@ -119,10 +119,10 @@ class _ReportScreenState extends State<ReportScreen> {
     List<Color> ColorList = [
       Colors.blue.shade600,
       Colors.blue.shade600,
+      const Color(0xffe32222),
+      const Color(0xffe32222),
       Colors.blue.shade600,
       Theme.of(context).primaryColor,
-      const Color(0xffe32222),
-      const Color(0xffe32222),
       const Color(0xffe32222)
     ];
     bool secondTimer = false;
