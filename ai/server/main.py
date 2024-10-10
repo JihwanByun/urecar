@@ -5,6 +5,7 @@ from fastapi import FastAPI
 import torch
 import ultralytics
 from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_client import Summary 
 
 from database import SessionLocal
 from model import Report, ProcessStatus
