@@ -8,6 +8,7 @@ import lombok.Getter;
 public class NotificationResponseDto {
 
     private long notificationId;
+    private long reportId;
     private String content;
     private String datetime;
 
