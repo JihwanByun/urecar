@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class ReportScreenListItem extends StatelessWidget {
   final String title;
-  final String content;
+  final dynamic content;
   final Color? fontColor;
+
   const ReportScreenListItem({
     super.key,
     required this.title,
@@ -20,6 +21,7 @@ class ReportScreenListItem extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             title,
@@ -28,14 +30,16 @@ class ReportScreenListItem extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(
-            content,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: fontColor ?? Colors.black,
-            ),
-          )
+          content is String
+              ? Text(
+                  content,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: fontColor ?? Colors.black,
+                  ),
+                )
+              : content as Widget,
         ],
       ),
     );

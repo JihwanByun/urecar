@@ -3,7 +3,6 @@ import 'package:frontend/screens/officer_detail_screen.dart';
 import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/screens/history_detail_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:frontend/services/api_service.dart';
@@ -32,6 +31,12 @@ class _OfficerScreenState extends State<OfficerScreen> {
     setState(() {
       if (responseData is List) {
         reportList = List<Map<String, dynamic>>.from(responseData);
+
+        reportList.sort((a, b) {
+          final dateA = DateFormat('yyyy-MM-dd HH:mm:ss:SSS').parse(a['date']);
+          final dateB = DateFormat('yyyy-MM-dd HH:mm:ss:SSS').parse(b['date']);
+          return dateB.compareTo(dateA);
+        });
       }
       isLoading = false;
     });
