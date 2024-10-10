@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text(
                             "$reportCount",
                             style: const TextStyle(
-                              color: Colors.red,
+                              color: Color(0xffe32222),
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
                             ),
