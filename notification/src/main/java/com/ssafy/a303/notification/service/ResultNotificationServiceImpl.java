@@ -22,10 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResultNotificationServiceImpl implements ResultNotificationService {
 
     private final static String TITLE = "UreCar";
-    private final static String FIRST_SUCCESS = "첫 번째 사진이 수용되었습니다.";
-    private final static String FIRST_FAILURE = "첫 번째 사진이 불수용되었습니다.";
-    private final static String SECOND_SUCCESS = "두 번째 사진이 수용되었습니다.";
-    private final static String SECOND_FAILURE = "두 번째 사진이 불수용되었습니다.";
+    private final static String FIRST_SUCCESS = "%d 신고 분석이 완료되었습니다.\n(검증 성공)";
+    private final static String FIRST_FAILURE = "%d 신고 분석이 완료되었습니다.\n(검증 실패)";
+    private final static String SECOND_SUCCESS = "%d 신고가 정상 접수되었습니다.";
+    private final static String SECOND_FAILURE = "두 번째 신고 분석이 완료되었습니다.\n(검증 실패 - 신고 번호: %d)";
+    private final static String ANALYSIS_SUCCESS = "%d 신고가 수용되었습니다.\n";
+    private final static String ANALYSIS_FAILURE = "%d 신고가 불수용되었습니다.\n";
 
     private final ResultNotificationRepository resultNotificationRepository;
 
@@ -33,6 +35,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
         this.resultNotificationRepository = notificationRepository;
     }
 
+    @Transactional
     @Override
     public void sendFirstNotification(NotificationRequestDto dto) {
         sendByToken(NotificationSendToFcmServerDto.builder()
@@ -45,6 +48,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .build());
     }
 
+    @Transactional
     @Override
     public void sendSecondNotification(NotificationRequestDto dto) {
         sendByToken(NotificationSendToFcmServerDto.builder()
@@ -57,6 +61,20 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .build());
     }
 
+    @Transactional
+    @Override
+    public void sendResultNotification(NotificationRequestDto dto) {
+        sendByToken(NotificationSendToFcmServerDto.builder()
+                .memberId(dto.getMemberId())
+                .title(TITLE)
+                .content(dto.getResult() ? ANALYSIS_SUCCESS : ANALYSIS_FAILURE)
+                .reportId(dto.getReportId())
+                .clientToken(dto.getToken())
+                .createAt(LocalDateTime.now())
+                .build());
+    }
+
+    @Transactional
     public void sendByToken(NotificationSendToFcmServerDto dto) {
         Message message = Message.builder()
                 .setNotification(Notification.builder()

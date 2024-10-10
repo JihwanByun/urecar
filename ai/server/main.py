@@ -5,9 +5,12 @@ from fastapi import FastAPI
 import torch
 import ultralytics
 from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_client import Summary 
 
 from database import SessionLocal
 from model import Report, ProcessStatus
+
+import json
 
 
 app = FastAPI()
@@ -35,12 +38,13 @@ consumer.subscribe([KAFKA_TOPIC])
 
 # Prometheus Summary 메트릭 생성
 REQUEST_TIME = Summary('image_process_execution_seconds', 'Time spent processing a request')
+Instrumentator().instrument(app).expose(app)
 
 @app.on_event("startup")
 async def startup_event():
     logger.info("App startup initiated")
     asyncio.create_task(consume_kafka())
-    Instrumentator().instrument(app).expose(app)
+    
 
 @app.on_event('shutdown')
 async def app_shutdown():
@@ -79,7 +83,7 @@ async def consume_kafka():
         #         with torch.no_grad():
         #             evaluation_result = model(image_data).numpy()
         #             update_process_status(report_id, evaluation_result)
-        if msg:
+        if msg.value():
             process_msg(msg)
 
         # Kafka 메시지 처리
@@ -93,18 +97,19 @@ model = torch.load('/home/ubuntu/docker/ai/train43_best.pt')
 @REQUEST_TIME.time()
 def process_msg(msg):
                 # 메시지의 각 파티션에 대해 처리
-    for partition, messages in msg.items():
-        for message in messages:
+    # for partition, messages in msg.value():
+    #     for message in messages:
 
-            content = message.value
-            report_id = content["reportId"]
-            first_image_path = content["firstImage"]
 
-            image_data = read_image(first_image_path)
+    content = json.loads(msg.value().decode('utf-8'))
+    report_id = content["reportId"]
+    first_image_path = content["firstImage"]
 
-            with torch.no_grad():
-                evaluation_result = model(image_data).numpy()
-                update_process_status(report_id, evaluation_result)
+    image_data = read_image(first_image_path)
+
+    with torch.no_grad():
+        evaluation_result = model(image_data).numpy()
+        update_process_status(report_id, evaluation_result)
 
 
 def update_process_status(report_id, evaluation_result):

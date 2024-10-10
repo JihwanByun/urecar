@@ -15,7 +15,7 @@ class ValidatorText extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
       child: Text(
         text,
-        style: TextStyle(color: color ?? Colors.red),
+        style: TextStyle(color: color ?? Color(0xffe32222)),
       ),
     );
   }
