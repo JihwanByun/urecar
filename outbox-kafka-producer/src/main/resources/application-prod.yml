@@ -24,14 +24,14 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: all
-      retries: 3
+      retries: 5
       batch-size: 16384
       linger-ms: 5
       # partitioner:
       #   class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
       buffer-memory: 33554432
       properties:
-        metadata.max.age.ms: 10000
+        metadata.max.age.ms: 300000
     topic:
       name:
         first-request: "first-request"
