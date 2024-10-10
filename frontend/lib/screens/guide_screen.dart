@@ -65,7 +65,7 @@ class _GuideScreenState extends State<GuideScreen> {
                         ),
                         const GuideImage(
                           path: "assets/images/intersection_guide_image.png",
-                          title: "사거리 불법주정차",
+                          title: "교차로 불법주정차",
                           content:
                               "신고 대상 차량의 번호판과 주정차금지 규제 표시 또는 노면의 황색 실선, 복선이 보이게 촬영해주세요.",
                         ),
