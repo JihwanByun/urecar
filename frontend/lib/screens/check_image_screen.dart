@@ -49,8 +49,7 @@ class CheckImageScreen extends StatelessWidget {
               ));
         }
       } catch (e) {
-        Get.snackbar('오류', '사진 전송 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
-            snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar('오류', "$e", snackPosition: SnackPosition.BOTTOM);
       }
     }
 
