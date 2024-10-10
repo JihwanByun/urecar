@@ -44,6 +44,7 @@ public class ReportController {
     ) {
         ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
         reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+        reportService.sendOneMinuteNotification(responseDto.getReportId());
         return ResponseEntity.ok().body(responseDto);
     }
 

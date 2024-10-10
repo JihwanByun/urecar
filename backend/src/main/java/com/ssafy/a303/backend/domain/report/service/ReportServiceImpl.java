@@ -1,5 +1,6 @@
 package com.ssafy.a303.backend.domain.report.service;
 
+import com.ssafy.a303.backend.domain.member.dto.NotificationRequestDto;
 import com.ssafy.a303.backend.domain.member.entity.Member;
 import com.ssafy.a303.backend.domain.report.dto.GalleryResponseDto;
 import com.ssafy.a303.backend.domain.report.dto.ImageInfoDto;
@@ -26,13 +27,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
 public class ReportServiceImpl implements ReportService {
 
+    private final RestTemplate restTemplate;
     private final MemberRepository memberRepository;
     private final ReportRepository reportRepository;
     private final OutboxReportRepository outboxReportRepository;
@@ -41,12 +48,13 @@ public class ReportServiceImpl implements ReportService {
 
     public ReportServiceImpl(MemberRepository memberRepository, ReportRepository reportRepository,
             OutboxReportRepository outboxReportRepository, IllegalParkingZoneRepository illegalParkingZoneRepository,
-            GeoCoderServiceImpl geoCoderService) {
+            GeoCoderServiceImpl geoCoderService, RestTemplate restTemplate) {
         this.memberRepository = memberRepository;
         this.reportRepository = reportRepository;
         this.outboxReportRepository = outboxReportRepository;
         this.illegalParkingZoneRepository = illegalParkingZoneRepository;
 //        this.geoCoderService =geoCoderService;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -203,6 +211,27 @@ public class ReportServiceImpl implements ReportService {
 
 //        String response = geoCoderService.getSeoulBorough(longitude,latitude);
 //        System.out.println(response);
+    }
+
+    @Override
+    public void sendOneMinuteNotification(long reportId) {
+        Report report = reportRepository.getReportById(reportId);
+        String apiUrl = "http://notification:8082/notifications/one-minute";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<NotificationRequestDto> requestEntity = new HttpEntity<>(
+                NotificationRequestDto.builder()
+                        .result(true)
+                        .memberId(report.getMember().getId())
+                        .reportId(report.getId())
+                        .token(report.getMember().getNotificationToken())
+                        .build(), headers);
+        restTemplate.exchange(
+                apiUrl,
+                HttpMethod.POST,
+                requestEntity,
+                String.class
+        );
     }
 
 }
