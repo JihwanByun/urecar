@@ -28,7 +28,7 @@ KAFKA_TOPIC = "first_wait"
 consumer_config = {
     'bootstrap.servers': KAFKA_BROKER_URL,
     'group.id' : 'first-wait-consumer-group',
-    'auto.offset.reset': 'latest',  # 커밋부터 읽기
+    'auto.offset.reset': 'earliest',  # 커밋부터 읽기
     'enable.auto.commit': True,        # 자동 커밋 활성화
     'auto.commit.interval.ms': 5000,   # 5초마다 오프셋 자동 커밋
 }
