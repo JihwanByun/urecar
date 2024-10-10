@@ -42,8 +42,8 @@ public class ReportController {
             @RequestPart(value = "dto") ReportCreateRequestDto reportCreateRequestDto,
             @RequestPart(value = "file") MultipartFile file
     ) {
-        ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
         reportService.isIllegalParkingZone(reportCreateRequestDto.getLongitude(), reportCreateRequestDto.getLatitude());
+        ReportCreateResponseDto responseDto = reportService.createReport(reportCreateRequestDto, file);
         reportService.sendOneMinuteNotification(responseDto.getReportId());
         return ResponseEntity.ok().body(responseDto);
     }
