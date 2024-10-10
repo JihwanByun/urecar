@@ -98,7 +98,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final response = await apiService.findSpecificReport(reportId);
 
     if (response != null && response is Map<String, dynamic>) {
-      Get.to(() => ReportScreen(res: response));
+      if (["ONGOING", "FIRST_ANALYSIS_SUCCESS"]
+          .contains(response["processStatus"])) {
+        Get.to(() => ReportScreen(
+              res: response,
+              isSecond: true,
+            ));
+      } else {
+        Get.to(() => ReportScreen(res: response));
+      }
     } else {
       Get.snackbar(
         "오류",
