@@ -108,7 +108,7 @@ class App extends StatelessWidget {
         GetPage(name: '/camera', page: () => const CameraScreen()),
         GetPage(name: '/history', page: () => const HistoryScreen()),
         GetPage(name: '/setting', page: () => const SettingScreen()),
-        GetPage(name: '/landing', page: () => LandingScreen()),
+        GetPage(name: '/landing', page: () => const LandingScreen()),
         GetPage(name: '/login', page: () => const LoginScreen()),
         GetPage(name: '/officer', page: () => const OfficerScreen()),
       ],

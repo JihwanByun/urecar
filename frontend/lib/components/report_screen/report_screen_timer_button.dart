@@ -25,7 +25,7 @@ class _ReportScreenTimerButtonState extends State<ReportScreenTimerButton> {
   @override
   void initState() {
     super.initState();
-    if (widget.seconds > 65) {
+    if (widget.seconds > 60) {
       setState(() {
         _progressValue = 2.0;
         _isButtonEnabled = true;
@@ -39,11 +39,11 @@ class _ReportScreenTimerButtonState extends State<ReportScreenTimerButton> {
   void _startLoading() {
     const oneSec = Duration(seconds: 1);
     int counter = 0;
-    if (widget.seconds < 65) {
+    if (widget.seconds < 60) {
       _timer = Timer.periodic(oneSec, (Timer timer) {
-        if (counter < (65 - widget.seconds)) {
+        if (counter < (60 - widget.seconds)) {
           setState(() {
-            _progressValue = counter / (65 - widget.seconds);
+            _progressValue = counter / (60 - widget.seconds);
           });
           counter++;
         } else {
