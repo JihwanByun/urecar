@@ -107,12 +107,10 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
                         ),
                 ),
               ),
-              // Display Member Name
               ReportScreenListItem(
                 title: "신고자",
                 content: widget.reportData['memberName'] ?? "이름 없음",
               ),
-              // Display Report Content
               ReportScreenListItem(
                 title: "신고 내용",
                 content: widget.reportData['content'] ?? "내용 없음",
