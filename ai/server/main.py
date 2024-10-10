@@ -128,7 +128,7 @@ def update_process_status(report_id, evaluation_result):
 
     # 평가 결과에 따라 process_status 업데이트
     if evaluation_result == "ACCEPTED":
-        report.process_status = ProcessStatus.ANALYSIS_SUCCESS
+        report.process_status = ProcessStatus.FIRST_ANALYSIS_SUCCESS
     else:
         report.process_status = ProcessStatus.CANCELLED_FIRST_FAILED  # 예시로 다른 상태로 변경
 
