@@ -11,10 +11,11 @@ import com.ssafy.a303.notification.entity.ResultNotification;
 import com.ssafy.a303.notification.repository.ResultNotificationRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -79,20 +80,15 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public List<NotificationResponseDto> getNotifications(long memberId) {
-        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
-        List<NotificationResponseDto> dtos = new ArrayList<>();
-        for (ResultNotification resultNotification : notifications) {
-            dtos.add(
-                    NotificationResponseDto.builder()
-                            .notificationId(resultNotification.getId())
-                            .content(resultNotification.getContent())
-                            .datetime(resultNotification.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
-                            .reportId(resultNotification.getReportId())
-                            .build()
-            );
-        }
-
-        return dtos;
+        return resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId)
+                .stream()
+                .map(resultNotification -> NotificationResponseDto.builder()
+                        .notificationId(resultNotification.getId())
+                        .content(resultNotification.getContent())
+                        .datetime(resultNotification.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                        .reportId(resultNotification.getReportId())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -102,13 +98,11 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
         resultNotificationRepository.save(resultNotification);
     }
 
-    @Override
+    @Transactional
     public void deleteByMemberId(long memberId) {
         List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
-        for (ResultNotification resultNotifications : notifications) {
-            resultNotifications.removeNotification();
-            resultNotificationRepository.save(resultNotifications);
-        }
+        notifications.forEach(ResultNotification::removeNotification); // 상태만 변경
+        resultNotificationRepository.saveAll(notifications); // 일괄 저장
     }
 
 }
