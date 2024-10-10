@@ -82,7 +82,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public List<NotificationResponseDto> getNotifications(long memberId) {
-        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalse(memberId);
+        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
         List<NotificationResponseDto> dtos = new ArrayList<>();
         for(ResultNotification resultNotification : notifications) {
             dtos.add(
@@ -107,7 +107,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public void deleteByMemberId(long memberId) {
-        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalse(memberId);
+        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
         for(ResultNotification resultNotifications : notifications) {
             resultNotifications.removeNotification();
             resultNotificationRepository.save(resultNotifications);
@@ -124,7 +124,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .build();
         try {
             FirebaseMessaging.getInstance().send(message);
-        } catch (FirebaseMessagingException ignored) {};
+        } catch (FirebaseMessagingException ignored) {}
 
         resultNotificationRepository.save(ResultNotification.builder()
                 .title(dto.getTitle())
