@@ -132,7 +132,7 @@ public class ReportServiceImpl implements ReportService {
 
         if (Math.abs(report.getLongitude() - requestDto.getLongitude()) >= 0.001 ||
                 Math.abs(report.getLatitude() - requestDto.getLatitude()) >= 0.001) {
-            throw new CustomException(ErrorCode.SECOND_IMAGE_SAVE_FAILED);
+            throw new CustomException(ErrorCode.SECOND_IMAGE_ANALYSIS_FAILED);
         }
 
         report.updateSecondImage(imageInfoDto.getFullPathName(), requestDto.getContent());

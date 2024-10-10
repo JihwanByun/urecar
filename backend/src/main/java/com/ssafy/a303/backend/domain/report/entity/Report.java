@@ -66,7 +66,7 @@ public class Report {
     public void updateSecondImage(String secondImage, String content) {
         this.secondImage = secondImage;
         this.content = content;
-        this.processStatus = ProcessStatus.FIRST_ANALYSIS_SUCCESS;
+        this.processStatus = ProcessStatus.ANALYSIS_SUCCESS;
     }
 
     public void decideReportOutcome(String officialName, ProcessStatus processStatus) {
