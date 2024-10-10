@@ -21,17 +21,18 @@ spring:
   kafka:
     bootstrap-servers: j11a303.p.ssafy.io:40000  # 카프카 브로커 주소
     producer:
+      enable-idempotence: true
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: all
-      retries: 3
+      retries: 5
       batch-size: 16384
       linger-ms: 5
       buffer-memory: 33554432
     partitioner:
       class: org.apache.kafka.clients.producer.RoundRobinPartitioner
       properties:
-        metadata.max.age.ms: 10000
+        metadata-max-age-ms: 300000
     topic:
       name:
         first-request: "test_topic"

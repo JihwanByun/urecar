@@ -5,8 +5,12 @@ import 'package:frontend/components/common/button.dart';
 class ReportScreenTimerButton extends StatefulWidget {
   final VoidCallback onButtonPressed;
   final int seconds;
+  final Function(bool) onEnabledChanged;
   const ReportScreenTimerButton(
-      {super.key, required this.onButtonPressed, required this.seconds});
+      {super.key,
+      required this.onButtonPressed,
+      required this.seconds,
+      required this.onEnabledChanged});
 
   @override
   State<ReportScreenTimerButton> createState() =>
@@ -16,7 +20,7 @@ class ReportScreenTimerButton extends StatefulWidget {
 class _ReportScreenTimerButtonState extends State<ReportScreenTimerButton> {
   bool _isButtonEnabled = false;
   double _progressValue = 0.0;
-  late Timer _timer;
+  late Timer _timer = Timer(const Duration(seconds: 0), () {});
 
   @override
   void initState() {
@@ -25,6 +29,7 @@ class _ReportScreenTimerButtonState extends State<ReportScreenTimerButton> {
       setState(() {
         _progressValue = 2.0;
         _isButtonEnabled = true;
+        widget.onEnabledChanged(true);
       });
     } else {
       _startLoading();
@@ -46,6 +51,7 @@ class _ReportScreenTimerButtonState extends State<ReportScreenTimerButton> {
             _progressValue = 1.0;
             _isButtonEnabled = true;
           });
+          widget.onEnabledChanged(true);
           _timer.cancel();
         }
       });

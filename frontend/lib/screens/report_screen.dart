@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/components/report_screen/report_screen_content_input.dart';
@@ -9,6 +10,7 @@ import 'package:frontend/components/report_screen/report_screen_list_item.dart';
 import 'package:frontend/components/report_screen/report_screen_timer_button.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/camera_screen.dart';
+import 'package:frontend/services/api_service.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -27,14 +29,52 @@ class _ReportScreenState extends State<ReportScreen> {
   late bool isCompleted;
   final TextEditingController _textController = TextEditingController();
   String textError = "";
+  final apiService = ApiService();
+  late Timer _statusTimer = Timer(const Duration(seconds: 0), () {});
+  String secondPossible = "불가능";
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.res["processStatus"] == "ONGOING") {
+      startStatusTimer();
+    }
+  }
+
+  void startStatusTimer() {
+    const duration = Duration(seconds: 10);
+    _statusTimer = Timer.periodic(duration, (Timer timer) async {
+      await fetchStatus();
+    });
+  }
+
+  Future<void> fetchStatus() async {
+    try {
+      final response = await apiService
+          .findSpecificReport(widget.res["reportId"].toString());
+      if (response["processStatus"] != "ONGOING") {
+        if (mounted) {
+          setState(() {
+            widget.res["processStatus"] = response["processStatus"];
+          });
+        }
+      }
+    } catch (e) {}
+  }
+
+  @override
+  void dispose() {
+    if (_statusTimer.isActive) {
+      _statusTimer.cancel();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> result = widget.res;
-    final Uint8List bitesImage = result.containsKey("firstImage")
-        ? base64Decode(result["firstImage"])
-        : base64Decode(result["secondImage"]);
+    final Uint8List bitesImage = base64Decode(result["firstImage"]);
     widget.isSecond == null ? isCompleted = true : isCompleted = false;
-
     DateTime dateTime =
         DateFormat("yyyy-MM-dd HH:mm:ss").parse(result["datetime"]);
     String date = DateFormat('yy.MM.dd').format(dateTime);
@@ -45,38 +85,61 @@ class _ReportScreenState extends State<ReportScreen> {
           textError = "신고 내용을 작성해주세요,";
         });
       } else {
-        Get.to(() => CameraScreen(
-              reportId: result["reportId"],
-              reportContent: _textController.text,
-            ));
+        if (secondPossible == "가능") {
+          Get.to(() => CameraScreen(
+                reportId: result["reportId"],
+                reportContent: _textController.text,
+              ));
+        }
       }
     }
 
     List<String> statusList = [
       'ONGOING',
-      'ANALYSIS_SUCCESS',
-      'ACCEPTED',
-      'UNDACCEPTED',
+      'FIRST_ANALYSIS_SUCCESS',
       'CANCELLED_FIRST_FAILED',
       'CANCELLED_SECOND_FAILED',
+      'ANALYSIS_SUCCESS',
+      'ACCEPTED',
+      'UNACCEPTED',
     ];
-    List<String> stautsListKorean = [
-      '분석중',
+
+    List<String> statusListKorean = [
+      '1차 사진 분석중',
+      '1차 사진 분석 완료',
+      '1차 사진 요건 불충족',
+      '2차 사진 요건 불충족',
       '심사중',
       '수용',
       '불수용',
-      '요건 불충족',
-      '검증 실패',
     ];
     int idx = statusList.indexOf(result["processStatus"]);
     List<Color> ColorList = [
       Colors.blue.shade600,
       Colors.blue.shade600,
+      const Color(0xffe32222),
+      const Color(0xffe32222),
+      Colors.blue.shade600,
       Theme.of(context).primaryColor,
-      const Color(0x0fe32222),
-      const Color(0x0fe32222),
-      const Color(0x0fe32222)
+      const Color(0xffe32222)
     ];
+    bool secondTimer = false;
+    void updateSecondPossible(bool isEnabled) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            secondTimer = isEnabled;
+            if (secondTimer &&
+                ["CANCELLED_FIRST_FAILED"].contains(result["processStatus"]) ==
+                    false) {
+              secondPossible = "가능";
+            } else {
+              secondPossible = "불가능";
+            }
+          });
+        }
+      });
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -123,13 +186,18 @@ class _ReportScreenState extends State<ReportScreen> {
               ReportScreenListItem(title: "신고 일시", content: datetime),
               ReportScreenListItem(
                 title: "진행 상황",
-                content: stautsListKorean[idx],
+                content: statusListKorean[idx],
                 fontColor: ColorList[idx],
               ),
               ReportScreenListItem(
                   title: isCompleted == false ? "2차 사진 촬영" : "신고 번호",
+                  fontColor: isCompleted == false
+                      ? secondPossible == "가능"
+                          ? Colors.blue.shade600
+                          : const Color(0xFFE32222)
+                      : Colors.black,
                   content: isCompleted == false
-                      ? "가능"
+                      ? secondPossible
                       : "SPP-2042_${result["reportId"]}"),
               isCompleted == true
                   ? ReportScreenListItem(
@@ -168,12 +236,16 @@ class _ReportScreenState extends State<ReportScreen> {
                             )
                           ],
                         ),
-                        ReportScreenTimerButton(
-                          onButtonPressed: onButtonPressed,
-                          seconds:
-                              dateTime.difference(DateTime.now()).inSeconds -
-                                  32400,
-                        )
+                        result["processStatus"] != "CANCELLED_FIRST_FAILED"
+                            ? ReportScreenTimerButton(
+                                onButtonPressed: onButtonPressed,
+                                seconds: DateTime.now()
+                                        .difference(dateTime)
+                                        .inSeconds +
+                                    32400,
+                                onEnabledChanged: updateSecondPossible,
+                              )
+                            : const SizedBox()
                       ],
                     )
                   : Column(

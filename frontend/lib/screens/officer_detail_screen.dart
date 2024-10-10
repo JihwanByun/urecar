@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/services/api_service.dart';
 import 'package:frontend/components/report_screen/report_screen_list_item.dart';
@@ -9,16 +11,23 @@ import 'package:frontend/controller.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-class OfficerDetailScreen extends StatelessWidget {
+class OfficerDetailScreen extends StatefulWidget {
   final Map<String, dynamic> reportData;
 
   const OfficerDetailScreen({super.key, required this.reportData});
 
-  Future<void> handleAcceptReport(bool decision) async {
+  @override
+  _OfficerDetailScreenState createState() => _OfficerDetailScreenState();
+}
+
+class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
+  bool? decision;
+
+  Future<void> handleAcceptReport() async {
     final apiService = ApiService();
     final formData = {
-      "reportId": reportData['reportId'],
-      "memberName": reportData['memberName'],
+      "reportId": widget.reportData['reportId'],
+      "memberName": widget.reportData['memberName'],
       "decision": decision,
     };
 
@@ -27,7 +36,7 @@ class OfficerDetailScreen extends StatelessWidget {
     if (response != null) {
       Get.snackbar(
         "처리 완료",
-        decision ? "신고가 수용되었습니다." : "신고가 불수용되었습니다.",
+        decision == true ? "신고가 수용되었습니다." : "신고가 불수용되었습니다.",
         snackPosition: SnackPosition.BOTTOM,
       );
     } else {
@@ -41,11 +50,15 @@ class OfficerDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MainController controller = Get.put(MainController());
-    final String dateTimeString = reportData['datetime'] as String;
+    final Uint8List bitesImage = widget.reportData.containsKey("firstImage") &&
+            widget.reportData["firstImage"] != null
+        ? base64Decode(widget.reportData["firstImage"])
+        : Uint8List(0);
+
+    final String dateTimeString = widget.reportData['datetime'] as String;
     final DateTime reportDateTime =
         DateFormat('yyyy-MM-dd HH:mm:ss:SSS').parse(dateTimeString);
-    bool isCompleted = reportData['status'] == '수용';
+    bool isCompleted = widget.reportData['processStatus'] == '수용';
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -69,7 +82,7 @@ class OfficerDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 15),
                   Text(
-                    reportData['title'] ?? "제목 없음",
+                    widget.reportData['type'] ?? "제목 없음",
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -80,63 +93,116 @@ class OfficerDetailScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SizedBox(
-                  width: 400,
-                  child: Image.asset(
-                    "assets/images/busstop_guide_image.png",
-                    fit: BoxFit.fitWidth,
-                  ),
+                  width: 250,
+                  child: bitesImage.isNotEmpty
+                      ? Image.memory(
+                          bitesImage,
+                          fit: BoxFit.fitWidth,
+                        )
+                      : const Center(
+                          child: Text(
+                            "이미지가 없습니다.",
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
+                        ),
                 ),
               ),
-              const ReportScreenListItem(title: "분류", content: "불법 주정차"),
+              // Display Member Name
               ReportScreenListItem(
-                  title: "신고 일시",
-                  content: DateFormat('yy.MM.dd HH:mm').format(reportDateTime)),
+                title: "신고자",
+                content: widget.reportData['memberName'] ?? "이름 없음",
+              ),
+              // Display Report Content
+              ReportScreenListItem(
+                title: "신고 내용",
+                content: widget.reportData['content'] ?? "내용 없음",
+              ),
+              ReportScreenListItem(
+                title: "신고 일시",
+                content: DateFormat('yy.MM.dd HH:mm').format(reportDateTime),
+              ),
               ReportScreenListItem(
                 title: "진행 상황",
-                content: reportData['status'] ?? "처리중",
-                fontColor: isCompleted ? Colors.green : Colors.red,
+                content: widget.reportData['processStatus'] ?? "처리중",
+                fontColor: isCompleted
+                    ? Theme.of(context).primaryColor
+                    : const Color(0xffe32222),
               ),
-              const SizedBox(height: 20),
+              ReportScreenListItem(
+                title: '위치',
+                content: Button(
+                  text: "지도 보기",
+                  onPressed: () {
+                    final lat = widget.reportData['latitude'];
+                    final long = widget.reportData['longitude'];
+                    Get.to(() => MapScreen(latitude: lat, longitude: long));
+                  },
+                  horizontal: 5,
+                  vertical: 10,
+                  fontSize: 16,
+                  backgroundColor: Colors.blueAccent,
+                  radius: 10,
+                  contentColor: Colors.white,
+                ),
+              ),
+              ReportScreenListItem(
+                title: '결과',
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Radio(
+                      value: true,
+                      groupValue: decision,
+                      onChanged: (value) {
+                        setState(() {
+                          decision = value as bool?;
+                        });
+                      },
+                    ),
+                    const Text("수용"),
+                    const SizedBox(width: 20),
+                    Radio(
+                      value: false,
+                      groupValue: decision,
+                      onChanged: (value) {
+                        setState(() {
+                          decision = value as bool?;
+                        });
+                      },
+                    ),
+                    const Text("불수용"),
+                  ],
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Button(
-                    text: "수용",
-                    onPressed: () => handleAcceptReport(true),
-                    horizontal: 20,
+                    text: "취소",
+                    onPressed: () {
+                      Get.back();
+                    },
+                    horizontal: 5,
                     vertical: 10,
-                    fontSize: 16,
+                    fontSize: 14,
+                    backgroundColor: Colors.grey,
                   ),
                   Button(
-                    text: "불수용",
-                    onPressed: () => handleAcceptReport(false),
-                    horizontal: 20,
+                    text: "확인",
+                    onPressed: decision == null
+                        ? null
+                        : () {
+                            handleAcceptReport();
+                            Get.offAllNamed('/officer');
+                          },
+                    horizontal: 5,
                     vertical: 10,
-                    fontSize: 16,
-                    backgroundColor: Colors.red,
+                    fontSize: 14,
+                    backgroundColor: decision == null
+                        ? Colors.grey
+                        : Theme.of(context).primaryColor,
                   ),
                 ],
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  final lat = reportData['latitude'];
-                  final long = reportData['longitude'];
-                  Get.to(() => MapScreen(latitude: lat, longitude: long));
-                },
-                child: const Center(
-                  child: Text(
-                    "지도에서 위치 보기",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
               ),
             ],
           ),
@@ -160,7 +226,9 @@ class MapScreen extends StatelessWidget {
       ),
       body: FlutterMap(
         options: MapOptions(
-            initialCenter: LatLng(latitude, longitude), initialZoom: 18),
+          initialCenter: LatLng(latitude, longitude),
+          initialZoom: 18,
+        ),
         children: [
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -173,7 +241,7 @@ class MapScreen extends StatelessWidget {
                 height: 80.0,
                 child: const Icon(
                   Icons.location_pin,
-                  color: Colors.red,
+                  color: Color(0xffe32222),
                   size: 40,
                 ),
               ),

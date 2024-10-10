@@ -12,6 +12,7 @@ public enum ErrorCode {
     TOKEN_NOT_BEARER(400, "TOKEN_NOT_BEARER", "토큰이 Bearer로 시작하지 않습니다."),
     ACCESS_TOKEN_REQUIRED(400, "ACCESS_TOKEN_REQUIRED", "Access Token으로 접근할 수 없습니다. Refresh Token이 필요합니다."),
     REFRESH_TOKEN_NOT_ALLOWED(400, "REFRESH_TOKEN_NOT_ALLOWED", "Refresh Token으로 접근할 수 없습니다. Access Token이 필요합니다."),
+    SECOND_IMAGE_ANALYSIS_FAILED(400, "SECOND_IMAGE_ANALYSIS_FAILED", "위치 검증에 실패했습니다."),
 
     INVALID_TOKEN(401, "INVALID_TOKEN", "토큰이 올바르지 않습니다."),
     EXPIRED_TOKEN(401, "EXPIRED_TOKEN", "토큰이 만료되었습니다."),

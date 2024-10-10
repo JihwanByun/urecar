@@ -160,7 +160,6 @@ class ApiService {
           },
         ),
       );
-
       final responseData = response.data;
 
       return responseData;
@@ -223,6 +222,7 @@ class ApiService {
           'Content-Type': 'application/json',
         },
       );
+
       if (response.statusCode == 200) {
         final List<dynamic> responseData = jsonDecode(response.body);
         return responseData;
@@ -364,6 +364,36 @@ class ApiService {
     try {
       final response =
           await http.get(url, headers: {'Content-Type': 'application/json'});
+
+      final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+      return responseData;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> removeNotification(int notificationsId) async {
+    final url = Uri.parse('$baseUrl//notifications/$notificationsId');
+
+    try {
+      final response =
+          await http.delete(url, headers: {'Content-Type': 'application/json'});
+
+      final responseData = response.body;
+      return responseData;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic> removeAllNotifications() async {
+    final int memberId = controller.memberId.value;
+    final url = Uri.parse('$baseUrl//notifications/all/$memberId');
+
+    try {
+      final response =
+          await http.delete(url, headers: {'Content-Type': 'application/json'});
+
       final responseData = response.body;
       return responseData;
     } catch (e) {

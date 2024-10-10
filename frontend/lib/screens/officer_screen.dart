@@ -3,7 +3,6 @@ import 'package:frontend/screens/officer_detail_screen.dart';
 import 'package:frontend/components/common/screen_card.dart';
 import 'package:frontend/components/common/top_bar.dart';
 import 'package:frontend/controller.dart';
-import 'package:frontend/screens/history_detail_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:frontend/services/api_service.dart';

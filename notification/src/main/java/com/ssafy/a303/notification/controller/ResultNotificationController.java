@@ -35,6 +35,12 @@ public class ResultNotificationController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/result")
+    public ResponseEntity<Void> sendResultNotification(@RequestBody NotificationRequestDto dto) {
+        resultNotificationService.sendResultNotification(dto);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{memberId}")
     public ResponseEntity<List<NotificationResponseDto>> getNotificationsPerMember(@PathVariable long memberId) {
         return ResponseEntity.ok().body(resultNotificationService.getNotifications(memberId));

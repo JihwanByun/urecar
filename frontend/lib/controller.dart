@@ -10,6 +10,7 @@ class MainController extends GetxController {
   var memberRole = "".obs;
   var currentIndex = 10.obs;
   var pageStack = <int>[0].obs;
+  var receiveNotification = false.obs;
   var camera;
 
   void changePage(int index) {
@@ -35,40 +36,6 @@ class MainController extends GetxController {
           Get.offAllNamed('/setting');
           break;
         }
-    }
-  }
-}
-
-class NotificationController extends GetxController {
-  var notificationList = <String>[].obs;
-
-  Future<void> addNotification(String? title, String? content) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (title != null && content != null) {
-      List<String>? storedNotifications = prefs.getStringList('notifications');
-      storedNotifications ??= [];
-      storedNotifications.add("$title:$content");
-      await prefs.setStringList('notifications', storedNotifications);
-    }
-  }
-
-  Future<void> removeNotification(String notification) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    notificationList.remove(notification);
-    await prefs.setStringList('notifications', notificationList);
-  }
-
-  Future<void> clearNotifications() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    notificationList.clear();
-    await prefs.remove('notifications');
-  }
-
-  Future<void> loadNotifications() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? storedNotifications = prefs.getStringList('notifications');
-    if (storedNotifications != null) {
-      notificationList.value = storedNotifications;
     }
   }
 }
