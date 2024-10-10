@@ -10,6 +10,6 @@ public interface ResultNotificationRepository extends JpaRepository<ResultNotifi
 
     ResultNotification findById(long notificationId);
 
-    List<ResultNotification> findByMemberIdAndIsDeletedFalse(Long memberId);
+    List<ResultNotification> findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(Long memberId);
 
 }

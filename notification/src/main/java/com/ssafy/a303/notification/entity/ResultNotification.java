@@ -27,16 +27,18 @@ public class ResultNotification {
     private LocalDateTime createdAt;
 
     private long memberId;
+    private long reportId;
 
     @ColumnDefault("false")
     private boolean isDeleted;
 
     @Builder
-    public ResultNotification(String title, String content, LocalDateTime createdAt, long memberId) {
+    public ResultNotification(String title, String content, LocalDateTime createdAt, long memberId, long reportId) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.memberId = memberId;
+        this.reportId = reportId;
     }
 
     public void removeNotification() {
