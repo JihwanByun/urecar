@@ -106,6 +106,11 @@ def process_msg(msg):
 
     image_data = read_image(first_image_path)
 
+        # 파일 경로 검증 로직
+    if not os.path.exists(first_image_path):
+        logger.error(f"File not found: {first_image_path}")
+        raise FileNotFoundError(f"File not found: {first_image_path}")
+
     with torch.no_grad():
         evaluation_result = model(image_data).numpy()
         update_process_status(report_id, evaluation_result)
