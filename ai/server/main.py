@@ -3,7 +3,6 @@ import asyncio
 import logging
 from fastapi import FastAPI
 import torch
-import ultralytics
 
 from database import SessionLocal
 from model import Report, ProcessStatus
