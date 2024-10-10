@@ -29,6 +29,12 @@ public class ResultNotificationController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/one-minute")
+    public ResponseEntity<Void> sendOneMinuteNotification(@RequestBody NotificationRequestDto dto) {
+        resultNotificationService.sendOneMinuteNotification(dto);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/second")
     public ResponseEntity<Void> sendSecondNotification(@RequestBody NotificationRequestDto dto) {
         resultNotificationService.sendSecondNotification(dto);
