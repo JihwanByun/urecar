@@ -45,8 +45,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   Future<void> navigateToDetailScreen(String reportId) async {
     final response = await apiService.findSpecificReport(reportId);
-    print(123);
-    print(response);
+
     if (response != null && response is Map<String, dynamic>) {
       if (["ONGOING", "FIRST_ANALYSIS_SUCCESS"]
           .contains(response["processStatus"])) {

@@ -41,22 +41,22 @@ class _MyReportScreenState extends State<MyReportScreen> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     '총 108건',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: const [
+                      children: [
                         Text('진행중 9건'),
                         Text('완료 99건'),
                       ],
@@ -72,22 +72,22 @@ class _MyReportScreenState extends State<MyReportScreen> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     '완료 99건',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: const [
+                      children: [
                         Text('수용 49건'),
                         Text('불수용 49건'),
                         Text('취소 1건'),

@@ -159,7 +159,7 @@ class _MemberWithdrawScreenState extends State<MemberWithdrawScreen> {
                         vertical: 10,
                         fontSize: 16,
                         radius: 10,
-                        backgroundColor: Color(0xffe32222),
+                        backgroundColor: const Color(0xffe32222),
                         contentColor: Colors.white,
                       ),
                     ],

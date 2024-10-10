@@ -10,7 +10,15 @@ import 'package:get/get.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  final String? imagePath;
+  final double? longitude;
+  final double? latitude;
+  const SignupScreen({
+    super.key,
+    this.imagePath,
+    this.longitude,
+    this.latitude,
+  });
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -163,7 +171,10 @@ class _SignupScreenState extends State<SignupScreen> {
       try {
         final res = await apiService.signUp(formData);
         if (res == 200) {
-          Get.offAllNamed('/login');
+          Get.offAll(LoginScreen(
+              imagePath: widget.imagePath,
+              longitude: widget.longitude,
+              latitude: widget.latitude));
         } else {
           Get.snackbar('오류', '${res["message"]}',
               snackPosition: SnackPosition.BOTTOM);
