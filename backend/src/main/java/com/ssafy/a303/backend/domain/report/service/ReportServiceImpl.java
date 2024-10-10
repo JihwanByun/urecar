@@ -214,9 +214,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void sendOneMinuteNotification(ReportCreateRequestDto reportCreateRequestDto) {
-        Report report = reportRepository.getReportById(reportCreateRequestDto.getMemberId());
-
+    public void sendOneMinuteNotification(long reportId) {
+        Report report = reportRepository.getReportById(reportId);
         String apiUrl = "http://notification:8082/notifications/one-minute";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
