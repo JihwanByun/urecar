@@ -22,12 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResultNotificationServiceImpl implements ResultNotificationService {
 
     private final static String TITLE = "UreCar";
-    private final static String FIRST_SUCCESS = "%d 신고 분석이 완료되었습니다.\n(검증 성공)";
-    private final static String FIRST_FAILURE = "%d 신고 분석이 완료되었습니다.\n(검증 실패)";
-    private final static String SECOND_SUCCESS = "%d 신고가 정상 접수되었습니다.";
-    private final static String SECOND_FAILURE = "%d 2차 분석이 완료되었습니다.\n(검증 실패)";
-    private final static String ANALYSIS_SUCCESS = "%d 신고가 수용되었습니다.\n";
-    private final static String ANALYSIS_FAILURE = "%d 신고가 불수용되었습니다.\n";
+    private final static String FIRST_SUCCESS = "%d번 신고 분석이 완료되었습니다.\n(검증 성공)";
+    private final static String FIRST_FAILURE = "%d번 신고 분석이 완료되었습니다.\n(검증 실패)";
+    private final static String SECOND_SUCCESS = "%d번 신고가 접수되었습니다.";
+    private final static String SECOND_FAILURE = "%d번 2차 분석이 완료되었습니다.\n(검증 실패)";
+    private final static String ANALYSIS_SUCCESS = "%d번 신고가 수용되었습니다.";
+    private final static String ANALYSIS_FAILURE = "%d번 신고가 불수용되었습니다.";
 
     private final ResultNotificationRepository resultNotificationRepository;
 
@@ -41,7 +41,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
         sendByToken(NotificationSendToFcmServerDto.builder()
                 .memberId(dto.getMemberId())
                 .title(TITLE)
-                .content(dto.getResult() ? FIRST_SUCCESS : FIRST_FAILURE)
+                .content(String.format(dto.getResult() ? FIRST_SUCCESS : FIRST_FAILURE, dto.getReportId()))
                 .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
@@ -54,7 +54,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
         sendByToken(NotificationSendToFcmServerDto.builder()
                 .memberId(dto.getMemberId())
                 .title(TITLE)
-                .content(dto.getResult() ? SECOND_SUCCESS : SECOND_FAILURE)
+                .content(String.format(dto.getResult() ? SECOND_SUCCESS : SECOND_FAILURE, dto.getReportId()))
                 .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
@@ -67,7 +67,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
         sendByToken(NotificationSendToFcmServerDto.builder()
                 .memberId(dto.getMemberId())
                 .title(TITLE)
-                .content(dto.getResult() ? ANALYSIS_SUCCESS : ANALYSIS_FAILURE)
+                .content(String.format(dto.getResult() ? ANALYSIS_SUCCESS : ANALYSIS_FAILURE, dto.getReportId()))
                 .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
@@ -79,7 +79,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
         Message message = Message.builder()
                 .setNotification(Notification.builder()
                         .setTitle(dto.getTitle())
-                        .setBody(String.format(dto.getContent(), dto.getReportId()))
+                        .setBody(dto.getContent())
                         .build())
                 .setToken(dto.getClientToken())
                 .build();
