@@ -6,6 +6,7 @@ import torch
 import ultralytics
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_client import Summary
+import os
 
 from database import SessionLocal
 from model import Report, ProcessStatus
@@ -88,9 +89,8 @@ async def consume_kafka():
 
         # Kafka 메시지 처리
         print(f"Received message: {msg.value()}")
-        await asyncio.sleep(1)  # 비동기 작업이므로 조금 대기
 
-
+model = torch.load('/home/ubuntu/docker/ai/train43_best.pt')
 # model = torch.load(r'C:\workspace\S11P21A303\ai\server\train43_best.pt')
 
 @REQUEST_TIME.time()
@@ -104,24 +104,24 @@ def process_msg(msg):
     report_id = content["reportId"]
     first_image_path = content["firstImage"]
 
-    image_data = read_image(first_image_path)
-
         # 파일 경로 검증 로직
     if not os.path.exists(first_image_path):
         logger.error(f"File not found: {first_image_path}")
         raise FileNotFoundError(f"File not found: {first_image_path}")
+    
+    image_data = read_image(first_image_path)
 
     with torch.no_grad():
         evaluation_result = model(image_data).numpy()
         update_process_status(report_id, evaluation_result)
 
-class ModelLoadError(Exception):
-    pass
-try:
-    model = torch.load('/home/ubuntu/docker/ai/train43_best.pt',weights_only=False)
+# class ModelLoadError(Exception):
+#     pass
+# try:
+#     model = torch.load('/home/ubuntu/docker/ai/train43_best.pt',weights_only=False)
 
-except FileNotFoundError:
-    raise ModelLoadError("Model file not found.")
+# except FileNotFoundError:
+#     raise ModelLoadError("Model file not found.")
 
 def update_process_status(report_id, evaluation_result):
     db = SessionLocal()
