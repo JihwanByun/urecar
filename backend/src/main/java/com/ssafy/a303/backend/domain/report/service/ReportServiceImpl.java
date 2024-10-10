@@ -153,7 +153,8 @@ public class ReportServiceImpl implements ReportService {
     public List<SearchedReportResponseDto> searchReports(SearchedReportsRequestDto searchedReportsRequestDto) {
         LocalDateTime startDateTime = searchedReportsRequestDto.getStartDate().atStartOfDay();
         LocalDateTime endDateTime = searchedReportsRequestDto.getEndDate().atTime(LocalTime.MAX);
-        List<Report> reports = reportRepository.findReportsByProcessStatusAndCreatedAtBetween(
+        List<Report> reports = reportRepository.findReportsByMemberIdAndProcessStatusAndCreatedAtBetween(
+                searchedReportsRequestDto.getMemberId(),
                 searchedReportsRequestDto.getProcessStatus(),
                 startDateTime,
                 endDateTime
