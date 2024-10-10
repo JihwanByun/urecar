@@ -28,7 +28,7 @@ class CheckImageScreen extends StatelessWidget {
     String? selectedOption;
     List<String> options = [
       '소화전 불법주정차',
-      '사거리 불법주정차',
+      '교차로 불법주정차',
       '인도 불법주정차',
       '횡단보도 불법주정차',
       '어린이 보호구역 불법주정차',
