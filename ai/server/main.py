@@ -35,7 +35,7 @@ consumer_config = {
     'group.id' : 'first-wait-consumer-group',
     'auto.offset.reset': 'earliest',  # 커밋부터 읽기
     'enable.auto.commit': True,        # 자동 커밋 활성화
-    'auto.commit.interval.ms': 5000,   # 5초마다 오프셋 자동 커밋
+    'auto.commit.interval.ms': 50000,   # 5초마다 오프셋 자동 커밋
 }
 
 consumer = Consumer(consumer_config)
@@ -88,8 +88,7 @@ async def consume_kafka():
         #         with torch.no_grad():
         #             evaluation_result = model(image_data).numpy()
         #             update_process_status(report_id, evaluation_result)
-        if msg.value():
-            process_msg(msg)
+        await process_msg(msg)
 
         # Kafka 메시지 처리
         print(f"Received message: {msg.value()}")
@@ -135,6 +134,10 @@ async def send_notification(report_id, evaluation_result, token, member_id):
         "token": token
     }
     
+    print(member_id)
+    print(report_id)
+    print(result)
+
     async with httpx.AsyncClient() as client:
         try:
             print("notification")
