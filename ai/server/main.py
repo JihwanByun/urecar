@@ -136,7 +136,7 @@ async def send_notification(report_id, evaluation_result, token, member_id):
     
     print(member_id)
     print(report_id)
-    print(result)
+    print(evaluation_result)
 
     async with httpx.AsyncClient() as client:
         try:
