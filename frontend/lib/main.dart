@@ -64,7 +64,7 @@ Future<void> main() async {
     controller.fcmToken.value = storedToken;
   }
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('포어그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
+    controller.receiveNotification.value = true;
   });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -72,7 +72,8 @@ Future<void> main() async {
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('백그라운드에서 메시지를 받았습니다: ${message.notification?.title}');
+  final MainController controller = Get.put(MainController());
+  controller.receiveNotification.value = true;
 }
 
 class LoadingApp extends StatelessWidget {
