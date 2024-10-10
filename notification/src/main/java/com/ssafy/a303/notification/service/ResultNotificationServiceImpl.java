@@ -25,7 +25,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
     private final static String FIRST_SUCCESS = "%d 신고 분석이 완료되었습니다.\n(검증 성공)";
     private final static String FIRST_FAILURE = "%d 신고 분석이 완료되었습니다.\n(검증 실패)";
     private final static String SECOND_SUCCESS = "%d 신고가 정상 접수되었습니다.";
-    private final static String SECOND_FAILURE = "두 번째 신고 분석이 완료되었습니다.\n(검증 실패 - 신고 번호: %d)";
+    private final static String SECOND_FAILURE = "%d 2차 분석이 완료되었습니다.\n(검증 실패)";
     private final static String ANALYSIS_SUCCESS = "%d 신고가 수용되었습니다.\n";
     private final static String ANALYSIS_FAILURE = "%d 신고가 불수용되었습니다.\n";
 
@@ -79,7 +79,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
         Message message = Message.builder()
                 .setNotification(Notification.builder()
                         .setTitle(dto.getTitle())
-                        .setBody(dto.getContent())
+                        .setBody(String.format(dto.getContent(), dto.getReportId()))
                         .build())
                 .setToken(dto.getClientToken())
                 .build();
