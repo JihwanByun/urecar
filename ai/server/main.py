@@ -134,9 +134,10 @@ async def send_notification(report_id, evaluation_result, token, member_id):
         "result": evaluation_result,
         "token": token
     }
-
+    
     async with httpx.AsyncClient() as client:
         try:
+            print("notification")
             response = await client.post(SPRING_NOTIFICATION_URL, json=data)
         except Exception as e:
             print(f"Error sending notification: {e}")            
