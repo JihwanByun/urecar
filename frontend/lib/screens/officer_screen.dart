@@ -14,8 +14,8 @@ class OfficerScreen extends StatefulWidget {
 }
 
 class _OfficerScreenState extends State<OfficerScreen> {
-  List<Map<String, dynamic>> reportList = [];
-  bool isLoading = true;
+  final RxList<Map<String, dynamic>> reportList = <Map<String, dynamic>>[].obs;
+  final RxBool isLoading = true.obs;
 
   @override
   void initState() {
@@ -27,12 +27,10 @@ class _OfficerScreenState extends State<OfficerScreen> {
     final apiService = ApiService();
     final responseData = await apiService.findOfficialReport();
 
-    setState(() {
-      if (responseData is List) {
-        reportList = List<Map<String, dynamic>>.from(responseData);
-      }
-      isLoading = false;
-    });
+    if (responseData is List) {
+      reportList.value = List<Map<String, dynamic>>.from(responseData);
+    }
+    isLoading.value = false;
   }
 
   Future<void> goToReportDetail(String reportId) async {
@@ -56,13 +54,11 @@ class _OfficerScreenState extends State<OfficerScreen> {
         preferredSize: Size.fromHeight(60),
         child: TopBar(),
       ),
-      body: isLoading
+      body: Obx(() => isLoading.value
           ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -82,7 +78,6 @@ class _OfficerScreenState extends State<OfficerScreen> {
                     itemCount: reportList.length,
                     itemBuilder: (context, index) {
                       final String dateString = reportList[index]['date'];
-
                       final DateTime reportDate =
                           DateFormat('yyyy-MM-dd HH:mm:ss:SSS')
                               .parse(dateString);
@@ -109,7 +104,7 @@ class _OfficerScreenState extends State<OfficerScreen> {
                   ),
                 )
               ],
-            ),
+            )),
     );
   }
 }
