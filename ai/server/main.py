@@ -113,7 +113,7 @@ def process_msg(msg):
 class ModelLoadError(Exception):
     pass
 try:
-    model = torch.load('/home/ubuntu/docker/ai/train43_best.pt',weights_only=True)
+    model = torch.load('/home/ubuntu/docker/ai/train43_best.pt',weights_only=False)
 
 except FileNotFoundError:
     raise ModelLoadError("Model file not found.")
