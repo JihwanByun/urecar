@@ -34,22 +34,10 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public void sendFirstNotification(NotificationRequestDto dto) {
-        if (dto.getResult()) {
-            sendByToken(NotificationSendToFcmServerDto.builder()
-                    .memberId(dto.getMemberId())
-                    .title(TITLE)
-                    .content(FIRST_SUCCESS)
-                    .reportId(dto.getReportId())
-                    .clientToken(dto.getToken())
-                    .createAt(LocalDateTime.now())
-                    .build());
-            return;
-        }
-
         sendByToken(NotificationSendToFcmServerDto.builder()
                 .memberId(dto.getMemberId())
                 .title(TITLE)
-                .content(FIRST_FAILURE)
+                .content(dto.getResult() ? FIRST_SUCCESS : FIRST_FAILURE)
                 .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
@@ -58,25 +46,34 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public void sendSecondNotification(NotificationRequestDto dto) {
-        if (dto.getResult()) {
-            sendByToken(NotificationSendToFcmServerDto.builder()
-                    .memberId(dto.getMemberId())
-                    .title(TITLE)
-                    .content(SECOND_SUCCESS)
-                    .reportId(dto.getReportId())
-                    .clientToken(dto.getToken())
-                    .createAt(LocalDateTime.now())
-                    .build());
-            return;
-        }
-
         sendByToken(NotificationSendToFcmServerDto.builder()
                 .memberId(dto.getMemberId())
                 .title(TITLE)
-                .content(SECOND_FAILURE)
+                .content(dto.getResult() ? SECOND_SUCCESS : SECOND_FAILURE)
                 .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
+                .build());
+    }
+
+    public void sendByToken(NotificationSendToFcmServerDto dto) {
+        Message message = Message.builder()
+                .setNotification(Notification.builder()
+                        .setTitle(dto.getTitle())
+                        .setBody(dto.getContent())
+                        .build())
+                .setToken(dto.getClientToken())
+                .build();
+        try {
+            FirebaseMessaging.getInstance().send(message);
+        } catch (FirebaseMessagingException ignored) {}
+
+        resultNotificationRepository.save(ResultNotification.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .createdAt(dto.getCreateAt())
+                .memberId(dto.getMemberId())
+                .reportId(dto.getReportId())
                 .build());
     }
 
@@ -84,7 +81,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
     public List<NotificationResponseDto> getNotifications(long memberId) {
         List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
         List<NotificationResponseDto> dtos = new ArrayList<>();
-        for(ResultNotification resultNotification : notifications) {
+        for (ResultNotification resultNotification : notifications) {
             dtos.add(
                     NotificationResponseDto.builder()
                             .notificationId(resultNotification.getId())
@@ -108,31 +105,10 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
     @Override
     public void deleteByMemberId(long memberId) {
         List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
-        for(ResultNotification resultNotifications : notifications) {
+        for (ResultNotification resultNotifications : notifications) {
             resultNotifications.removeNotification();
             resultNotificationRepository.save(resultNotifications);
         }
-    }
-
-    public void sendByToken(NotificationSendToFcmServerDto dto) {
-        Message message = Message.builder()
-                .setNotification(Notification.builder()
-                        .setTitle(dto.getTitle())
-                        .setBody(dto.getContent())
-                        .build())
-                .setToken(dto.getClientToken())
-                .build();
-        try {
-            FirebaseMessaging.getInstance().send(message);
-        } catch (FirebaseMessagingException ignored) {}
-
-        resultNotificationRepository.save(ResultNotification.builder()
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .createdAt(dto.getCreateAt())
-                .memberId(dto.getMemberId())
-                .reportId(dto.getReportId())
-                .build());
     }
 
 }
