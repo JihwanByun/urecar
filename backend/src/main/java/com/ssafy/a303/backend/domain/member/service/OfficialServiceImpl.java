@@ -69,7 +69,7 @@ public class OfficialServiceImpl implements OfficialService {
     }
 
     private void requestNotification(NotificationRequestDto notificationRequestDto) {
-        String apiUrl = "http://noticiation:8082/notifications/result";
+        String apiUrl = "http://notification:8082/notifications/result";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<NotificationRequestDto> requestEntity = new HttpEntity<>(notificationRequestDto, headers);
