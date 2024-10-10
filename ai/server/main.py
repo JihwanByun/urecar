@@ -128,9 +128,9 @@ def update_process_status(report_id, evaluation_result):
 
     # 평가 결과에 따라 process_status 업데이트
     if evaluation_result == "ACCEPTED":
-        report.process_status = ProcessStatus.ACCEPTED
+        report.process_status = ProcessStatus.ANALYSIS_SUCCESS
     else:
-        report.process_status = ProcessStatus.UNACCEPTED  # 예시로 다른 상태로 변경
+        report.process_status = ProcessStatus.CANCELLED_FIRST_FAILED  # 예시로 다른 상태로 변경
 
     db.commit()
     db.refresh(report)
