@@ -59,9 +59,7 @@ class _ReportScreenState extends State<ReportScreen> {
           });
         }
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   @override
