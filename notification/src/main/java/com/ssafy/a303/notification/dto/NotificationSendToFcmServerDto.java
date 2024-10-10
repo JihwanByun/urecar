@@ -9,6 +9,7 @@ import lombok.Getter;
 public class NotificationSendToFcmServerDto {
 
     private Long memberId;
+    private Long reportId;
     private Long contentId;
     private LocalDateTime createAt;
     private String title;

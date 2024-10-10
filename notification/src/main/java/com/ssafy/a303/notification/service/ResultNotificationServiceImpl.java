@@ -39,6 +39,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                     .memberId(dto.getMemberId())
                     .title(TITLE)
                     .content(FIRST_SUCCESS)
+                    .reportId(dto.getReportId())
                     .clientToken(dto.getToken())
                     .createAt(LocalDateTime.now())
                     .build());
@@ -49,6 +50,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .memberId(dto.getMemberId())
                 .title(TITLE)
                 .content(FIRST_FAILURE)
+                .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
                 .build());
@@ -61,6 +63,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                     .memberId(dto.getMemberId())
                     .title(TITLE)
                     .content(SECOND_SUCCESS)
+                    .reportId(dto.getReportId())
                     .clientToken(dto.getToken())
                     .createAt(LocalDateTime.now())
                     .build());
@@ -71,6 +74,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .memberId(dto.getMemberId())
                 .title(TITLE)
                 .content(SECOND_FAILURE)
+                .reportId(dto.getReportId())
                 .clientToken(dto.getToken())
                 .createAt(LocalDateTime.now())
                 .build());
@@ -78,7 +82,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public List<NotificationResponseDto> getNotifications(long memberId) {
-        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalse(memberId);
+        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
         List<NotificationResponseDto> dtos = new ArrayList<>();
         for(ResultNotification resultNotification : notifications) {
             dtos.add(
@@ -86,6 +90,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                             .notificationId(resultNotification.getId())
                             .content(resultNotification.getContent())
                             .datetime(resultNotification.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")))
+                            .reportId(resultNotification.getReportId())
                             .build()
             );
         }
@@ -102,7 +107,7 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
 
     @Override
     public void deleteByMemberId(long memberId) {
-        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalse(memberId);
+        List<ResultNotification> notifications = resultNotificationRepository.findByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(memberId);
         for(ResultNotification resultNotifications : notifications) {
             resultNotifications.removeNotification();
             resultNotificationRepository.save(resultNotifications);
@@ -118,17 +123,15 @@ public class ResultNotificationServiceImpl implements ResultNotificationService 
                 .setToken(dto.getClientToken())
                 .build();
         try {
-            String response = FirebaseMessaging.getInstance().send(message);
-            log.info("FCMsend-" + response);
-        } catch (FirebaseMessagingException e) {
-            log.info("FCMexcept-" + e.getMessage());
-        }
+            FirebaseMessaging.getInstance().send(message);
+        } catch (FirebaseMessagingException ignored) {}
 
         resultNotificationRepository.save(ResultNotification.builder()
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .createdAt(dto.getCreateAt())
                 .memberId(dto.getMemberId())
+                .reportId(dto.getReportId())
                 .build());
     }
 

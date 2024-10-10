@@ -86,6 +86,7 @@ async def consume_kafka():
         print(f"Received message: {msg.value()}")
         await asyncio.sleep(1)  # 비동기 작업이므로 조금 대기
 
+
 model = torch.load('/home/ubuntu/docker/ai/train43_best.pt')
 # model = torch.load(r'C:\workspace\S11P21A303\ai\server\train43_best.pt')
 
@@ -104,6 +105,7 @@ def process_msg(msg):
             with torch.no_grad():
                 evaluation_result = model(image_data).numpy()
                 update_process_status(report_id, evaluation_result)
+
 
 def update_process_status(report_id, evaluation_result):
     db = SessionLocal()
