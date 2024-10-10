@@ -91,7 +91,6 @@ async def consume_kafka():
         await asyncio.sleep(1)  # 비동기 작업이므로 조금 대기
 
 
-model = torch.load('/home/ubuntu/docker/ai/train43_best.pt')
 # model = torch.load(r'C:\workspace\S11P21A303\ai\server\train43_best.pt')
 
 @REQUEST_TIME.time()
