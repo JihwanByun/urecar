@@ -117,7 +117,6 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
                 title: "신고 내용",
                 content: widget.reportData['content'] ?? "내용 없음",
               ),
-              // Display Report Date
               ReportScreenListItem(
                 title: "신고 일시",
                 content: DateFormat('yy.MM.dd HH:mm').format(reportDateTime),
@@ -125,7 +124,9 @@ class _OfficerDetailScreenState extends State<OfficerDetailScreen> {
               ReportScreenListItem(
                 title: "진행 상황",
                 content: widget.reportData['processStatus'] ?? "처리중",
-                fontColor: isCompleted ? Colors.green : Colors.red,
+                fontColor: isCompleted
+                    ? Theme.of(context).primaryColor
+                    : const Color(0xffe32222),
               ),
               ReportScreenListItem(
                 title: '위치',
@@ -240,7 +241,7 @@ class MapScreen extends StatelessWidget {
                 height: 80.0,
                 child: const Icon(
                   Icons.location_pin,
-                  color: Colors.red,
+                  color: Color(0xffe32222),
                   size: 40,
                 ),
               ),

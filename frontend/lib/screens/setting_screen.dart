@@ -122,7 +122,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 SettingScreenItem(
                   title: "회원 탈퇴",
                   screen: MemberWithdrawScreen(),
-                  fontColor: Colors.red,
+                  fontColor: Color(0xffe32222),
                 ),
               ],
             )

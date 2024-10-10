@@ -88,14 +88,20 @@ class _CameraScreenState extends State<CameraScreen> {
                       child: Stack(children: [
                         CameraPreview(_controller!),
                         Positioned(
-                          left: 0,
-                          right: 0,
+                          left: 45,
+                          right: 45,
                           top: 10,
-                          child: Text(
-                            widget.reportId == null
-                                ? "번호판과 불법 요소가 잘 보이게 촬영해 주세요."
-                                : "첫 번째 사진과 같은 구도로 촬영해 주세요",
-                            textAlign: TextAlign.center,
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white.withOpacity(0.7)),
+                            child: Text(
+                              widget.reportId == null
+                                  ? "번호판과 불법 요소가 잘 보이게 촬영해 주세요."
+                                  : "첫 번째 사진과 같은 구도로 촬영해 주세요",
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         )
                       ]),

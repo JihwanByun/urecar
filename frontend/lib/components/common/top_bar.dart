@@ -36,7 +36,7 @@ class TopBar extends StatelessWidget {
                         width: 11,
                         height: 11,
                         decoration: const BoxDecoration(
-                          color: Colors.red,
+                          color: Color(0xffe32222),
                           shape: BoxShape.circle,
                         ),
                       ),
