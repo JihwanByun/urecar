@@ -37,7 +37,7 @@ public class ImageHandler {
                 throw new CustomException(ErrorCode.CANT_FOUND_FOLDER);
         }
 
-        String fullPathName =  folder.getPath() + "\\" + fileName + ".jpg";
+        String fullPathName =  folder.getPath() + "/" + fileName + ".jpg";
         try {
             image.transferTo(new File(fullPathName));
             return ImageInfoDto.builder()
