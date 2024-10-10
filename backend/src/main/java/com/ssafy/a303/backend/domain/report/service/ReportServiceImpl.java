@@ -132,7 +132,7 @@ public class ReportServiceImpl implements ReportService {
 
         if (Math.abs(report.getLongitude() - requestDto.getLongitude()) >= 0.001 ||
                 Math.abs(report.getLatitude() - requestDto.getLatitude()) >= 0.001) {
-            throw new CustomException(ErrorCode.SECOND_IMAGE_SAVE_FAILED);
+            throw new CustomException(ErrorCode.SECOND_IMAGE_ANALYSIS_FAILED);
         }
 
         report.updateSecondImage(imageInfoDto.getFullPathName(), requestDto.getContent());
@@ -153,7 +153,8 @@ public class ReportServiceImpl implements ReportService {
     public List<SearchedReportResponseDto> searchReports(SearchedReportsRequestDto searchedReportsRequestDto) {
         LocalDateTime startDateTime = searchedReportsRequestDto.getStartDate().atStartOfDay();
         LocalDateTime endDateTime = searchedReportsRequestDto.getEndDate().atTime(LocalTime.MAX);
-        List<Report> reports = reportRepository.findReportsByProcessStatusAndCreatedAtBetween(
+        List<Report> reports = reportRepository.findReportsByMemberIdAndProcessStatusAndCreatedAtBetween(
+                searchedReportsRequestDto.getMemberId(),
                 searchedReportsRequestDto.getProcessStatus(),
                 startDateTime,
                 endDateTime

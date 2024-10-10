@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
@@ -100,20 +99,21 @@ class _ReportScreenState extends State<ReportScreen> {
     List<String> statusList = [
       'ONGOING',
       'FIRST_ANALYSIS_SUCCESS',
+      'CANCELLED_FIRST_FAILED',
+      'CANCELLED_SECOND_FAILED',
       'ANALYSIS_SUCCESS',
       'ACCEPTED',
       'UNACCEPTED',
-      'CANCELLED_FIRST_FAILED',
-      'CANCELLED_SECOND_FAILED',
     ];
-    List<String> stautsListKorean = [
-      '분석중',
-      '분석 완료',
+
+    List<String> statusListKorean = [
+      '1차 사진 분석중',
+      '1차 사진 분석 완료',
+      '1차 사진 요건 불충족',
+      '2차 사진 요건 불충족',
       '심사중',
       '수용',
       '불수용',
-      '요건 불충족',
-      '검증 실패',
     ];
     int idx = statusList.indexOf(result["processStatus"]);
     List<Color> ColorList = [
@@ -188,7 +188,7 @@ class _ReportScreenState extends State<ReportScreen> {
               ReportScreenListItem(title: "신고 일시", content: datetime),
               ReportScreenListItem(
                 title: "진행 상황",
-                content: stautsListKorean[idx],
+                content: statusListKorean[idx],
                 fontColor: ColorList[idx],
               ),
               ReportScreenListItem(

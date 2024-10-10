@@ -41,7 +41,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
     try {
       List<String> galleryImages = await apiService.findGallery();
-      print(galleryImages);
       setState(() {
         images.addAll(galleryImages);
         loadedItems += galleryImages.length;

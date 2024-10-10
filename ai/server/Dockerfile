@@ -20,3 +20,13 @@ COPY . /app
 
 # 애플리케이션 실행
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# 기존 이미지에서 시작
+
+# 시스템 업데이트 및 필요한 패키지 설치
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install torch==2.4.0 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118
+RUN pip3 install ultralytics==8.3.7
