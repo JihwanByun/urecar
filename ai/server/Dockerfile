@@ -31,6 +31,5 @@ RUN apt-get update && apt-get install -y \
 RUN pip3 install torch==2.4.0 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118
 RUN pip3 install ultralytics==8.3.7
 
-COPY /home/ubuntu/docker/ai/train43_best.pt /app/train43_best.pt
 
 
