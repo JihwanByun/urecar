@@ -10,7 +10,15 @@ import 'package:get/get.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  final String? imagePath;
+  final double? longitude;
+  final double? latitude;
+  const SignupScreen({
+    super.key,
+    this.imagePath,
+    this.longitude,
+    this.latitude,
+  });
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -48,7 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       final address = model.address ?? '';
       addressController.text = address;
-      formData['address'] = address;
+      formData['address_base'] = address;
 
       final buildingName = model.buildingName ?? '';
       addressDetailController.text = buildingName;
@@ -156,14 +164,17 @@ class _SignupScreenState extends State<SignupScreen> {
       formKey.currentState!.save();
       final apiService = ApiService();
       formData['address'] = {
-        'address': formData.remove('address') ?? '',
+        'address': formData.remove('address_base') ?? '',
         'addressDetail': formData.remove('address_detail') ?? '',
         'zipCode': formData.remove('zip_code') ?? ''
       };
       try {
         final res = await apiService.signUp(formData);
         if (res == 200) {
-          Get.offAllNamed('/login');
+          Get.offAll(LoginScreen(
+              imagePath: widget.imagePath,
+              longitude: widget.longitude,
+              latitude: widget.latitude));
         } else {
           Get.snackbar('오류', '${res["message"]}',
               snackPosition: SnackPosition.BOTTOM);
@@ -184,7 +195,7 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 150),
+              const SizedBox(height: 80),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: Image.asset(
@@ -254,16 +265,25 @@ class _SignupScreenState extends State<SignupScreen> {
                   formData['address_detail'] = value ?? '';
                 },
               ),
+              const SizedBox(
+                height: 10,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 60),
-                child: Button(
-                  text: "회원가입",
-                  onPressed: submitForm,
-                  horizontal: 95,
-                  vertical: 10,
-                  fontSize: 15,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Button(
+                    text: "회원가입",
+                    onPressed: submitForm,
+                    horizontal: 95,
+                    vertical: 13,
+                    fontSize: 15,
+                  ),
                 ),
-              )
+              ),
+              const SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),

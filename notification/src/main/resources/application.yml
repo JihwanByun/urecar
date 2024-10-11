@@ -4,11 +4,15 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/urecar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://j11a303.p.ssafy.io:3308/urecar-notification?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ssafy
     password: ssafy
 
@@ -16,5 +20,5 @@ spring:
 server:
   port: 8082
 
-firebase:
-  key-path: service-account.json
+notification:
+  key-path: C:\Users\SSAFY\Desktop\service-account.json

@@ -6,6 +6,7 @@ import lombok.Getter;
 public class ReportCreateRequestDto {
 
     private Long memberId;
+    private String type;
     private Double latitude;
     private Double longitude;
 

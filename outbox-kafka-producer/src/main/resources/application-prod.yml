@@ -1,13 +1,13 @@
 server:
-  port: ${PORT_NUMBER}
+  port: 8084
 
 spring:
   application:
     name: outbox-kafka-producer
   datasource:
-    url: ${MYSQL_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:mysql://mysql:3306/urecar?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ssafy
+    password: ssafy
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -19,19 +19,19 @@ spring:
     #     dialect: org.hibernate.dialect.MySQLDialect
 
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}  # 카프카 브로커 주소
+    bootstrap-servers: j11a303.p.ssafy.io:40000  # 카프카 브로커 주소
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      acks: ${KAFKA_ACKS}
-      retries: 3
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 5
       batch-size: 16384
       linger-ms: 5
       # partitioner:
       #   class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
       buffer-memory: 33554432
       properties:
-        metadata.max.age.ms: 10000
+        metadata.max.age.ms: 300000
     topic:
       name:
         first-request: "first-request"

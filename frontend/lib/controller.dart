@@ -4,11 +4,14 @@ class MainController extends GetxController {
   var fcmToken = "".obs;
   var accessToken = "".obs;
   var memberName = "".obs;
+  var memberEmail = "".obs;
   var memberId = 0.obs;
+  var memberRole = "".obs;
   var currentIndex = 10.obs;
   var pageStack = <int>[0].obs;
-  var showNotification = false.obs;
+  var receiveNotification = false.obs;
   var camera;
+
   void changePage(int index) {
     currentIndex.value = index;
     switch (index) {
@@ -33,9 +36,5 @@ class MainController extends GetxController {
           break;
         }
     }
-  }
-
-  void showNotificationPage() {
-    showNotification.value = true;
   }
 }

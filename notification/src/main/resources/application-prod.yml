@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: notification
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://j11a303.p.ssafy.io:3308/urecar-notification?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: ssafy
+
+server:
+  port: 8082
+
+notification:
+  key-path: /home/ubuntu/docker/notification/service-account.json

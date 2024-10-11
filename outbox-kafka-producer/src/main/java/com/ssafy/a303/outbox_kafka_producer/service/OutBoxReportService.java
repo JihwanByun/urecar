@@ -1,14 +1,18 @@
 package com.ssafy.a303.outbox_kafka_producer.service;
 
 import com.ssafy.a303.outbox_kafka_producer.KafkaProducer;
+import com.ssafy.a303.outbox_kafka_producer.entity.OutboxReport;
+import com.ssafy.a303.outbox_kafka_producer.entity.OutboxStatus;
 import com.ssafy.a303.outbox_kafka_producer.repository.OutboxReportRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Random;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -30,14 +34,28 @@ public class OutBoxReportService {
         this.outboxReportRepository = outboxReportRepository;
         this.kafkaProducer = kafkaProducer;
     }
+
+    @Transactional
     public void publishMessage(){
         // read from table
+        List<OutboxReport> list = outboxReportRepository.findAll();
+        if(list.isEmpty()){
+            return;
+        }
 
         // publish msg to kafka
-        kafkaProducer.sendMessage("test","test +" + LocalDateTime.now());
-//        log.info("topic 1");
-//        kafkaProducer.sendMe
-//        Random random = new Random();
-//        kafkaProducer.sendMessageKey("test", String.valueOf(random.nextInt(6) % 6),"L" + LocalDateTime.now());
+        for(OutboxReport report : list){
+
+            String topic = report.getOutboxStatus() == OutboxStatus.FIRST_WAIT ? "first_wait" : "second_wait";
+            CompletableFuture<SendResult<String, OutboxReport>> result = kafkaProducer.sendMessageWithKey(topic, String.valueOf(LocalDateTime.now()), report);
+            result.thenAccept(sendResult -> {
+                log.info("produced successfully");
+                outboxReportRepository.deleteById(report.getId());
+            }).exceptionally(ex ->{
+                log.info("publish failed");
+                return null;
+                    }
+            );
+        }
     }
 }

@@ -64,7 +64,7 @@ class _MemberWithdrawScreenState extends State<MemberWithdrawScreen> {
                   const Icon(
                     Icons.delete_forever,
                     size: 200,
-                    color: Colors.red,
+                    color: Color(0xffe32222),
                   ),
                   const SizedBox(height: 20),
                   const Text.rich(
@@ -99,7 +99,8 @@ class _MemberWithdrawScreenState extends State<MemberWithdrawScreen> {
                         TextSpan(
                           text: '모든 데이터는 삭제',
                           style: TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.bold),
+                              color: Color(0xffe32222),
+                              fontWeight: FontWeight.bold),
                         ),
                         TextSpan(
                           text: '되며,\n이 작업은 취소할 수 없습니다.',
@@ -158,7 +159,7 @@ class _MemberWithdrawScreenState extends State<MemberWithdrawScreen> {
                         vertical: 10,
                         fontSize: 16,
                         radius: 10,
-                        backgroundColor: Colors.red,
+                        backgroundColor: const Color(0xffe32222),
                         contentColor: Colors.white,
                       ),
                     ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/components/common/bottom_navigation.dart';
 import 'package:frontend/components/common/top_bar.dart';
+import 'package:frontend/components/setting_screen/setting_item.dart';
 import 'package:frontend/components/setting_screen/setting_screen_item.dart';
 import 'package:frontend/controller.dart';
 import 'package:frontend/screens/login_screen.dart';
@@ -8,6 +10,8 @@ import 'package:frontend/screens/preparation_screen.dart';
 import 'package:frontend/screens/notification_setting_screen.dart';
 import 'package:frontend/screens/my_report_screen.dart';
 import 'package:frontend/screens/member_withdraw_screen.dart';
+import 'package:frontend/screens/gallery_screen.dart';
+import 'package:frontend/screens/update_member_screen.dart';
 import 'package:get/get.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -21,11 +25,22 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     final MainController controller = Get.put(MainController());
+    void logout() async {
+      const storage = FlutterSecureStorage();
+      await storage.delete(key: 'login');
+      setState(() {
+        controller.memberEmail.value = "";
+        controller.accessToken.value = "";
+        controller.memberId.value = 0;
+        controller.memberName.value = "";
+        controller.memberRole.value = "";
+      });
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(60),
         child: TopBar(),
       ),
       body: Center(
@@ -39,7 +54,7 @@ class _SettingScreenState extends State<SettingScreen> {
               child: GestureDetector(
                 onTap: () {
                   Get.to(() => controller.memberName.value != ""
-                      ? const PreparationScreen()
+                      ? const UpdateMemberScreen()
                       : const LoginScreen());
                 },
                 child: Row(
@@ -99,28 +114,33 @@ class _SettingScreenState extends State<SettingScreen> {
               height: 30,
               decoration: BoxDecoration(color: Theme.of(context).cardColor),
             ),
-            const Column(
+            Column(
               children: [
-                SettingScreenItem(
+                const SettingScreenItem(
                   title: "알림 설정",
                   screen: NotificationSettingScreen(),
                 ),
-                SettingScreenItem(
+                const SettingScreenItem(
                   title: "고객센터",
                   screen: PreparationScreen(),
                 ),
-                SettingScreenItem(
+                const SettingScreenItem(
                   title: "나의 신고",
                   screen: MyReportScreen(),
                 ),
-                SettingScreenItem(
+                const SettingScreenItem(
                   title: "내 저장소",
-                  screen: PreparationScreen(),
+                  screen: GalleryScreen(),
                 ),
-                SettingScreenItem(
+                SettingItem(
+                  title: "로그아웃",
+                  onTap: logout,
+                  fontColor: const Color(0xffe32222),
+                ),
+                const SettingScreenItem(
                   title: "회원 탈퇴",
                   screen: MemberWithdrawScreen(),
-                  fontColor: Colors.red,
+                  fontColor: Color(0xffe32222),
                 ),
               ],
             )

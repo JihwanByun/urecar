@@ -17,6 +17,11 @@ spring:
       host: localhost
       port: 6379
 
+  servlet:
+    multipart:
+      max-file-size: 10MB  # 파일 하나의 최대 크기
+      max-request-size: 30MB  # 요청 전체의 최대 크기
+
 jwt:
   token:
     header: Authorization
@@ -40,3 +45,12 @@ management:
         enabled: true
   server:
     port: 8081
+
+geocoder:
+  url: https://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326&format=json&type=both&zipcode=true&simple=false
+  credentials:
+    secret-access-key: 5AD60FBD-952F-3953-9FCC-6E9694A17B63
+
+
+image:
+  url: C:\Users\SSAFY\Desktop\imageFolder\
