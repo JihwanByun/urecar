@@ -58,6 +58,7 @@ class _ReportScreenState extends State<ReportScreen> {
             widget.res["processStatus"] = response["processStatus"];
           });
         }
+        _statusTimer.cancel();
       }
     } catch (e) {}
   }
