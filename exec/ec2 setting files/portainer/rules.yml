@@ -1,0 +1,23 @@
+groups:
+  - name: CPUAlerts
+    rules:
+    - alert: HighCPUUsage
+      expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 90
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "High CPU Usage Alert"
+        description: "{{$labels.instance}} has high CPU usage for more than 1 minute."
+
+  - name: KeepAlive
+    rules:
+    - alert: KeepAlive
+      expr: vector(1)  # 항상 참인 상태로 설정
+      for: 1h  # 24시간에 한 번 알림
+      labels:
+        severity: info
+      annotations:
+        summary: "Daily KeepAlive Alert"
+        description: "This is a keep-alive alert sent every 24 hours to confirm the system is operational."
+

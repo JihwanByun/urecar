@@ -1,0 +1,17 @@
+services:
+  spring-main:
+    image: imjunhyuk/urecar:latest
+    container_name: spring-main
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - /home/ubuntu/imageFolder:/home/ubuntu/imageFolder
+    networks:
+      - urecar_network
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+networks:
+  urecar_network:
+    external: true

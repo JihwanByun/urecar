@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  - job_name: 'spring-main'
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets: ['spring-main:8081']
+
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysqld-exporter:3307']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['j11a303.p.ssafy.io:4001']
+
+  - job_name: 'fastapi_ai'
+    static_configs:
+      - targets: ['localhost:8000']
+
+rule_files:
+  - "rules.yml"

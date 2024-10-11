@@ -1,0 +1,58 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ssafy
+      MYSQL_DATABASE: urecar
+      MYSQL_USER: ssafy
+      MYSQL_PASSWORD: ssafy
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - urecar_network
+
+  notification_db:
+    image: mysql:latest
+    container_name: notification_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ssafy
+      MYSQL_DATABASE: urecar-notification
+      MYSQL_USER: ssafy
+      MYSQL_PASSWORD: ssafy
+    ports:
+      - "3308:3306"
+
+    networks:
+      - urecar_network
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter:latest
+    environment:
+        DATA_SOURCE_NAME: "ssafy:ssafy@(mysql:3306)/urecar"
+    ports:
+      - "3307:9104"
+    networks:
+      - urecar_network
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"  # Redis 기본 포트
+    volumes:
+      - redis_data:/data  # Redis 데이터를 영구적으로 저장할 볼륨
+    restart: always  # 컨테이너가 중단될 경우 자동으로 재시작
+    networks: 
+      - urecar_network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  urecar_network:
+    driver: bridge
+    external: true

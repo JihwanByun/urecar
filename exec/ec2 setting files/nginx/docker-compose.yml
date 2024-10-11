@@ -1,0 +1,16 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"       # 호스트의 80포트를 컨테이너의 80포트에 매핑
+      - "443:443"     # 필요시 HTTPS를 위해 443포트도 매핑
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # 커스텀 Nginx 설정 파일 마운트
+        #- etc/ssl/certs:/etc/nginx/certs:ro            # SSL 인증서 (HTTPS 사용 시)
+    networks:
+      - urecar_network
+
+networks:
+  urecar_network:
+    external: true
