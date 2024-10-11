@@ -243,8 +243,8 @@
 | Name      | Roles                                   | GitHub                                         |
 | :-------- | :-------------------------------------- | :--------------------------------------------- |
 | 변지환 👑 | 팀장 | [@JihwanByun](https://github.com/JihwanByun)        |
-| 김혁 🐹 | Frontend                                | [@](https://github.com/) |
-| 권대형 🍀 | Frontend                           | [@](https://github.com/)   |
+| 김혁 🐹 | Frontend                                | [@ssafyhyuk](https://github.com/ssafyhyuk) |
+| 권대형 🍀 | Frontend                           | [@doto3852](https://github.com/doto3852)   |
 | 백승우 🐶 | AI                 | [@galler-ist](https://github.com/galler-ist)   |
 | 박동환 🍬 | Backend                                 | [@ParkDH0809](https://github.com/ParkDH0809)   |
 | 임준혁 🐰 | Backend, CI/CD                          | [@Im-Junhyuk](https://github.com/Im-Junhyuk)         |
