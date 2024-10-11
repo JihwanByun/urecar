@@ -249,8 +249,8 @@
 | Name      | Roles                                   | GitHub                                         |
 | :-------- | :-------------------------------------- | :--------------------------------------------- |
 | 변지환 👑 | 팀장 | [@JihwanByun](https://github.com/JihwanByun)        |
-| 김혁 🐹 | Frontend                                | [@kanghyukjun](https://github.com/kanghyukjun) |
-| 권대형 🍀 | Frontend                           | [@galler-ist](https://github.com/galler-ist)   |
-| 백승우 🐶 | AI                 | [@JihwanByun](https://github.com/JihwanByun)   |
+| 김혁 🐹 | Frontend                                | [@](https://github.com/) |
+| 권대형 🍀 | Frontend                           | [@](https://github.com/)   |
+| 백승우 🐶 | AI                 | [@galler-ist](https://github.com/galler-ist)   |
 | 박동환 🍬 | Backend                                 | [@ParkDH0809](https://github.com/ParkDH0809)   |
-| 임준혁 🐰 | Backend, CI/CD                          | [@Dim0127](https://github.com/Dim0127)         |
+| 임준혁 🐰 | Backend, CI/CD                          | [@Im-Junhyuk](https://github.com/Im-Junhyuk)         |
