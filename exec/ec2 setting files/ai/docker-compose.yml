@@ -1,0 +1,16 @@
+services:
+  urecar_ai1:
+    image: imjunhyuk/urecar_ai
+    restart: always
+    container_name: urecar_ai1
+    ports:
+      - "8000:8000"
+    networks:
+      - urecar_network
+    volumes:
+      - ./train43_best.pt:/home/ubuntu/docker/ai/train43_best.pt
+      - /home/ubuntu/imageFolder:/home/ubuntu/imageFolder  
+
+networks:
+  urecar_network:
+    external: true
