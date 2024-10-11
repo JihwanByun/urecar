@@ -76,7 +76,7 @@
 
 > 사진 촬영
 
-- **1차 사진 **
+- **1차 사진**
   - 
   - 
   - 
@@ -122,13 +122,15 @@
 </br>
 
 ## 📱 서비스 화면
+|                                                                  |                                                                  |                                                                     |                                                                     |
+|:----------------------------------------------------------------:|:----------------------------------------------------------------:|:-------------------------------------------------------------------:|:-------------------------------------------------------------------:|
+| <img src="assets/screenshots/UreCar_메인페이지.jpg" width="175px" />  |  <img src="assets/screenshots/UreCar_신고조회.jpg" width="175px" />  |   <img src="assets/screenshots/UreCar_신고실패.jpg" width="175px" />    |    <img src="assets/screenshots/UreCar_갤러리.jpg" width="175px" />    |
+|                              메인 페이지                              |                               신고조회                               |                                신고실패                                 |                                 갤러리                                 |
+| <img src="assets/screenshots/UreCar_알림페이지.jpg" width="175px" />  | <img src="assets/screenshots/UreCar_알림_상태바.jpg" width="175px" /> | <img src="assets/screenshots/UreCar_불법주정차_가이드.jpg" width="175px" /> |   <img src="assets/screenshots/UreCar_마이페이지.jpg" width="175px" />   |
+|                              알림 페이지                              |                              알림 상태바                              |                              불법주정차 가이드                              |                                마이페이지                                |
+| <img src="assets/screenshots/UreCar_로그인페이지.jpg" width="175px" /> |  <img src="assets/screenshots/UreCar_회원가입.jpg" width="175px" />  | <img src="assets/screenshots/UreCar_공무원_신고리스트.jpg" width="175px" /> | <img src="assets/screenshots/UreCar_공무원_상세페이지.jpg" width="175px" /> |
+|                             로그인 페이지                              |                             회원가입 페이지                             |                             공무원 신고 리스트                              |                            공무원 신고 상세 페이지                            |
 
-|                                                                   |                                                                 |                                                                     |                                                                     |
-| :---------------------------------------------------------------: | :-------------------------------------------------------------: | :-----------------------------------------------------------------: | :-----------------------------------------------------------------: |
-| <img src="assets/screenshots/KidWe_메인화면.jpg" width="175px" /> |  <img src="assets/screenshots/KidWe_일정.gif" width="175px" />  |  <img src="assets/screenshots/KidWe_공지사항.jpg" width="175px" />  |    <img src="assets/screenshots/KidWe_식단.gif" width="175px" />    |
-|                             메인 화면                             |                            일정 관리                            |                              공지사항                               |                                식단                                 |
-|   <img src="assets/screenshots/KidWe_메모.gif" width="175px" />   | <img src="assets/screenshots/KidWe_알림장.gif" width="175px" /> | <img src="assets/screenshots/KidWe_투약의뢰서.gif" width="175px" /> | <img src="assets/screenshots/KidWe_귀가동의서.gif" width="175px" /> |
-|                             메모 등록                             |                        알림장 자동 생성                         |                             투약의뢰서                              |                             귀가동의서                              |
 
 </br>
 
@@ -200,13 +202,13 @@
 
 ## 🧩 ERD
 
-![ERD](assets/ERD.png)
+![ERD](assets/UreCar_ERD.jpg)
 
 </br>
 
 ## 🗃️ 아키텍처
 
-![시스템 아키텍처](assets/시스템아키텍처.png)
+![시스템 아키텍처](assets/UreCar_architecture.jpg)
 
 > 주요 아키텍처
 
@@ -222,9 +224,9 @@
 
 ## 🎨 화면 설계서
 
-[🔗 Figma](<https://www.figma.com/design/oip92RdSlprizyyOvtJ4OB/%ED%82%A4%EC%9C%84-(KidWe)?node-id=0-1&t=k3nqVD3Do1tuyns0-1>)
+[🔗 Figma](<https://www.figma.com/design/CIgKnla27tmKOUzFrZiBKU/wow?node-id=0-1&node-type=canvas&t=hRaCLQ5Lg8yqNioX-0>)
 
-![Wireframe](assets/Wireframe.png)
+![Wireframe](assets/UreCar_WireFrame.jpg)
 
 </br>
 
@@ -232,13 +234,7 @@
 
 > MySQL
 
- <img src="assets/API명세서_MySQL.png" alt="API명세서 - MySQL" width="60%">
-
-</br>
-
-> MongoDB
-
- <img src="assets/API명세서_MongoDB.png" alt="API명세서 - MongoDB" width="60%">
+ <img src="assets/UreCar_API명세서.jpg" alt="API명세서 - MySQL" width="60%">
 
 </br>
 
