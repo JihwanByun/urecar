@@ -16,7 +16,10 @@ class NotificationScreenCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime dateTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(datetime);
-    Duration difference = DateTime.now().difference(dateTime);
+    Duration difference = DateTime.now()
+        .toUtc()
+        .add(const Duration(hours: -9))
+        .difference(dateTime);
     String timeAgo;
     if (difference.inDays >= 1) {
       timeAgo = '${difference.inDays} 일 전';
