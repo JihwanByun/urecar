@@ -212,9 +212,9 @@
 
 | Name      | Roles                                   | GitHub                                         |
 | :-------- | :-------------------------------------- | :--------------------------------------------- |
-| 정다빈 👑 | 팀장, Frontend Leader, Frontend, Design | [@allempti](https://github.com/allkong)        |
-| 강혁준 🐹 | Frontend                                | [@kanghyukjun](https://github.com/kanghyukjun) |
-| 백승우 🍀 | Frontend, UCC                           | [@galler-ist](https://github.com/galler-ist)   |
-| 변지환 🐶 | Backend Leader, Backend                 | [@JihwanByun](https://github.com/JihwanByun)   |
+| 변지환 👑 | 팀장, Backend Leader | [@allempti](https://github.com/allkong)        |
+| 김혁 🐹 | Frontend                                | [@kanghyukjun](https://github.com/kanghyukjun) |
+| 권대형 🍀 | Frontend                           | [@galler-ist](https://github.com/galler-ist)   |
+| 백승우 🐶 | AI                 | [@JihwanByun](https://github.com/JihwanByun)   |
 | 박동환 🍬 | Backend                                 | [@ParkDH0809](https://github.com/ParkDH0809)   |
-| 서지민 🐰 | Backend, CI/CD                          | [@Dim0127](https://github.com/Dim0127)         |
+| 임준혁 🐰 | Backend, CI/CD                          | [@Dim0127](https://github.com/Dim0127)         |
