@@ -1,7 +1,7 @@
 # 불법 주정차 신고 간편화 서비스, UreCar 🚗
 
 <div align=center>
-  <img src="" width="90%" />
+  <img src="/UreCar.png" width="90%" />
 </div>
 
 ## 📅 프로젝트 정보
