@@ -1,0 +1,17 @@
+services:
+  outbox:
+    image: imjunhyuk/urecar_outbox:latest
+    container_name: outbox
+    ports:
+      - "8084:8084"
+      - "8085:8085"
+    networks:
+      - urecar_network
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+     
+
+networks:
+  urecar_network:
+    external: true
+

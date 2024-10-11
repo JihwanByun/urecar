@@ -1,0 +1,64 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - "55555:9000"
+      - "55556:9443"
+    privileged: true
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer_data:/data
+    networks:
+       - urecar_network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes: 
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "4000:9090"
+    networks:
+      - urecar_network
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    depends_on:
+      - portainer   
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - urecar_network
+    depends_on:
+      - prometheus
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    ports:
+      - "4001:9100"
+    restart: always
+    networks:
+      - urecar_network
+
+volumes:
+  portainer_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  urecar_network:
+    external: true
+
+

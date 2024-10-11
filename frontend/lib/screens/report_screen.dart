@@ -58,8 +58,12 @@ class _ReportScreenState extends State<ReportScreen> {
             widget.res["processStatus"] = response["processStatus"];
           });
         }
+        _statusTimer.cancel();
       }
-    } catch (e) {}
+    } catch (e) {
+      Get.snackbar('오류', '신고 정보를 분석 중 오류가 발생했습니다. 잠시 후 다시 이용해주세요.',
+          snackPosition: SnackPosition.BOTTOM);
+    }
   }
 
   @override
