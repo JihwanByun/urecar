@@ -212,7 +212,7 @@
 
 | Name      | Roles                                   | GitHub                                         |
 | :-------- | :-------------------------------------- | :--------------------------------------------- |
-| 변지환 👑 | 팀장, Backend Leader | [@allempti](https://github.com/allkong)        |
+| 변지환 👑 | 팀장 | [@JihwanByun](https://github.com/JihwanByun)        |
 | 김혁 🐹 | Frontend                                | [@kanghyukjun](https://github.com/kanghyukjun) |
 | 권대형 🍀 | Frontend                           | [@galler-ist](https://github.com/galler-ist)   |
 | 백승우 🐶 | AI                 | [@JihwanByun](https://github.com/JihwanByun)   |
