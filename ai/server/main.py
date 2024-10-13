@@ -220,5 +220,5 @@ def read_image(image_path):
     from PIL import Image
     import numpy as np
 
-    image = Image.open(image_path)
+    image = Image.open(image_path).convert('RGB')
     return np.array(image)
