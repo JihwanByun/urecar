@@ -95,7 +95,7 @@
 > Frontend
 
 <div>
-<img src="https://img.shields.io/badge/Flutter-#02569B?style=flat&logo=recoil&logoColor=white"/>
+<img src="https://img.shields.io/badge/Flutter-#02569B?style=flat&logo=flutter&logoColor=white"/>
 </div>
 <div>
   <img src="https://img.shields.io/badge/Recoil-3578E5?style=flat&logo=recoil&logoColor=white"/>
